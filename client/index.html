@@ -1,0 +1,80 @@
+<!-- -*- mode: web; -*- -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Web Client</title>
+    <script>
+     // For debugging purposes when reloading the page
+     console.log(new Array(24 + 1).join('\n'));
+    </script>
+    <style type="text/css" id="syntax-highlighting-style"> </style>
+
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js">
+     
+    </script>
+
+    <script src="marked.min.js"></script>
+    <!--  Available in the jupyter notebook environment-->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js">
+    </script>
+        
+
+    <script src="moon.js"></script>
+    <script type="module" src="./comm.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="labmode.css">
+  </head>
+
+  <body>
+      <pre>
+ _       _                         _
+| | __ _| |__  _ __ ___   ___   __| | ___
+| |/ _` | '_ \| '_ ` _ \ / _ \ / _` |/ _ \
+| | (_| | |_) | | | | | | (_) | (_| |  __/
+|_|\__,_|_.__/|_| |_| |_|\___/ \__,_|\___|       <a href="#" onclick="commlink.send_message('download_python_notebook', {});return false;">py</a> . <a href="#" onclick="commlink.send_message('download_cleared_notebook', {});return false;">cleared</a> . <a href="#" onclick="commlink.send_message('download_full_notebook', {});return false;" >full</a> . <a href="#" onclick="commlink.send_message('view_notebook', {});return false;" target="_blank">view</a>  
+      </pre>
+      <div id="app">
+          <div m-for="uuid in uuids" >
+              <pre class="labmode-prompt" m-html='prompt(uuid)'></pre>
+              <cell-input m-if="!removed.includes(uuid)"
+                          uuid="{{uuid}}"
+                          input_refresh="{{refresh(uuid, 'input')}}"></cell-input>
+              <cell-output m-if="!removed.includes(uuid)" uuid="{{uuid}}"
+                           output_refresh="{{refresh(uuid,'output')}}"></cell-output>
+          </div>
+      </div>
+
+      <script type="module">
+
+       import {CommLink} from './comm.js';
+       import {Cell, Notebook} from './cell.js';
+       import {app} from './components.js'
+       import {ReceiveTest, KernelTest, ExecutionTest, 
+               ScriptTest, MarkdownTest} from './test.js'
+
+       let notebook = new Notebook(app, eval);
+       let commlink = new CommLink(app, notebook, 'localhost');
+
+       // For access via console
+       window.commlink = commlink;
+       window.app = app;
+       window.notebook = notebook;       
+       window.Cell = Cell;
+       
+       // Testing
+       window.receivetest = new ReceiveTest(commlink);
+       window.executiontest = new ExecutionTest(commlink);
+       window.kerneltest = new KernelTest(commlink);
+       window.scripttest = new ScriptTest(commlink);
+       window.markdowntest = new MarkdownTest(commlink);
+
+      </script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+a {
+    color: #cccccc;
+    font-weight: bold;
+}
+
+
+pre {
+    margin:0px;
+}
+
+.markdown-cell {
+    margin-left: 40px; 
+}
+
+.labmode-output-div {
+    overflow: hidden;
+    width: 100%; 
+    font-style:oblique;
+    font-family: sans;
+    margin-top: 3px; 
+    margin-left:10px; 
+    /* background-color: rgba(256, 256, 256, 0.05);*/
+}

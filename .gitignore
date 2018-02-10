@@ -1,0 +1,6 @@
+.DS_Store
+*.elc
+.ipynb_checkpoints/
+__pycache__
+
+client/view.html
