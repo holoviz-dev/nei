@@ -3,7 +3,7 @@
 **Notebooks. In plaintext. In *your* editor.**
 
 
-<img src="https://s3-eu-west-1.amazonaws.com/misc-static-assets/labmode-README-example.gif" width="90%"><img>
+<img src="https://s3-eu-west-1.amazonaws.com/misc-static-assets/labmode-README.gif" width="90%"><img>
 
 The goal of labmode is to allow Python [Jupyter
 notebooks](https://jupyter.org/) to be edited efficiently as plaintext,
