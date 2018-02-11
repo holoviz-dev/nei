@@ -39,26 +39,6 @@ conda install tornado ansi2html jupyter_client
 
 The ``ansi2html`` dependency will soon not be necessary.
 
-## Emacs configuration
-
-Labmode does not yet have an emacs package but it only has two elisp
-dependencies given a recent version of emacs:
-[``s``](https://melpa.org/#/s) and
-[``websocket``](https://melpa.org/#/websocket). These can be easily
-installed using the ``package-list-packages`` command if you have
-pointed to a suitable elisp package repository such as
-[MELPA](https://melpa.org/).
-
-You will also need to add labmode to your ``.emacs`` file by pointing to
-the ``emacs`` subdirectory of this repository:
-
-```elisp
-(add-to-list 'load-path "~/labmode/emacs")
-(require 'lab-mode)
-```
-
-Eventually a MELPA package will be offered for labmode.
-
 ## Browser configuration
 
 Labmode is written in ES6 and is not yet configured to compile to ES5
@@ -89,6 +69,61 @@ putting this line at the top of your Python file:
 The environment used will have to satisfy the Python dependencies listed
 above. If you don't use miniconda you will need to set the
 ``labmode-python-path`` elisp variable.
+
+## Emacs configuration
+
+Labmode does not yet have an emacs package but it only has two elisp
+dependencies given a recent version of emacs:
+[``s``](https://melpa.org/#/s) and
+[``websocket``](https://melpa.org/#/websocket). These can be easily
+installed using the ``package-list-packages`` command if you have
+pointed to a suitable elisp package repository such as
+[MELPA](https://melpa.org/).
+
+You will also need to add labmode to your ``.emacs`` file by pointing to
+the ``emacs`` subdirectory of this repository:
+
+```elisp
+(add-to-list 'load-path "~/labmode/emacs")
+(require 'lab-mode)
+```
+
+Eventually a MELPA package will be offered for labmode.
+
+### Usage
+
+To get started, the most important keybindings are ``C-c v`` to open a
+view of the buffer in the selected browser (Firefox by default), ``C-c
+c`` to insert a code cell, ``C-c m`` to add a markdown cell and ``C-c
+e`` to execute a cell.
+
+
+```elisp
+  (define-key map (kbd "C-c W") 'labmode-write-notebook)
+  (define-key map (kbd "C-c I") 'labmode-insert-notebook)
+  (define-key map (kbd "C-c E") 'labmode-exec-by-line)
+  (define-key map (kbd "C-c L") 'labmode-clear-all-cell-outputs)
+  (define-key map (kbd "C-c C") 'labmode-update-css)
+  
+  (define-key map (kbd "C-c w") 'labmode-move-cell-up)
+  (define-key map (kbd "C-c s") 'labmode-move-cell-down)
+  (define-key map (kbd "C-c <down>") 'labmode-move-point-to-next-cell)
+  (define-key map (kbd "C-c <up>") 'labmode-move-point-to-previous-cell)
+  (define-key map (kbd "C-c c") 'labmode-insert-code-cell)
+  (define-key map (kbd "C-c m") 'labmode-insert-markdown-cell)
+  (define-key map (kbd "C-c e") 'labmode-exec-by-line-and-move-to-next-cell)
+  (define-key map (kbd "C-c i") 'labmode-interrupt-kernel)
+  (define-key map (kbd "C-c r") 'labmode-restart-kernel)
+  (define-key map (kbd "C-c l") 'labmode-clear-cell-by-line)
+  (define-key map (kbd "C-c n") 'labmode-clear-notebook-and-restart)
+
+  (define-key map (kbd "C-c v") 'labmode-view-browser)
+  (define-key map (kbd "C-c V") 'labmode-view-notebook)
+```
+
+The elisp variable ``labmode-browser`` can be set from 'firefox' to
+'chrome' if you prefer to view the notebooks in the Chrome browser.
+
 
 ## Scope of the project
 
