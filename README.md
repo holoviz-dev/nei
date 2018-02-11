@@ -31,13 +31,19 @@ considered stable.**
 
 ## Python dependencies
 
-You can conda install the three python dependencies as follows:
+You can conda install the four python dependencies as follows:
 
 ```
 conda install tornado ansi2html jupyter_client
 ```
 
-The ``ansi2html`` dependency will soon not be necessary.
+The ``ansi2html`` dependency will soon not be necessary and the
+``cssutils`` dependency is only used to apply theming to holoviews bokeh
+plots. This dependency will be made optional but for now it is required:
+
+```
+pip install cssutils
+```
 
 ## Browser configuration
 
