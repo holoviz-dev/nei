@@ -89,7 +89,7 @@ To set the env per file set this as a file variable e.g.
           )
         )
     (if (not labmode-external-server)
-        (message "Error: Server process not running. If the conda env specified?"))
+        (message "Error: Server process not running. Is the conda env specified?"))
     )
   )
 
