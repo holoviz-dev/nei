@@ -48,7 +48,7 @@ visible simultaneously as shown in the GIF above. This is no problem for
 people working on multiple monitors and laptop users should have no
 trouble splitting the screen, especially if they can easily tile windows
 e.g OSX users can use
-[spectable](https://github.com/eczarny/spectacle). The partially
+[spectacle](https://github.com/eczarny/spectacle). The partially
 decoupled view in the web browser avoids the problem of having code
 change position as output is generated and will allow labmode to view
 select portions of the overall notebook as you work.
