@@ -10,10 +10,6 @@ import nbformat
 
 from styles import process_css
 
-from ansi2html import Ansi2HTMLConverter # Note GPL 3+!
-ansi2html = Ansi2HTMLConverter()
-
-
 BROWSER = 'firefox' # E.g 'chrome' or 'firefox'
 
 # TODO
@@ -205,7 +201,7 @@ class OutputMessage(object):
     @classmethod
     def _output_messages(cls, node):
         "Given a notebook node, generate output messages"
-        mime_types = ['text/plain', 'text/html',
+        mime_types = ['text/plain', 'text/html', 'text/ansi',
                       'application/vnd.bokehjs_load.v0+json']
         output_type = node['output_type']
         # Assuming notebook node is iterated in order.
@@ -215,8 +211,7 @@ class OutputMessage(object):
                 text = "<p style='color:red'>{text}</p>".format(text=text)
             return [('text/html', text)]
         elif output_type == 'error': # Handle warnings
-            return[('text/html',
-                    ansi2html.convert('\n'.join(node['traceback'])))]
+            return[('text/ansi', node['traceback'])]
 
         outputs = []
         for mtype, data in node['data'].items():

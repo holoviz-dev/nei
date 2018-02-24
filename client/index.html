@@ -14,7 +14,10 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js">
      
     </script>
-
+    <!-- browserify -s ansi_to_html.js --bare ansi_to_html.js -o ansi_bare.js
+         https://github.com/rburns/ansi-to-html
+    -->
+    <script src="ansi_bare.js"></script>
     <script src="marked.min.js"></script>
     <!--  Available in the jupyter notebook environment-->
     <script
@@ -52,7 +55,7 @@
       </div>
 
       <script type="module">
-
+       import './ansi_bare.js';
        import {CommLink} from './comm.js';
        import {Cell, Notebook} from './cell.js';
        import {app} from './components.js'

@@ -1,6 +1,8 @@
 'use strict';
 
 import {escapeHtml, syntax_highlight, UUID, range, zip, reorder} from './util.js';
+import {ansi_solarized_xterm} from './util.js';
+
 
 export class Notebook {
   // Notebook model constituting the Javascript API
@@ -204,6 +206,11 @@ export class Cell {
     if (mime == 'text/html') {
       return data;
     }
+   else if (mime == 'text/ansi') {
+     let converter = new ansi_to_html.js({colors:ansi_solarized_xterm, escapeXML: true});
+     let mapped = data.map((d) => converter.toHtml(d));
+     return "<pre>" + mapped.join("<br>") + "</pre>"
+   }
     else {  // e.g 'text/plain'
       return escapeHtml(data);
     }
