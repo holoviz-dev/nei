@@ -13,6 +13,32 @@ let entityMap = {
 
 
 
+export let ansi_solarized = ['#073642', '#D30102', '#859900', '#B58900',
+                             '#268BD2', '#D33682', '#2AA198', '#EEE8D5',
+                             '#002B36', '#CB4B16', '#586E75', '#657B83',
+                             '#839496', '#6C71C4', '#93A1A1', '#FDF6E3'];
+
+export let ansi_solarized_xterm = ['#262626', '#AF0000', '#5F8700', '#AF8700',
+                                   '#0087FF', '#AF005F', '#00AFAF', '#E4E4E4',
+                                   '#1C1C1C', '#D75F00', '#585858', '#626262',
+                                   '#808080', '#5F5FAF', '#8A8A8A', '#FFFFD7'];
+
+export let ansi_tango = ['#000000', '#CC0000', '#4E9A06', '#C4A000',
+                         '#3465A4', '#75507B', '#06989A', '#D3D7CF',
+                         '#555753', '#EF2929', '#8AE234', '#FCE94F',
+                         '#729FCF', '#AD7FA8', '#34E2E2', '#EEEEEC'];
+
+export let ansi_xterm = ['#000000', '#CD0000', '#00CD00', '#CDCD00',
+                         '#0000EE', '#CD00CD', '#00CDCD', '#E5E5E5',
+                         '#7F7F7F', '#FF0000', '#00FF00', '#FFFF00',
+                         '#5C5CFF', '#FF00FF', '#00FFFF', '#FFFFFF'];
+
+export let ansi_console = ['#000000', '#AA0000', '#00AA00', '#AA5500',
+                           '#0000AA', '#AA00AA', '#00AAAA', '#AAAAAA',
+                           '#555555', '#FF5555', '#55FF55', '#FFFF55',
+                           '#5555FF', '#FF55FF', '#55FFFF', '#FFFFFF'];
+
+
 export function zip(rows) {
   return rows[0].map((_,c)=>rows.map(row=>row[c]))
 }
