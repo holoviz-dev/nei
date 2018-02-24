@@ -1,5 +1,8 @@
-import cssutils
-
+import pkgutil
+try:
+    import cssutils
+except:
+    cssutils = None
 
 def parse_CSS(css):
     """
@@ -25,8 +28,10 @@ def css_processor(code_generator):
     Create a CSS processor based on the given code generator.
     """
     def inner(notebook, connection, css):
+        if cssutils is None: return
         code = code_generator(parse_CSS(css))
-        notebook.exec_silently(connection, code)
+        if code is not None:
+            notebook.exec_silently(connection, code)
     return inner
 
 
@@ -35,7 +40,8 @@ def apply_holoviews_theme(parsed_css):
     """
     A code generator used to set the holoviews theme from the parsed CSS.
     """
-
+    hvavailable = pkgutil.find_loader('holoviews')
+    if hvavailable is None: return
     if parsed_css == {}:
         return ''
 
