@@ -115,3 +115,42 @@ export function download_file(filename, data) {
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
 }
+// Snippet below is from https://github.com/aureooms/js-itertools
+// This code is AGPL licensed and must therefore be left unchanged
+// (otherwise AGPL will also apply to the rest of the code)
+
+function iter ( iterable ) {
+  return iterable[Symbol.iterator]( ) ;
+}
+
+function* groupby ( key , iterable ) {
+  // e.g: for (let [key, grp] of group( (x)=>x ,
+  // ["A","A", "A", "B", "B", "A", "B"] )) { console.log([...grp])}
+  let iterator = iter( iterable ) ;
+  let first = iterator.next() ;
+  if ( first.done ) return ;
+  let currval = first.value ;
+  let currkey = key( currval ) ;
+
+  const grouper = function* ( tgtkey ) {
+
+    while (true) {
+      yield currval ;
+      let event = iterator.next( ) ;
+      if ( event.done ) return ;
+      currval = event.value ;
+      currkey = key( currval ) ;
+      if ( currkey !== tgtkey ) return  }
+  };
+  while (true) {
+    const tgtkey = currkey ;
+    const g = grouper( tgtkey ) ;
+    yield [ tgtkey , g ] ;
+    while ( currkey === tgtkey ) {
+      let event = iterator.next( ) ;
+      if ( event.done ) return ;
+      currval = event.value ;
+      currkey = key( currval ) ;
+    }
+  }
+}
