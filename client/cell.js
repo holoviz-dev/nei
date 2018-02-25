@@ -2,6 +2,7 @@
 
 import {escapeHtml, syntax_highlight, UUID, range, zip, reorder} from './util.js';
 import {ansi_solarized_xterm} from './util.js';
+import {batched_js} from './util.js';
 
 
 export class Notebook {
@@ -149,6 +150,8 @@ export class Cell {
     this.update_output(outputs);
 
     this.evaltypes = ["application/javascript"];
+
+    this.batched = [[],{}];
   }
 
   update_input(source, input) {
@@ -172,6 +175,8 @@ export class Cell {
     else {
       this.outputs = outputs
     }
+    let mimes = this.outputs.map(pair => pair[0]);
+    this.batched  = batched_js(mimes);
   }
 
   extract_scripts(output) {
@@ -195,7 +200,11 @@ export class Cell {
     if (!this.evaltypes.includes(mime)) {
       return true
     }
-    this.notebook.evaluate(data);
+
+    if (!this.batched[0].includes(index)) {
+      // Do not evaluate JS that is batched with HTML
+      this.notebook.evaluate(data);
+    }
     return this.completed(false, index);
   }
 
@@ -215,14 +224,25 @@ export class Cell {
     }
   }
 
+
+
+  batched_js(data, index) {
+    // Find all JS that needs evaluation after HTML display
+    // This includes script tags and any JS following HTML display
+    let scripts = this.extract_scripts(data);
+    let batched_inds = this.batched[1][index];
+    let batched_js = batched_inds.map(ind => this.outputs[ind][1]);
+    return Object.values(scripts).concat(batched_js)
+  }
+
+
   execute(index) {
     let [mime, data] = this.outputs[index];
 
     let nextDOMupdate = () => {
-      for (let script of this.extract_scripts(data)) {
-        console.log(`Script length is ${script.innerHTML.length}`);
-        this.notebook.evaluate(script.innerHTML);
-        this.completed(null, index);
+      let all_js = this.batched_js(data, index);
+      for (let jsdata of all_js) {
+        this.notebook.evaluate(jsdata);
       }
     };
 
