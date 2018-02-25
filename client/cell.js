@@ -148,8 +148,7 @@ export class Cell {
     this.update_input(source, input);
     this.update_output(outputs);
 
-    this.evaltypes = ["application/javascript",
-                      "application/vnd.bokehjs_load.v0+json"]
+    this.evaltypes = ["application/javascript"];
   }
 
   update_input(source, input) {
