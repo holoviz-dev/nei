@@ -202,7 +202,7 @@ class OutputMessage(object):
     def _output_messages(cls, node):
         "Given a notebook node, generate output messages"
         mime_types = ['text/plain', 'text/html', 'text/ansi',
-                      'application/vnd.bokehjs_load.v0+json']
+                      'application/javascript']
         output_type = node['output_type']
         # Assuming notebook node is iterated in order.
         if output_type == 'stream':
