@@ -115,6 +115,49 @@ export function download_file(filename, data) {
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
 }
+
+
+
+
+export function batched_js(mimes) {
+  // Given a list of output mime types, figure out which JS outputs indices
+  // need to be batched with the preceding HTML.
+  // Returns a flat array of batch JS indices and an object mapping html indices
+  // to the corresponding batch of JS indices.
+
+  // let mimes = [ "application/javascript",
+  //               "text/html",
+  //               "application/javascript",
+  //               "application/javascript",
+  //               "text/ansi",
+  //               "text/html",
+  //               "application/javascript",
+  //               "text/html" ]
+  //
+  // batch_js(mimes)
+  // Should return [ [ 2, 3, 6 ], { 1: [ 2, 3 ], 5: [ 6 ], 7 : [] } ]
+  let groups = {}
+  let html_mime = 'text/html';
+  let js_mime = 'application/javascript';
+  let html_inds = mimes.map((e, i) => e === html_mime ? i : '').filter(String);
+  for (let ind of html_inds) { groups[ind]=[] }
+
+  let last_mime = undefined;
+  let batched = [];
+  for (let [key, grp] of groupby( (x)=>x[1] , mimes.entries() )) {
+    // console.log(`KEY ${key} LAST ${last_mime}`);
+    if (key == js_mime & last_mime== html_mime) {
+      let html_ind = html_inds.shift();
+      for (let ind of [...grp].map(x=>x[0])) {
+        batched.push(ind);
+        groups[html_ind].push(ind);
+      }
+    }
+    last_mime = key;
+  }
+  return [batched, groups]
+}
+
 // Snippet below is from https://github.com/aureooms/js-itertools
 // This code is AGPL licensed and must therefore be left unchanged
 // (otherwise AGPL will also apply to the rest of the code)
