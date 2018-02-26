@@ -183,7 +183,8 @@ export class Cell {
     // For a text/html output, extract JS from script tags
     let parser = new DOMParser();
     let doc = parser.parseFromString(output, "text/html");
-    return doc.getElementsByTagName('script');
+    let collection = doc.getElementsByTagName('script');
+    return Object.values(collection).map(el => el.innerHTML);
   }
 
   completed(val, index) {
@@ -232,7 +233,7 @@ export class Cell {
     let scripts = this.extract_scripts(data);
     let batched_inds = this.batched[1][index];
     let batched_js = batched_inds.map(ind => this.outputs[ind][1]);
-    return Object.values(scripts).concat(batched_js)
+    return scripts.concat(batched_js);
   }
 
 
