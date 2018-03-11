@@ -44,12 +44,25 @@ class PeriodicOutputCallback(object):
         try:
             val = self.server.queue.get_nowait()
             self.server.queue.task_done()
-            outnode, execution_count  = val
+            result, status  = val
         except:
             return
 
         connection = (self.server.BROWSER_CONNECTIONS[0]
                       if self.server.BROWSER_CONNECTIONS else None)
+
+        if connection and (status == 'comm_open'):
+            print("REQUEST TO OPEN COMM FOR JS: %s" % result)
+            # e.g:
+            # {'data': {}, 'comm_id': 'ee0a39d3728945cdb4ad30848b7856fc',
+            #  'target_name': 'ZOO', 'target_module': None}
+            return
+        elif connection and  (status == 'comm_msg'):
+            self.notebook.send_comm_msg(connection, result)
+            return
+        else:
+            outnode, execution_count = result, status
+
         if connection:
             cell = self.notebook.find_cell(execution_count)
             if cell is None: return # There may be no cell if running a silent execution

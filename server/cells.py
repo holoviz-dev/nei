@@ -274,7 +274,8 @@ class Notebook(Cells):
                          # For JS testing only...
                          'add_cell_exec': self.add_cell_exec,
 
-                         'comm_open': self.comm_open
+                         'comm_open':      self.comm_open,    # Request from JS to open comm
+                         'send_comm_msg' : self.send_comm_msg # Send message to JS
                          }
         self.css = "" # Last CSS sent to browser
         self.config = {'browser':'firefox'}
@@ -333,6 +334,8 @@ class Notebook(Cells):
     def comm_open(self, connection, data=None, metadata=None):
         self.executor.comms.comm_open(data=data, metadata=metadata)
 
+    def send_comm_msg(self, connection, content):
+        self.message(connection, 'comm_msg', content)
 
     def exec_cell(self, connection, position):
         if position >= len(self.cells):

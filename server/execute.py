@@ -30,20 +30,15 @@ class Channel(ThreadedZMQSocketChannel):
             pass # e.g content['execution_state'] == 'idle'
 
         elif msg_type == "comm_open":
-            print("REQUEST TO OPEN COMM IN PYTHON")
-            print(content)
-            # e.g:
-            # {'data': {}, 'comm_id': 'ee0a39d3728945cdb4ad30848b7856fc',
-            #  'target_name': 'ZOO', 'target_module': None}
+            self.queue.put((content, 'comm_open'))
+            return
         elif msg_type == "comm_msg":
-            # e.g: {'data': 'TEST', 'comm_id': '5e64369705814bf495474cb512d82e05'}
-            print(content)
+            self.queue.put((content, 'comm_msg'))
+            return
         elif msg_type.startswith('comm'):
             print("Unhandled 'comm' message of type {msg_type} with {content}".format(
                 msg_type=msg_type,
                 content=content))
-            # e.g:
-            # {'data': 'BEEP', 'comm_id': '3202e01d0198449e9bfe5ee7462230bd'}
 
         display_id = None
         if msg_type in {'execute_result', 'display_data', 'update_display_data'}:

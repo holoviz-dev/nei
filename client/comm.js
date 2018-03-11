@@ -60,7 +60,9 @@ export class CommLink {
                     // Download
                     'download_python_notebook',
                     'download_cleared_notebook',
-                    'download_full_notebook'];
+                    'download_full_notebook',
+                    // Comms
+                    'comm_msg'];
     // TODO: 'insert_cell', 'append_cells'
     if (!commands.includes(json.cmd)) {
       console.log(`Command ${json.cmd} is not one of ${commands}`);
@@ -68,6 +70,11 @@ export class CommLink {
     }
     let message = `Running command ${json.cmd} with args ${JSON.stringify(json.args)}`;
     console.log( (message.length < 200) ? message : message.slice(0,200));
+
+    if (json.cmd == 'comm_msg') {
+      let {data, comm_id} = json.args;
+      console.log(`COMM ${comm_id} SAYS ${data}`);
+    }
 
     if (json.cmd == 'add_cell') {
         let {mode, source, input, outputs, position} = json.args;
