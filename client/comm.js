@@ -64,18 +64,20 @@ export class CommManager {
                                             metadata:metadata});
   }
 
-  new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
+  new_bare_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
     let new_comm = new Comm(this, target_name, on_msg, comm_id);
     this.comms[new_comm.comm_id] = new_comm;
     return new_comm
   }
 
-  dispatch_message(msg, comm_id) { // Commlink broadcasts message to all comms
-    for (comm_id of Object.keys(this.comms)) {
-      this.comms[comm_id].trigger(msg);
-      return
-    }
-    console.log(`Comm ${comm_id} not found to trigger.`);
+  new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
+    let new_comm = this.new_bare_comm(target_name, comm_id, data, on_msg, metadata);
+    this.commlink.send_message("comm_open", {target_name: target_name,
+                                             comm_id  : new_comm.comm_id,
+                                             data     : data,
+                                             metadata : metadata});
+    return new_comm
+  }
   }
 
 
