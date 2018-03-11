@@ -1,4 +1,4 @@
-import os, time, logging
+import os, time, logging, json
 import atexit
 
 from collections import OrderedDict
@@ -29,8 +29,19 @@ class Channel(ThreadedZMQSocketChannel):
         elif msg_type == 'status':
             pass # e.g content['execution_state'] == 'idle'
 
+        elif msg_type == "comm_open":
+            print("REQUEST TO OPEN COMM IN PYTHON")
+            print(content)
+            # e.g:
+            # {'data': {}, 'comm_id': 'ee0a39d3728945cdb4ad30848b7856fc',
+            #  'target_name': 'ZOO', 'target_module': None}
+
         elif msg_type.startswith('comm'):
-            print("Unhandled 'comm' message")
+            print("Unhandled 'comm' message of type {msg_type} with {content}".format(
+                msg_type=msg_type,
+                content=content))
+            # e.g:
+            # {'data': 'BEEP', 'comm_id': '3202e01d0198449e9bfe5ee7462230bd'}
 
         display_id = None
         if msg_type in {'execute_result', 'display_data', 'update_display_data'}:
