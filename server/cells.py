@@ -274,8 +274,8 @@ class Notebook(Cells):
                          # For JS testing only...
                          'add_cell_exec': self.add_cell_exec,
 
-                         'comm_open':      self.comm_open,    # Request from JS to open comm
-                         'send_comm_msg' : self.send_comm_msg # Send message to JS
+                         'comm_open': self.comm_open,    # Request from JS to open comm
+                         'comm_msg' : self.comm_msg # Message send from JS
                          }
         self.css = "" # Last CSS sent to browser
         self.config = {'browser':'firefox'}
@@ -330,12 +330,17 @@ class Notebook(Cells):
     def exec_silently(self, connection, code):
         self.executor(code, stop_on_error=False, cell=None, silent=True)
 
+    def comm_open(self, connection, target_name, comm_id, data=None, metadata=None):
+        # Request to open a comm from JS
+        self.executor.comms.comm_open(comm_id=comm_id,
+                                      target_name=target_name,
+                                      data=data, metadata=metadata)
 
-    def comm_open(self, connection, data=None, metadata=None):
-        self.executor.comms.comm_open(data=data, metadata=metadata)
-
-    def send_comm_msg(self, connection, content):
-        self.message(connection, 'comm_msg', content)
+    def comm_msg(self, connection, target_name, comm_id, data, metadata=None):
+        # Message from JS comm to Python
+        self.executor.comms.comm_msg(comm_id=comm_id,
+                                     target_name=target_name,
+                                     data=data, metadata=metadata)
 
     def exec_cell(self, connection, position):
         if position >= len(self.cells):
