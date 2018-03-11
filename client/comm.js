@@ -67,16 +67,15 @@ export class CommManager {
   new_bare_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
     let new_comm = new Comm(this, target_name, on_msg, comm_id);
     this.comms[new_comm.comm_id] = new_comm;
-    return new_comm
-  }
-
-  new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
-    let new_comm = this.new_bare_comm(target_name, comm_id, data, on_msg, metadata);
     this.commlink.send_message("comm_open", {target_name: target_name,
                                              comm_id  : new_comm.comm_id,
                                              data     : data,
                                              metadata : metadata});
     return new_comm
+  }
+
+  new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
+    return this.new_bare_comm(target_name, comm_id, data, on_msg, metadata);
   }
 
   dispatch_message(msg, comm_id) { // Commlink broadcasts message to appropriate comm
