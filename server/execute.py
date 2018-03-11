@@ -1,4 +1,4 @@
-import os, time, logging, json
+import os, time, logging, json, uuid
 import atexit
 
 from collections import OrderedDict
@@ -35,7 +35,9 @@ class Channel(ThreadedZMQSocketChannel):
             # e.g:
             # {'data': {}, 'comm_id': 'ee0a39d3728945cdb4ad30848b7856fc',
             #  'target_name': 'ZOO', 'target_module': None}
-
+        elif msg_type == "comm_msg":
+            # e.g: {'data': 'TEST', 'comm_id': '5e64369705814bf495474cb512d82e05'}
+            print(content)
         elif msg_type.startswith('comm'):
             print("Unhandled 'comm' message of type {msg_type} with {content}".format(
                 msg_type=msg_type,
@@ -70,6 +72,8 @@ class ThreadedExecutor(object):
 
     def __init__(self, name, queue=Queue()):
         self.name = name
+
+        self.comms = Comms(self)
         self.km = None
         self.kc = None
 
@@ -133,3 +137,29 @@ https://github.com/ilkerkesen/tornado-websocket-client-example/blob/master/clien
 
 Is get_iopub_msg a useful method?
 """
+
+
+class Comms(object):
+
+    def __init__(self, executor):
+        self.executor = executor
+        self.opened = {}
+
+    def comm_open(self, data=None, metadata=None, buffers=None, **keys):
+        # Initialized in constructors
+        comm_uuid = uuid.uuid4().hex
+        target_name = 'ZA'
+        # target_module = "" # requirejs module from which to load comm target
+
+        content = dict(data= data if data else {},
+                       comm_id=comm_uuid,
+                       buffers = buffers,
+                       target_name=target_name, **keys)
+
+        self.opened[content["comm_id"]] = {k:v for k,v in content.items() if k != "comm_id"}
+        print("COMMS OPENED: %s" % self.opened)
+
+        session = self.executor.km.session
+        shell_channel_socket = self.executor.kc.shell_channel.socket
+        session.send(shell_channel_socket, 'comm_open', json.dumps(content))
+

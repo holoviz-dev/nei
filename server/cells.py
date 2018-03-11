@@ -272,7 +272,9 @@ class Notebook(Cells):
                          'exec_cell_by_line':         self.exec_cell_by_line,
                          'clear_cell_output_by_line': self.clear_cell_output_by_line,
                          # For JS testing only...
-                         'add_cell_exec': self.add_cell_exec
+                         'add_cell_exec': self.add_cell_exec,
+
+                         'comm_open': self.comm_open
                          }
         self.css = "" # Last CSS sent to browser
         self.config = {'browser':'firefox'}
@@ -326,6 +328,10 @@ class Notebook(Cells):
 
     def exec_silently(self, connection, code):
         self.executor(code, stop_on_error=False, cell=None, silent=True)
+
+
+    def comm_open(self, connection, data=None, metadata=None):
+        self.executor.comms.comm_open(data=data, metadata=metadata)
 
 
     def exec_cell(self, connection, position):

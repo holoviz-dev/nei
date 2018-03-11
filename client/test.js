@@ -342,4 +342,10 @@ export class KernelTest {
     this.commlink.send_message("interrupt_kernel", {});
   }
 
+  test_comm_open(data, metadata=null) {
+    this.commlink.send_message("comm_open", {data: data, metadata : metadata});
+  }
+
+
+
 }
