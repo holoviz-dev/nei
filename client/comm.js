@@ -78,6 +78,10 @@ export class CommManager {
                                              metadata : metadata});
     return new_comm
   }
+
+  dispatch_message(msg, comm_id) { // Commlink broadcasts message to appropriate comm
+    let comm = this.comms[comm_id];
+    comm.trigger(msg);
   }
 
 
@@ -156,7 +160,7 @@ export class CommLink {
 
     if (json.cmd == 'comm_open') {
       let {comm_id, target_name} = json.args;
-      this.comm_manager.new_comm(target_name, comm_id)
+      this.comm_manager.new_bare_comm(target_name, comm_id)
     }
     if (json.cmd == 'comm_msg') {
       let {content, msg_type} = json.args;
