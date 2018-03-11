@@ -138,23 +138,27 @@ class Comms(object):
 
     def __init__(self, executor):
         self.executor = executor
-        self.opened = {}
+        self.opened = set()
 
-    def comm_open(self, data=None, metadata=None, buffers=None, **keys):
-        # Initialized in constructors
-        comm_uuid = uuid.uuid4().hex
-        target_name = 'ZA'
-        # target_module = "" # requirejs module from which to load comm target
-
-        content = dict(data= data if data else {},
-                       comm_id=comm_uuid,
-                       buffers = buffers,
-                       target_name=target_name, **keys)
-
-        self.opened[content["comm_id"]] = {k:v for k,v in content.items() if k != "comm_id"}
-        print("COMMS OPENED: %s" % self.opened)
+    def _publish_msg(self, cmd, comm_id, data=None, metadata=None, buffers=None, **keys):
+        target_module = '' # requirejs module from which to load comm target
+        content = dict(data        = data if data else {},
+                       comm_id     = comm_id,
+                       buffers     = buffers, # TODO: Needed for Bokeh
+                       **keys)  # Includes target_name
 
         session = self.executor.km.session
         shell_channel_socket = self.executor.kc.shell_channel.socket
-        session.send(shell_channel_socket, 'comm_open', json.dumps(content))
+        session.send(shell_channel_socket, cmd, json.dumps(content))
 
+    def comm_open(self, comm_id, target_name, data=None, metadata=None,
+                  buffers=None, **keys):
+        self.opened.add(comm_id)
+        self._publish_msg('comm_open', comm_id, target_name=target_name,
+                          data=data, metadata=metadata, buffers=buffers)
+
+    def comm_msg(self, comm_id, target_name, data=None, metadata=None
+                 , buffers=None, **keys):
+        print("Sending message to Python comm %s." % comm_id)
+        self._publish_msg('comm_msg', comm_id, target_name=target_name,
+                          data=data, metadata=metadata, buffers=buffers)
