@@ -2,6 +2,84 @@
 
 
 import {download_file, update_style} from './util.js'
+import {UUID} from './util.js';
+
+export class Comm {
+  constructor(manager, target_name, callback=null, comm_id=null) {
+    this.manager = manager;
+    this.target_name = target_name;
+    this.comm_id =  (comm_id === null) ? UUID() : comm_id;
+
+    if (callback != null) {
+      this.callback = callback;
+    }
+    this.get_callback(target_name);
+  }
+
+  get_callback(target_name) {
+    if (this.manager.targets[target_name] != undefined) {
+      this.manager.targets[target_name](this)
+    }
+  }
+
+  on_msg(callback) {
+    this.callback = callback;
+  }
+  trigger(msg) {  // Trigger the on_msg callback with msg
+    this.get_callback(this.target_name);
+    if (this.callback != null) {
+      this.callback(msg)
+    }
+  }
+
+  send(data) {
+    this.manager.send_message(this.target_name, this.comm_id, data);
+  }
+}
+
+export class CommManager {
+  // Commlink messages sent:
+  //   'comm_open' from register_target
+  //   'comm_msg'  from send_message
+  // Commlink message received:
+  //    'comm_msg' triggers dispatch_message method
+  //    'comm_open' triggers the new_comm method
+  //
+  // TODO: comm_close
+  constructor(commlink) {
+    this.commlink = commlink;
+    this.comms = {};
+    this.targets = {};
+  }
+
+  register_target(target_name, callback, data={}, metadata={}, comm_id=null) {
+    // Registers a comm target on the JS side
+    this.targets[target_name] = callback;
+  }
+
+  send_message(target_name, comm_id, data, metadata={}) {
+    this.commlink.send_message("comm_msg", {target_name:target_name,
+                                            comm_id: comm_id,
+                                            data: data,
+                                            metadata:metadata});
+  }
+
+  new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
+    let new_comm = new Comm(this, target_name, on_msg, comm_id);
+    this.comms[new_comm.comm_id] = new_comm;
+    return new_comm
+  }
+
+  dispatch_message(msg, comm_id) { // Commlink broadcasts message to all comms
+    for (comm_id of Object.keys(this.comms)) {
+      this.comms[comm_id].trigger(msg);
+      return
+    }
+    console.log(`Comm ${comm_id} not found to trigger.`);
+  }
+
+
+}
 
 export class CommLink {
   constructor(app, notebook, server, port=9999) {
@@ -11,6 +89,7 @@ export class CommLink {
     this.setup(this.socket)
 
     this.notebook = notebook;
+    this.comm_manager = new CommManager(this);
     }
 
     setup(socket) {
@@ -62,7 +141,9 @@ export class CommLink {
                     'download_cleared_notebook',
                     'download_full_notebook',
                     // Comms
-                    'comm_msg'];
+                    'comm_open',
+                    'comm_msg']; // TODO: comm_close
+
     // TODO: 'insert_cell', 'append_cells'
     if (!commands.includes(json.cmd)) {
       console.log(`Command ${json.cmd} is not one of ${commands}`);
@@ -71,11 +152,14 @@ export class CommLink {
     let message = `Running command ${json.cmd} with args ${JSON.stringify(json.args)}`;
     console.log( (message.length < 200) ? message : message.slice(0,200));
 
-    if (json.cmd == 'comm_msg') {
-      let {data, comm_id} = json.args;
-      console.log(`COMM ${comm_id} SAYS ${data}`);
+    if (json.cmd == 'comm_open') {
+      let {comm_id, target_name} = json.args;
+      this.comm_manager.new_comm(target_name, comm_id)
     }
-
+    if (json.cmd == 'comm_msg') {
+      let {content, msg_type} = json.args;
+      this.comm_manager.dispatch_message(json.args, content.comm_id);
+    }
     if (json.cmd == 'add_cell') {
         let {mode, source, input, outputs, position} = json.args;
         let cell = new Cell(mode, source, input, outputs);
