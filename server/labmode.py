@@ -53,12 +53,14 @@ class PeriodicOutputCallback(object):
 
         if connection and (status == 'comm_open'):
             print("REQUEST TO OPEN COMM FOR JS: %s" % result)
+            self.notebook.message(connection, 'comm_open', result)
             # e.g:
             # {'data': {}, 'comm_id': 'ee0a39d3728945cdb4ad30848b7856fc',
             #  'target_name': 'ZOO', 'target_module': None}
             return
-        elif connection and  (status == 'comm_msg'):
-            self.notebook.send_comm_msg(connection, result)
+        elif connection and (status == 'comm_msg'):
+            self.notebook.message(connection, 'comm_msg', {'msg_type':status,
+                                                           'content': result})
             return
         else:
             outnode, execution_count = result, status
