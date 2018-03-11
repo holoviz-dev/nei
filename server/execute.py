@@ -14,9 +14,6 @@ class Channel(ThreadedZMQSocketChannel):
     executions = OrderedDict()
     queue = None
 
-    def __init__(self, *args, **kwargs):
-        super(Channel, self).__init__(*args, **kwargs)
-
     def call_handlers(self, msg):
         msg_type = msg.get('msg_type',None)
         content = msg.get('content', None)
