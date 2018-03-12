@@ -3,6 +3,7 @@
 
 import {download_file, update_style} from './util.js'
 import {UUID} from './util.js';
+import {serialize, deserialize} from './buffer.js';
 
 export class Comm {
   constructor(manager, target_name, callback=null, comm_id=null) {
@@ -119,7 +120,10 @@ export class CommLink {
     }
 
   socket_onmessage(e) {
-    this.onmessage(JSON.parse(e.data));
+    let resolved = deserialize(e.data);
+    resolved.then((value) => {
+      this.onmessage(value);
+    });
   }
 
   send_message(cmd, args) {
@@ -164,7 +168,9 @@ export class CommLink {
     }
     if (json.cmd == 'comm_msg') {
       let {content, msg_type} = json.args;
-      this.comm_manager.dispatch_message(json.args, content.comm_id);
+      this.comm_manager.dispatch_message({content:content,
+                                          msg_type:msg_type,
+                                          buffers:json.buffers}, content.comm_id);
     }
     if (json.cmd == 'add_cell') {
         let {mode, source, input, outputs, position} = json.args;
