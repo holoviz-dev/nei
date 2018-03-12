@@ -39,11 +39,11 @@ export class Comm {
 
 export class CommManager {
   // Commlink messages sent:
-  //   'comm_open' from register_target
+  //   'comm_open' from new_comm
   //   'comm_msg'  from send_message
   // Commlink message received:
   //    'comm_msg' triggers dispatch_message method
-  //    'comm_open' triggers the new_comm method
+  //    'comm_open' triggers the comm_open method
   //
   // TODO: comm_close
   constructor(commlink) {
@@ -64,18 +64,19 @@ export class CommManager {
                                             metadata:metadata});
   }
 
-  new_bare_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
+  comm_open(target_name, comm_id, data={}, on_msg=null, metadata={}) {
     let new_comm = new Comm(this, target_name, on_msg, comm_id);
     this.comms[new_comm.comm_id] = new_comm;
-    this.commlink.send_message("comm_open", {target_name: target_name,
-                                             comm_id  : new_comm.comm_id,
-                                             data     : data,
-                                             metadata : metadata});
     return new_comm
   }
 
   new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
-    return this.new_bare_comm(target_name, comm_id, data, on_msg, metadata);
+    let comm = this.comm_open(target_name, comm_id, data, on_msg, metadata);
+    this.commlink.send_message("comm_open", {target_name: target_name,
+                                             comm_id  : comm.comm_id,
+                                             data     : data,
+                                             metadata : metadata});
+    return comm
   }
 
   dispatch_message(msg, comm_id) { // Commlink broadcasts message to appropriate comm
@@ -159,7 +160,7 @@ export class CommLink {
 
     if (json.cmd == 'comm_open') {
       let {comm_id, target_name} = json.args;
-      this.comm_manager.new_bare_comm(target_name, comm_id)
+      this.comm_manager.comm_open(target_name, comm_id)
     }
     if (json.cmd == 'comm_msg') {
       let {content, msg_type} = json.args;
