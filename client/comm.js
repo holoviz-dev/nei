@@ -170,9 +170,10 @@ export class CommLink {
     }
     if (json.cmd == 'comm_msg') {
       let {content, msg_type} = json.args;
+      let buffers = json.buffers ? json.buffers : [];
       this.comm_manager.dispatch_message({content:content,
                                           msg_type:msg_type,
-                                          buffers:json.buffers}, content.comm_id);
+                                          buffers:buffers}, content.comm_id);
     }
     if (json.cmd == 'add_cell') {
         let {mode, source, input, outputs, position} = json.args;
