@@ -66,9 +66,9 @@ export class CommManager {
   }
 
   comm_open(target_name, comm_id, data={}, on_msg=null, metadata={}) {
-    let new_comm = new Comm(this, target_name, on_msg, comm_id);
-    this.comms[new_comm.comm_id] = new_comm;
-    return new_comm
+    let comm = new Comm(this, target_name, on_msg, comm_id);
+    this.comms[comm.comm_id] = comm;
+    return comm
   }
 
   new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
