@@ -71,8 +71,10 @@ export class CommManager {
     return comm
   }
 
-  new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
-    let comm = this.comm_open(target_name, comm_id, data, on_msg, metadata);
+  // new_comm(target_name, comm_id, data={}, on_msg=null, metadata={}) {
+  new_comm(target_name, data, callbacks, metadata, comm_id, buffers=[]) {
+    // Note: data, metadata, callbacks and buffers untested
+    let comm = this.comm_open(target_name, comm_id, data, callbacks, metadata);
     this.commlink.send_message("comm_open", {target_name: target_name,
                                              comm_id  : comm.comm_id,
                                              data     : data,
