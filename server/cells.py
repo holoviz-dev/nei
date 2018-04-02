@@ -243,6 +243,7 @@ class Notebook(Cells):
         self.commands = {'view_browser': self.view_browser, # Opens browser connection
                          # Commands that do no need a browser connection
                          'update_config':    self.update_config,
+                         'scroll_by' :       self.scroll_by,
                          'write_notebook':   self.write_notebook,
                          'exec_silently':    self.exec_silently,
                          'interrupt_kernel': self.interrupt_kernel,
@@ -293,6 +294,9 @@ class Notebook(Cells):
 
     def update_config(self, connection, config):
         self.config = config
+
+    def scroll_by(self, connection, offset):
+        self.message(connection, 'scroll_by', {'offset': offset})
 
     def clear_cell_output(self, connection, position):
         self.cells[position].clear_output()
