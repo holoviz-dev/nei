@@ -103,6 +103,27 @@
                       )
   )
 
+
+(defun labmode--scroll-hook (win start-pos)
+  "Hook to update scroll position in client via window-scroll-functions"
+  (let ((buffer-mode (with-current-buffer 
+                         (window-buffer (selected-window)) major-mode)))
+    (if (eq buffer-mode 'python-mode) ;; TODO: Needs a better check
+        (labmode--send-json (labmode--server-cmd "scroll_to_line"
+                                                 (list 
+                                                  (cons "line"
+                                                        (line-number-at-pos (window-start))
+                                                        )
+                                                  )
+                                                 )
+                            )
+      )
+    )
+)
+
+(defun labmode--set-scroll-hook ()
+  (push 'labmode--scroll-hook window-scroll-functions) 
+  )
 (defun labmode-exec-by-line-and-move-to-next-cell ()
   "Executes cell at current line and moves point to next cell"
   (interactive)
