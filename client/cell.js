@@ -20,6 +20,10 @@ export class Notebook {
     this.refresh_uuids = [];          // uuids of cells needing update
   }
 
+  scroll_by(offset) {
+    window.scrollBy({ top: offset, left: 0, behavior: 'smooth'});
+  }
+
   visible_uuids() {
     return this.uuids.filter(v => !this.removed.includes(v));
   }
