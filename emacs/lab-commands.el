@@ -15,7 +15,6 @@
 
 (defun labmode--scroll-by (offset)
   "Send a scroll-by message"
-  (labmode--wait-connection)
   (labmode--send-json (labmode--server-cmd "scroll_by" (list (cons "offset" offset))))
 )
 
