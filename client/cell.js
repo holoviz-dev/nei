@@ -27,6 +27,10 @@ export class Notebook {
     window.scrollBy({ top: offset, left: 0, behavior: 'smooth'});
   }
 
+  scroll_to(position, line, offset=0) {
+    this.cell[this.uuid_at_pos(position)].scroll(offset, line)
+  }
+
   visible_uuids() {
     return this.uuids.filter(v => !this.removed.includes(v));
   }
@@ -174,11 +178,19 @@ export class Cell {
     }
   }
 
-  scroll(offset=0) {
-    let ypos = scroll_position(document.getElementById(this.uuid), offset);
-    window.scroll({top : ypos,
-                   left : 0,
-                   behavior : 'smooth'})
+  scroll(offset=0, line=null) {
+    let start_div = document.getElementById(`input-start-${this.uuid}`)
+    let start_ypos = scroll_position(start_div, offset)
+
+    let end_div = document.getElementById(`input-end-${this.uuid}`)
+    let end_ypos = scroll_position(end_div, offset)
+
+    // TODO: Filter out lines containing whitespace only
+    let delta = (start_ypos - end_ypos) / this.source.split("\n").length
+    let ypos = ((this.mode == 'code') && (line==null)) ? (start_ypos + delta) : start_ypos
+    let line_offset = (line != null) ? (delta*line) : 0
+    window.scroll({top : ypos - line_offset + offset,
+                   left : 0, behavior : 'smooth'})
   }
 
   update_output(outputs, extend=false) {

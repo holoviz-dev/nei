@@ -10,11 +10,13 @@ Moon.component('cell-input', {
   template: `<div m-html='input()'></div>`,
   methods: {
     input: function() {
-      return notebook.cell[this.get('uuid')].input
+      let uuid = this.get('uuid')
+      return (`<div id='input-start-${uuid}'>`
+              + notebook.cell[uuid].input
+              + `<div id='input-end-${uuid}'>`)
     }
   }
 });
-
 
 Moon.component('cell-output', {
   props: ['uuid', 'output_refresh'], // style to horizontally align
@@ -59,7 +61,7 @@ export const app = new Moon({
       }
       else {
         let count = (cell.prompt != null) ? cell.prompt : ' ';
-        return `<br><div id='${uuid}'>In[${count}]</div>`
+        return `<br>In[${count}]</div>`
       }
     }
   }
