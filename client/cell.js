@@ -3,7 +3,7 @@
 import {escapeHtml, syntax_highlight, UUID, range, zip, reorder} from './util.js';
 import {ansi_solarized_xterm} from './util.js';
 import {batched_js} from './util.js';
-
+import {scroll_position} from './util.js';
 
 export class Notebook {
   // Notebook model constituting the Javascript API
@@ -163,6 +163,13 @@ export class Cell {
     else if (this.mode == "markdown")  {
       this.input = `<div class="markdown-cell">${marked(source)}</div>`;
     }
+  }
+
+  scroll(offset=0) {
+    let ypos = scroll_position(document.getElementById(this.uuid), offset);
+    window.scroll({top : ypos,
+                   left : 0,
+                   behavior : 'smooth'})
   }
 
   update_output(outputs, extend=false) {
