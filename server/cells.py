@@ -696,6 +696,17 @@ class ParseNotebook(object):
     """
 
     @classmethod
+    def normalize(cls, code):
+        "Strip newlines so parsed code matches contents of JSON notebooks"
+        if code.startswith('\n'):
+            code = code[1:]
+        if code.endswith('\n\n'):
+            code = code[:-2]
+        elif code.endswith('\n'):
+            code = code[:-1]
+        return code
+
+    @classmethod
     def extract_markdown_cells(cls, source):
         accumulator = ''
         extracted = []
@@ -707,7 +718,8 @@ class ParseNotebook(object):
                                       # Remove newlines on quote lines
                                       'source':accumulator[1:-1]})
                 elif accumulator.strip():
-                    extracted.append({'mode':'code', 'source':accumulator})
+                    extracted.append({'mode':'code',
+                                      'source': cls.normalize(accumulator)})
                 accumulator = line[3:]
                 opened = not opened
             else:
@@ -715,7 +727,8 @@ class ParseNotebook(object):
         if accumulator.strip() and opened:
             extracted.append({'mode':'markdown', 'source':accumulator})
         elif accumulator.strip():
-            extracted.append({'mode':'code', 'source':accumulator})
+            extracted.append({'mode':'code',
+                              'source' : cls.normalize(accumulator)})
         return extracted
 
     @classmethod
@@ -731,7 +744,7 @@ class ParseNotebook(object):
                 started = True
                 if accumulator.strip():
                     extracted.append({'mode':'code',
-                                      'source':accumulator,
+                                      'source' : cls.normalize(accumulator),
                                       'prompt':count})
 
                 accumulator = re.sub(Cell.code_prompt_regexp, '', line)
@@ -743,7 +756,8 @@ class ParseNotebook(object):
                 accumulator += line
 
         if accumulator and started:
-            extracted.append({'mode':'code', 'prompt':count, 'source':accumulator})
+            extracted.append({'mode':'code', 'prompt':count,
+                              'source' : cls.normalize(accumulator)})
         return extracted
 
 
