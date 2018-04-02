@@ -148,6 +148,8 @@ export class CommLink {
                     'update_cell', 'update_cell_outputs', 'update_cell_input',
                     'clear_notebook', 'reorder_cells', 'clear_cell_output',
                     'update_style',
+                    // Window management
+                    'scroll_by',
                     // Download
                     'download_python_notebook',
                     'download_cleared_notebook',
@@ -174,6 +176,10 @@ export class CommLink {
       this.comm_manager.dispatch_message({content:content,
                                           msg_type:msg_type,
                                           buffers:buffers}, content.comm_id);
+    }
+    if (json.cmd == 'scroll_by') {
+      let {offset} = json.args;
+      this.notebook.scroll_by(offset);
     }
     if (json.cmd == 'add_cell') {
         let {mode, source, input, outputs, position} = json.args;
