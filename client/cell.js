@@ -18,6 +18,8 @@ export class Notebook {
     this.cell = {};
     this.removed = [];                // uuids sadly no longer with us
     this.refresh_uuids = [];          // uuids of cells needing update
+
+    this.scroll_offset = -20;         // Offset when scrolling to cell, in pixels
   }
 
   scroll_by(offset) {
@@ -122,7 +124,7 @@ export class Notebook {
     }
     let cell = this.get_cell(position);
     cell.prompt = prompt;
-    cell.scroll();
+    cell.scroll(this.scroll_offset);
     this._set_refresh(this.uuid_at_pos(position), ['output']);
   }
 
