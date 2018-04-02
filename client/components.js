@@ -59,7 +59,7 @@ export const app = new Moon({
       }
       else {
         let count = (cell.prompt != null) ? cell.prompt : ' ';
-        return `<br>In[${count}]`
+        return `<br><div id='${uuid}'>In[${count}]</div>`
       }
     }
   }
