@@ -116,7 +116,9 @@ export class Notebook {
     if (outputs != null) {
       this.get_cell(position).update_output(outputs, true);
     }
-    this.get_cell(position).prompt = prompt;
+    let cell = this.get_cell(position);
+    cell.prompt = prompt;
+    cell.scroll();
     this._set_refresh(this.uuid_at_pos(position), ['output']);
   }
 
