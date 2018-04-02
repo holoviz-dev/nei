@@ -55,7 +55,7 @@ export const app = new Moon({
     prompt : function(uuid) {
       let cell = notebook.cell[uuid];
       if (cell === undefined || cell.mode=='markdown') {
-        return ''
+        return `<div id='${uuid}'></div>`
       }
       else {
         let count = (cell.prompt != null) ? cell.prompt : ' ';
