@@ -59,6 +59,19 @@ export function reorder(arr, positions) {
   return result
 }
 
+
+export function scroll_position(obj, offset) {
+  // The y position of DOM object in pixels used for scrolling
+  let curtop = 0;
+  if (obj.offsetParent) {
+    do {
+      curtop += obj.offsetTop;
+    } while (obj = obj.offsetParent);
+    return [curtop + offset];
+  }
+}
+
+
 export function syntax_highlight(source) {
   let s = hljs.highlight("python", source).value;
   s = s.replace("self", "<span class='hljs-keyword'>self</span>");
