@@ -173,4 +173,5 @@ A few notes on the current scope of the project. As the project progress, suppor
 
 * At this time, labmode only aims to support Python and IPython syntax.
 * The primary focus is currently on ensuring robust emacs support but contributions to support other editors are welcome.
-* One key objective is to support rich interactive visualization with [holoviews](http://holoviews.org/) which means supporting [bokeh](https://bokeh.pydata.org/en/latest/) plots. Support for other complex Javascript components such as ipywidgets is currently out of scope of the project.
+* One key objective is to support rich interactive visualization with [holoviews](http://holoviews.org/), which means supporting [bokeh](https://bokeh.pydata.org/en/latest/) plots. 
+* Support for other complex Javascript components such as ipywidgets can be added if contributors volunteer to maintain and test those aspects of the project.
