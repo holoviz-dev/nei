@@ -5,14 +5,34 @@
 (defvar labmode--currently-mirroring nil)
 ;; Module for commands sent to and from the server
 
+(defvar labmode-scroll-pixels 300)
+
+
 (defun labmode--server-cmd (command args)
   "Given a command string and its assoc list of args, return the JSON command object"
    (list (cons "cmd" command) (cons "args" args))
   )
 
+(defun labmode--scroll-by (offset)
+  "Send a scroll-by message"
+  (labmode--wait-connection)
+  (labmode--send-json (labmode--server-cmd "scroll_by" (list (cons "offset" offset))))
+)
+
+
 ;;======================;;
 ;; Interactive commands ;;
 ;;======================;;
+
+(defun labmode-scroll-up ()
+  (interactive)
+  (labmode--scroll-by (- labmode-scroll-pixels))
+  )
+
+(defun labmode-scroll-down ()
+  (interactive)
+  (labmode--scroll-by labmode-scroll-pixels)
+  )
 
 
 (defun labmode-interrupt-kernel ()

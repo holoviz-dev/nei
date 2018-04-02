@@ -180,7 +180,6 @@ To set the env per file set this as a file variable e.g.
   (define-key map (kbd "C-c E") 'labmode-exec-by-line)
   (define-key map (kbd "C-c L") 'labmode-clear-all-cell-outputs)
   (define-key map (kbd "C-c C") 'labmode-update-css)
-
   
   (define-key map (kbd "C-c w") 'labmode-move-cell-up)
   (define-key map (kbd "C-c s") 'labmode-move-cell-down)
@@ -196,6 +195,9 @@ To set the env per file set this as a file variable e.g.
 
   (define-key map (kbd "C-c v") 'labmode-view-browser)
   (define-key map (kbd "C-c V") 'labmode-view-notebook)
+
+  (define-key map (kbd "C-c ,") 'labmode-scroll-up)
+  (define-key map (kbd "C-c .") 'labmode-scroll-down)
   map
 )
 
