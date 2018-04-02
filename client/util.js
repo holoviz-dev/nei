@@ -63,6 +63,7 @@ export function reorder(arr, positions) {
 export function scroll_position(obj, offset) {
   // The y position of DOM object in pixels used for scrolling
   let curtop = 0;
+  if (obj == null) { return 0}
   if (obj.offsetParent) {
     do {
       curtop += obj.offsetTop;
