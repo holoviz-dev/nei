@@ -4,6 +4,7 @@ import {escapeHtml, syntax_highlight, UUID, range, zip, reorder} from './util.js
 import {ansi_solarized_xterm} from './util.js';
 import {batched_js} from './util.js';
 import {scroll_position} from './util.js';
+import {Ansi} from './ansi_to_html.js'
 
 export class Notebook {
   // Notebook model constituting the Javascript API
@@ -231,7 +232,7 @@ export class Cell {
       return data;
     }
    else if (mime == 'text/ansi') {
-     let converter = new ansi_to_html.js({colors:ansi_solarized_xterm, escapeXML: true});
+     let converter = new Ansi({colors:ansi_solarized_xterm, escapeXML: true});
      let mapped = data.map((d) => converter.toHtml(d));
      return "<pre>" + mapped.join("<br>") + "</pre>"
    }
