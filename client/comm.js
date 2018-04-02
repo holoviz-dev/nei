@@ -150,6 +150,7 @@ export class CommLink {
                     'update_style',
                     // Window management
                     'scroll_by',
+                    'scroll_to',
                     // Download
                     'download_python_notebook',
                     'download_cleared_notebook',
@@ -181,6 +182,11 @@ export class CommLink {
       let {offset} = json.args;
       this.notebook.scroll_by(offset);
     }
+    if (json.cmd == 'scroll_to') {
+      let {position, line} = json.args;
+      this.notebook.scroll_to(position, line);
+    }
+
     if (json.cmd == 'add_cell') {
         let {mode, source, input, outputs, position} = json.args;
         let cell = new Cell(mode, source, input, outputs);
