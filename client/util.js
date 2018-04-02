@@ -68,7 +68,7 @@ export function scroll_position(obj, offset) {
     do {
       curtop += obj.offsetTop;
     } while (obj = obj.offsetParent);
-    return [curtop + offset];
+    return curtop + offset;
   }
 }
 
