@@ -41,7 +41,7 @@ The core features are labmode are:
    without leaving your editor.
 2. Freeform text editing without hard cell boundaries. Notebooks can now
    be edited and worked with as regular, plaintext Python files.
-3. Editor agnositic by design with robust Emacs support.
+3. Editor agnostic by design, with robust Emacs support.
 
 To use labmode you will need to have both your editor and browser
 visible simultaneously as shown in the GIF above. This is no problem for
@@ -53,10 +53,10 @@ decoupled view in the web browser avoids the problem of having code
 change position as output is generated and will allow labmode to view
 select portions of the overall notebook as you work.
 
-Labmode is composed of three components (1) a Python server using
+Labmode is composed of three components, (1) a Python server using
 [tornado](http://www.tornadoweb.org/en/stable/) which receives commands
-from the editor via websockets (2) HTML and Javascript that runs in the
-browser and (3) the code used to integrate with the editor. Currently
+from the editor via websockets, (2) HTML and Javascript that runs in the
+browser, and (3) the code used to integrate with the editor. Currently
 this last component is written in elisp as the first editor to be
 supported is [emacs](http://emacs.org). As the server and web component
 are editor agnostic, there is no reason labmode cannot be extended to
