@@ -62,6 +62,9 @@
        let notebook = new Notebook(app, eval);
        let commlink = new CommLink(app, notebook, 'localhost');
 
+       // Initialize for pyviz_comms
+       window.PyViz = {comms: {}, comm_status:{}, kernels:{}, receivers: {}, plot_index: []}
+       
        // For access via console
        window.commlink = commlink;
        window.app = app;
