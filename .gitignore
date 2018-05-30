@@ -5,3 +5,5 @@ __pycache__
 
 client/view.html
 client/scratch/
+emacs/scripts
+dev/
