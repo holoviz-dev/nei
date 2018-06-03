@@ -5,6 +5,9 @@ import {download_file, update_style} from './util.js'
 import {UUID} from './util.js';
 import {serialize, deserialize} from './buffer.js';
 
+
+import {Notebook} from './cell.js';
+
 export class Comm {
   constructor(manager, target_name, callback=null, comm_id=null) {
     this.manager = manager;
@@ -104,6 +107,23 @@ export class CommLink {
     this.notebooks = {}
     this.notebook = null
     this.comm_manager = new CommManager(this);
+    }
+
+
+    toggle_notebook(name) {
+      // Switch to an existing notebook or create a new one as necessary
+      if (!(name in this.notebooks)) {
+        let notebook = new Notebook(name, this.app, eval)
+        this.notebooks[name] = notebook
+      }
+      if ((this.notebook != null)  && (name == this.notebook.name)) {return}
+
+      this.app.set('uuids',         [])
+      this.app.set('removed',       [])
+      this.app.set('refresh_uuids', [])
+      this.notebook = this.notebooks[name]
+      window.notebook = this.notebooks[name] // Used by Moon app
+      this.notebook.refresh()
     }
 
     setup(socket) {
