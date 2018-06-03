@@ -88,6 +88,10 @@ export class CommManager {
   }
 
 
+function notebook_name_from_URL() {
+  // e.g for http://localhost:8000/index.html?name=foo
+  let url = new URL(window.location.href)
+  return url.searchParams.get("name");
 }
 
 export class CommLink {
