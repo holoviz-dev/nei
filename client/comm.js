@@ -168,6 +168,10 @@ export class CommLink {
       return
     }
 
+    let url_name = notebook_name_from_URL()
+    let name =  (url_name != null) ? url_name : 'default' // TODO: Get from message
+    this.toggle_notebook(name)
+
     // Dispatch commands
     let commands = ['add_cell', 'remove_cell', 'remove_cells',
                     'update_cell', 'update_cell_outputs', 'update_cell_input',
