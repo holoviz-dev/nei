@@ -95,13 +95,14 @@ function notebook_name_from_URL() {
 }
 
 export class CommLink {
-  constructor(app, notebook, server, port=9999) {
+  constructor(app, server, port=9999) {
     this.app = app;
     this.socket = new WebSocket("ws://localhost:9999");
     // this.socket = new WebSocket("ws://"+server+":"+port+"/ws");
     this.setup(this.socket)
 
-    this.notebook = notebook;
+    this.notebooks = {}
+    this.notebook = null
     this.comm_manager = new CommManager(this);
     }
 
