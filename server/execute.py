@@ -11,7 +11,7 @@ from queue import Queue
 
 class Channel(ThreadedZMQSocketChannel):
 
-    executions = OrderedDict()
+    executions = None
     queue = None
 
     def call_handlers(self, msg):
@@ -21,7 +21,7 @@ class Channel(ThreadedZMQSocketChannel):
 
         node = None
         if msg_type == 'execute_input':
-            self.executions[int(content['execution_count'])] = content['code']
+            self.executions = int(content['execution_count'])
         elif msg_type == 'error':
             node = output_from_msg(msg)
         # Capture print output
@@ -51,11 +51,10 @@ class Channel(ThreadedZMQSocketChannel):
 
             node = output_from_msg(msg)
 
-        execution_count = list(self.executions.keys())[-1] if len(self.executions) else None
         if node:
-            self.queue.put((node, execution_count))
+            self.queue.put((node, self.executions))
         elif msg_type == 'execute_reply':
-            self.queue.put((None, execution_count))
+            self.queue.put((None, self.executions))
 
 
 class Client(ThreadedKernelClient):
@@ -88,11 +87,13 @@ class ThreadedExecutor(object):
         time.sleep(2)
         atexit.register(self.shutdown_kernel)
 
+    def reset(self):
+        Channel.executions = 0
 
     def restart_kernel(self):
         self.execution_count = 0
         self.km.restart_kernel()
-        Channel.executions = OrderedDict()
+        Channel.executions = 0
 
     def interrupt_kernel(self):
         self.km.interrupt_kernel()
