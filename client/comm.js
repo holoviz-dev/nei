@@ -169,7 +169,7 @@ export class CommLink {
     }
 
     let url_name = notebook_name_from_URL()
-    let name =  (url_name != null) ? url_name : 'default' // TODO: Get from message
+    let name =  (url_name != null) ? url_name : json.name
     this.toggle_notebook(name)
 
     // Dispatch commands
