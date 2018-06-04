@@ -123,18 +123,26 @@ class LabServer(websocket.WebSocketHandler):
     BROWSER_CONNECTIONS = []
 
     NOTEBOOK = None
+    NOTEBOOKS = {}
 
     def open(self):
         self.queue = Queue()
-
-        # Note that there are multiple LabServer instances and we want only one notebook!
-        # (for now)
-        if LabServer.NOTEBOOK is None:
-            LabServer.NOTEBOOK = Notebook(ThreadedExecutor("threaded-kernel", self.queue))
-
-        self.output_callback = PeriodicOutputCallback(self, LabServer.NOTEBOOK)
+        self.output_callback = PeriodicOutputCallback(self)
         self.output_callback.start()
         logging.info("Connection opened")
+
+
+    def toggle_notebook(self, name):
+        notebook = self.NOTEBOOKS.get(name, None)
+
+        if notebook is None:  # Create notebook
+            # Note that there are multiple LabServer instances and we want only one notebook!
+            # (for now)
+            notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue))
+            LabServer.NOTEBOOK = notebook
+            self.NOTEBOOKS[name] = notebook
+
+        self.output_callback.switch_notebook(notebook)
 
 
     def on_message(self, message):
@@ -158,6 +166,7 @@ class LabServer(websocket.WebSocketHandler):
 
         # SOME COMMANDS (e.g mirroring) should happen even without a browser tab open!
         connection = self.BROWSER_CONNECTIONS[0] if len(self.BROWSER_CONNECTIONS) else None
+        self.toggle_notebook(payload['name'])
         LabServer.NOTEBOOK.dispatch(connection, payload)
 
 
