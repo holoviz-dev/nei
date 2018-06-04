@@ -19,7 +19,7 @@ from cells import Notebook
 
 
 STATIC_PATH = os.path.join(os.path.split(__file__)[0], '..', 'client')
-
+Notebook.STATIC_PATH = STATIC_PATH
 
 def serialize_binary_message(msg):
     """serialize a message as a binary blob
@@ -129,7 +129,6 @@ class LabServer(websocket.WebSocketHandler):
         # (for now)
         if LabServer.NOTEBOOK is None:
             LabServer.NOTEBOOK = Notebook(ThreadedExecutor("threaded-kernel", self.queue))
-            LabServer.NOTEBOOK.STATIC_PATH = STATIC_PATH
 
         self.output_callback = PeriodicOutputCallback(self, LabServer.NOTEBOOK)
         self.output_callback.start()
