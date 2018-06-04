@@ -55,11 +55,13 @@ class PeriodicOutputCallback(object):
     the queue pushed to by the ThreadedExecutor.
     """
 
-    def __init__(self, server, notebook, period=20):
+    def __init__(self, server, period=20):
         self.server = server
-        self.notebook = notebook
+        self.notebook = None
         self.period = period
 
+    def switch_notebook(self, notebook):
+        self.notebook = notebook
 
     def start(self):
         self.callback = ioloop.PeriodicCallback(self.__call__, self.period)
