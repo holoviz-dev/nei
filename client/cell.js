@@ -10,8 +10,9 @@ export class Notebook {
   // Notebook model constituting the Javascript API
   // Handles interfacing with comms and the moon application.
 
-  constructor(app, evaluate) {
+  constructor(name, app, evaluate) {
     // If eval is used in a module, the result gets trapped
+    this.name = name;
     this.app = app;
     this.evaluate = evaluate;
 
