@@ -138,10 +138,12 @@ class LabServer(websocket.WebSocketHandler):
         if notebook is None:  # Create notebook
             # Note that there are multiple LabServer instances and we want only one notebook!
             # (for now)
-            notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue), name=name)
-            LabServer.NOTEBOOK = notebook
+            notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue),
+                                name=name,
+                                cells=list())
             self.NOTEBOOKS[name] = notebook
 
+        LabServer.NOTEBOOK = notebook
         self.output_callback.switch_notebook(notebook)
 
 

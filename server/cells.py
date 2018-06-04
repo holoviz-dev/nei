@@ -430,7 +430,7 @@ class Notebook(Cells):
         self.mirrorbuffer(start, end, length, added, size)
         if not self.mirrorbuffer.hold:
             cells = ParseNotebook.extract_cells(str(self.mirrorbuffer))
-            src = Notebook(executor=None)
+            src = Notebook(executor=None, cells=list())
             src.load(cells)
             SyncNotebooks.sync(connection, src, self)
 
@@ -448,7 +448,7 @@ class Notebook(Cells):
         # Mirror buffer expected to be already updated by mirror insertion from editor
         buffer_text = str(self.mirrorbuffer)
         cells = ParseNotebook.extract_cells(buffer_text)
-        src = Notebook(executor=None)
+        src = Notebook(executor=None, cells=list())
         src.load(cells)
 
         with open(filename, 'r') as f:
