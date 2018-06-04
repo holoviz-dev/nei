@@ -241,8 +241,9 @@ class Notebook(Cells):
 
     STATIC_PATH = None
 
-    def __init__(self, executor, **kwargs):
+    def __init__(self, executor, name=None, **kwargs):
         super(Notebook, self).__init__(executor, **kwargs)
+        self.name = name
         self.mirrorbuffer = MirrorBuffer()
         self.commands = {'view_browser': self.view_browser, # Opens browser connection
                          # Commands that do no need a browser connection

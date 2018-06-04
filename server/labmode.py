@@ -138,7 +138,7 @@ class LabServer(websocket.WebSocketHandler):
         if notebook is None:  # Create notebook
             # Note that there are multiple LabServer instances and we want only one notebook!
             # (for now)
-            notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue))
+            notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue), name=name)
             LabServer.NOTEBOOK = notebook
             self.NOTEBOOKS[name] = notebook
 
