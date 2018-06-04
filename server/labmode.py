@@ -145,16 +145,15 @@ class LabServer(websocket.WebSocketHandler):
             logging.info('JSON parse exception: %s' % str(e))
             return
 
-        if payload.get('init',False):
-            if payload['init'] == 'browser':
-                self.BROWSER_CONNECTIONS.append(self)
-                logging.info('Added browser client connection')
-                if len(LabServer.NOTEBOOK.cells) > 0:
-                    logging.info("Restart with previously opened notebook")
-                    LabServer.NOTEBOOK.reload(self)
-                    # If you hit reload in the browser, the CSS needs to be re-sent
-                    LabServer.NOTEBOOK.update_style(self, css=None)
-                return
+        if payload.get('init', False) == 'browser':
+            self.BROWSER_CONNECTIONS.append(self)
+            logging.info('Added browser client connection')
+            if len(LabServer.NOTEBOOK.cells) > 0: # TODO: Needs updating
+                logging.info("Restart with previously opened notebook")
+                LabServer.NOTEBOOK.reload(self)
+                # If you hit reload in the browser, the CSS needs to be re-sent
+                LabServer.NOTEBOOK.update_style(self, css=None)
+            return
 
         # SOME COMMANDS (e.g mirroring) should happen even without a browser tab open!
         connection = self.BROWSER_CONNECTIONS[0] if len(self.BROWSER_CONNECTIONS) else None
