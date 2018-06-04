@@ -288,10 +288,9 @@ class Notebook(Cells):
         self.css = "" # Last CSS sent to browser
         self.config = {'browser':'firefox'}
 
-    @classmethod
-    def message(cls, connection, command, args):
+    def message(self, connection, command, args):
         if connection is not None:
-            connection.write_message({'cmd':command, 'args':args})
+            connection.write_message({'cmd':command, 'args':args, 'name':self.name})
         else:
             logging.info("WARNING: Command %s sent to non-connection" % command)
 
