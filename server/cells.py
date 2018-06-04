@@ -23,6 +23,35 @@ BROWSER = 'firefox' # E.g 'chrome' or 'firefox'
 # [ ] Comment prompts in client
 
 
+def serialize_binary_message(msg):
+    """serialize a message as a binary blob
+    Header:
+    4 bytes: number of msg parts (nbufs) as 32b int
+    4 * nbufs bytes: offset for each buffer as integer as 32b int
+    Offsets are from the start of the buffer, including the header.
+    Returns
+    -------
+    The message serialized to bytes.
+    """
+    from jupyter_client.jsonutil import date_default
+    import struct
+    # don't modify msg or buffer list in-place
+    msg = msg.copy()
+    buffers = list(msg.pop('buffers'))
+    if sys.version_info < (3, 4):
+        buffers = [x.tobytes() for x in buffers]
+    bmsg = json.dumps(msg, default=date_default).encode('utf8')
+    buffers.insert(0, bmsg)
+    nbufs = len(buffers)
+    offsets = [4 * (nbufs + 1)]
+    for buf in buffers[:-1]:
+        offsets.append(offsets[-1] + len(buf))
+    offsets_buf = struct.pack('!' + 'I' * (nbufs + 1), nbufs, *offsets)
+    buffers.insert(0, offsets_buf)
+    return b''.join(buffers)
+
+
+
 class Cell(object):
     "Object representing a code or markdown cell"
 
@@ -288,9 +317,15 @@ class Notebook(Cells):
         self.css = "" # Last CSS sent to browser
         self.config = {'browser':'firefox'}
 
-    def message(self, connection, command, args):
+
+    def message(self, connection, command, args, buffers=[]):
         if connection is not None:
-            connection.write_message({'cmd':command, 'args':args, 'name':self.name})
+            if buffers == []:
+                connection.write_message({'cmd':command, 'args':args, 'name':self.name})
+            else:
+                binary = serialize_binary_message(
+                    {'cmd':'comm_msg', 'args':args, 'name':self.name, 'buffers': buffers})
+                connection.write_message(binary, binary=True)
         else:
             logging.info("WARNING: Command %s sent to non-connection" % command)
 

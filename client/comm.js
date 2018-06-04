@@ -29,6 +29,7 @@ export class Comm {
   on_msg(callback) {
     this.callback = callback;
   }
+
   trigger(msg) {  // Trigger the on_msg callback with msg
     this.get_callback(this.target_name);
     if (this.callback != null) {
@@ -156,7 +157,7 @@ export class CommLink {
   send_message(cmd, args) {
     let json_args = JSON.stringify(args);
     if (this.socket.readyState === 1) {
-      this.socket.send(`{"cmd":"${cmd}", "args":${json_args}}`);
+      this.socket.send(`{"cmd":"${cmd}", "args":${json_args}, "name":"${this.notebook.name}"}`);
     }
   }
 

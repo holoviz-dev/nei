@@ -21,34 +21,6 @@ from cells import Notebook
 STATIC_PATH = os.path.join(os.path.split(__file__)[0], '..', 'client')
 Notebook.STATIC_PATH = STATIC_PATH
 
-def serialize_binary_message(msg):
-    """serialize a message as a binary blob
-    Header:
-    4 bytes: number of msg parts (nbufs) as 32b int
-    4 * nbufs bytes: offset for each buffer as integer as 32b int
-    Offsets are from the start of the buffer, including the header.
-    Returns
-    -------
-    The message serialized to bytes.
-    """
-    from jupyter_client.jsonutil import date_default
-    import struct
-    # don't modify msg or buffer list in-place
-    msg = msg.copy()
-    buffers = list(msg.pop('buffers'))
-    if sys.version_info < (3, 4):
-        buffers = [x.tobytes() for x in buffers]
-    bmsg = json.dumps(msg, default=date_default).encode('utf8')
-    buffers.insert(0, bmsg)
-    nbufs = len(buffers)
-    offsets = [4 * (nbufs + 1)]
-    for buf in buffers[:-1]:
-        offsets.append(offsets[-1] + len(buf))
-    offsets_buf = struct.pack('!' + 'I' * (nbufs + 1), nbufs, *offsets)
-    buffers.insert(0, offsets_buf)
-    return b''.join(buffers)
-
-
 class PeriodicOutputCallback(object):
     """
     Sets up a periodic callback to push output to cells by polling from
@@ -91,15 +63,11 @@ class PeriodicOutputCallback(object):
             return
         elif connection and (status == 'comm_msg'):
             buffers = result['buffers']
-            if buffers == []:
-                self.notebook.message(connection, 'comm_msg', # FIXME: redundant 'comm_msg'
-                                      {'msg_type': 'comm_msg',
-                                       'content': result['content']})
-            else:
-                msg = {'msg_type': 'comm_msg',
-                       'content': result['content']}
-                connection.write_message(serialize_binary_message(# FIXME: use message method
-                    {'cmd':'comm_msg', 'args':msg, 'buffers': buffers}), binary=True)
+
+            self.notebook.message(connection, 'comm_msg', # FIXME: redundant 'comm_msg'
+                                  {'msg_type': 'comm_msg',
+                                   'content': result['content']},
+                                  buffers=buffers)
             return
 
 
