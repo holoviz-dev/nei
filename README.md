@@ -171,7 +171,7 @@ The elisp variable ``nei-browser`` can be set from 'firefox' to
 
 A few notes on the current scope of the project. As the project progress, support for features currently out of scope will be considered.
 
-* At this time, nei only aims to support Python and IPython syntax.
+* At this time, NEI only aims to support Python and IPython syntax.
 * The primary focus is currently on ensuring robust emacs support but contributions to support other editors are welcome.
 * One key objective is to support rich interactive visualization with [holoviews](http://holoviews.org/), which means supporting [bokeh](https://bokeh.pydata.org/en/latest/) plots. 
 * Support for other complex Javascript components such as ipywidgets can be added if contributors volunteer to maintain and test those aspects of the project.

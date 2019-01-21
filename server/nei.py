@@ -19,35 +19,7 @@ from cells import Notebook
 
 
 STATIC_PATH = os.path.join(os.path.split(__file__)[0], '..', 'client')
-
-
-def serialize_binary_message(msg):
-    """serialize a message as a binary blob
-    Header:
-    4 bytes: number of msg parts (nbufs) as 32b int
-    4 * nbufs bytes: offset for each buffer as integer as 32b int
-    Offsets are from the start of the buffer, including the header.
-    Returns
-    -------
-    The message serialized to bytes.
-    """
-    from jupyter_client.jsonutil import date_default
-    import struct
-    # don't modify msg or buffer list in-place
-    msg = msg.copy()
-    buffers = list(msg.pop('buffers'))
-    if sys.version_info < (3, 4):
-        buffers = [x.tobytes() for x in buffers]
-    bmsg = json.dumps(msg, default=date_default).encode('utf8')
-    buffers.insert(0, bmsg)
-    nbufs = len(buffers)
-    offsets = [4 * (nbufs + 1)]
-    for buf in buffers[:-1]:
-        offsets.append(offsets[-1] + len(buf))
-    offsets_buf = struct.pack('!' + 'I' * (nbufs + 1), nbufs, *offsets)
-    buffers.insert(0, offsets_buf)
-    return b''.join(buffers)
-
+Notebook.STATIC_PATH = STATIC_PATH
 
 class PeriodicOutputCallback(object):
     """
@@ -55,11 +27,13 @@ class PeriodicOutputCallback(object):
     the queue pushed to by the ThreadedExecutor.
     """
 
-    def __init__(self, server, notebook, period=20):
+    def __init__(self, server, period=20):
         self.server = server
-        self.notebook = notebook
+        self.notebook = None
         self.period = period
 
+    def switch_notebook(self, notebook):
+        self.notebook = notebook
 
     def start(self):
         self.callback = ioloop.PeriodicCallback(self.__call__, self.period)
@@ -89,15 +63,11 @@ class PeriodicOutputCallback(object):
             return
         elif connection and (status == 'comm_msg'):
             buffers = result['buffers']
-            if buffers == []:
-                self.notebook.message(connection, 'comm_msg', # FIXME: redundant 'comm_msg'
-                                      {'msg_type': 'comm_msg',
-                                       'content': result['content']})
-            else:
-                msg = {'msg_type': 'comm_msg',
-                       'content': result['content']}
-                connection.write_message(serialize_binary_message(# FIXME: use message method
-                    {'cmd':'comm_msg', 'args':msg, 'buffers': buffers}), binary=True)
+
+            self.notebook.message(connection, 'comm_msg', # FIXME: redundant 'comm_msg'
+                                  {'msg_type': 'comm_msg',
+                                   'content': result['content']},
+                                  buffers=buffers)
             return
 
 
@@ -121,19 +91,28 @@ class Server(websocket.WebSocketHandler):
     BROWSER_CONNECTIONS = []
 
     NOTEBOOK = None
+    NOTEBOOKS = {}
 
     def open(self):
         self.queue = Queue()
-
-        # Note that there are multiple Server instances and we want only one notebook!
-        # (for now)
-        if Server.NOTEBOOK is None:
-            Server.NOTEBOOK = Notebook(ThreadedExecutor("threaded-kernel", self.queue))
-            Server.NOTEBOOK.STATIC_PATH = STATIC_PATH
-
-        self.output_callback = PeriodicOutputCallback(self, Server.NOTEBOOK)
+        self.output_callback = PeriodicOutputCallback(self)
         self.output_callback.start()
         logging.info("Connection opened")
+
+
+    def toggle_notebook(self, name):
+        notebook = self.NOTEBOOKS.get(name, None)
+
+        if notebook is None:  # Create notebook
+            # Note that there are multiple Server instances and we want only one notebook!
+            # (for now)
+            notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue),
+                                name=name,
+                                cells=list())
+            self.NOTEBOOKS[name] = notebook
+
+        Server.NOTEBOOK = notebook
+        self.output_callback.switch_notebook(notebook)
 
 
     def on_message(self, message):
@@ -145,19 +124,19 @@ class Server(websocket.WebSocketHandler):
             logging.info('JSON parse exception: %s' % str(e))
             return
 
-        if payload.get('init',False):
-            if payload['init'] == 'browser':
-                self.BROWSER_CONNECTIONS.append(self)
-                logging.info('Added browser client connection')
-                if len(Server.NOTEBOOK.cells) > 0:
-                    logging.info("Restart with previously opened notebook")
-                    Server.NOTEBOOK.reload(self)
-                    # If you hit reload in the browser, the CSS needs to be re-sent
-                    Server.NOTEBOOK.update_style(self, css=None)
-                return
+        if payload.get('init', False) == 'browser':
+            self.BROWSER_CONNECTIONS.append(self)
+            logging.info('Added browser client connection')
+            if len(Server.NOTEBOOK.cells) > 0: # TODO: Needs updating
+                logging.info("Restart with previously opened notebook")
+                Server.NOTEBOOK.reload(self)
+                # If you hit reload in the browser, the CSS needs to be re-sent
+                Server.NOTEBOOK.update_style(self, css=None)
+            return
 
         # SOME COMMANDS (e.g mirroring) should happen even without a browser tab open!
         connection = self.BROWSER_CONNECTIONS[0] if len(self.BROWSER_CONNECTIONS) else None
+        self.toggle_notebook(payload['name'])
         Server.NOTEBOOK.dispatch(connection, payload)
 
 

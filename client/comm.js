@@ -5,6 +5,9 @@ import {download_file, update_style} from './util.js'
 import {UUID} from './util.js';
 import {serialize, deserialize} from './buffer.js';
 
+
+import {Notebook} from './cell.js';
+
 export class Comm {
   constructor(manager, target_name, callback=null, comm_id=null) {
     this.manager = manager;
@@ -26,6 +29,7 @@ export class Comm {
   on_msg(callback) {
     this.callback = callback;
   }
+
   trigger(msg) {  // Trigger the on_msg callback with msg
     this.get_callback(this.target_name);
     if (this.callback != null) {
@@ -88,17 +92,39 @@ export class CommManager {
   }
 
 
+function notebook_name_from_URL() {
+  // e.g for http://localhost:8000/index.html?name=foo
+  let url = new URL(window.location.href)
+  return url.searchParams.get("name");
 }
 
 export class CommLink {
-  constructor(app, notebook, server, port=9999) {
+  constructor(app, server, port=9999) {
     this.app = app;
     this.socket = new WebSocket("ws://localhost:9999");
     // this.socket = new WebSocket("ws://"+server+":"+port+"/ws");
     this.setup(this.socket)
 
-    this.notebook = notebook;
+    this.notebooks = {}
+    this.notebook = null
     this.comm_manager = new CommManager(this);
+    }
+
+
+    toggle_notebook(name) {
+      // Switch to an existing notebook or create a new one as necessary
+      if (!(name in this.notebooks)) {
+        let notebook = new Notebook(name, this.app, eval)
+        this.notebooks[name] = notebook
+      }
+      if ((this.notebook != null)  && (name == this.notebook.name)) {return}
+
+      this.app.set('uuids',         [])
+      this.app.set('removed',       [])
+      this.app.set('refresh_uuids', [])
+      this.notebook = this.notebooks[name]
+      window.notebook = this.notebooks[name] // Used by Moon app
+      this.notebook.refresh()
     }
 
     setup(socket) {
@@ -131,7 +157,7 @@ export class CommLink {
   send_message(cmd, args) {
     let json_args = JSON.stringify(args);
     if (this.socket.readyState === 1) {
-      this.socket.send(`{"cmd":"${cmd}", "args":${json_args}}`);
+      this.socket.send(`{"cmd":"${cmd}", "args":${json_args}, "name":"${this.notebook.name}"}`);
     }
   }
 
@@ -142,6 +168,10 @@ export class CommLink {
       console.log(`Command ${json.cmd} is deprecated.`);
       return
     }
+
+    let url_name = notebook_name_from_URL()
+    let name =  (url_name != null) ? url_name : json.name
+    this.toggle_notebook(name)
 
     // Dispatch commands
     let commands = ['add_cell', 'remove_cell', 'remove_cells',

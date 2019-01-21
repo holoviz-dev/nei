@@ -10,7 +10,7 @@
 
 (defun nei--server-cmd (command args)
   "Given a command string and its assoc list of args, return the JSON command object"
-   (list (cons "cmd" command) (cons "args" args))
+   (list (cons "cmd" command) (cons "args" args) (cons "name" (buffer-name)))
   )
 
 (defun nei--scroll-by (offset)
