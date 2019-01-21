@@ -1,5 +1,5 @@
-(require 'lab-util)
-(require 'lab-parse)
+(require 'nei-util)
+(require 'nei-parse)
 (require 'json)
 
 
@@ -192,4 +192,4 @@
     )
   )
 
-(provide 'lab-interface)
+(provide 'nei-interface)

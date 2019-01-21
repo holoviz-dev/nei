@@ -2,16 +2,16 @@
 (require 'websocket)
 (require 'json)
 
-(require 'lab-parse)
-(require 'lab-interface)
-(require 'lab-commands)
+(require 'nei-parse)
+(require 'nei-interface)
+(require 'nei-commands)
 
 
 (defvar nei-env "root"
   "Nei assumes the use of miniconda3 with the stated env if nei-python-path is nil
 
 To set the env per file set this as a file variable e.g.
-# -*- mode: python; nei-env \"example-env\": nil; eval: (lab-mode)-*-")
+# -*- mode: python; nei-env \"example-env\": nil; eval: (nei-mode)-*-")
 
 (defvar nei-python-path nil
   "Explicit path to the Python executable used to launch the nei server.")
@@ -80,7 +80,7 @@ To set the env per file set this as a file variable e.g.
   (start-nei-server)
   (if ws-closed (setq ws-connection nil))
 
-  (if (and (not nei-external-server) (get-process "lab-server"))
+  (if (and (not nei-external-server) (get-process "nei-server"))
       (while (null ws-connection)
         (sleep-for 0 200)
         (message "No connection (waiting)")
@@ -100,7 +100,7 @@ To set the env per file set this as a file variable e.g.
 (defun start-nei-server (&optional verbose)
   "Starts the nei server if it isn't already running using nei-python-path"
   (interactive)
-  (let ((proc (get-process "lab-server")))
+  (let ((proc (get-process "nei-server")))
     (if (and (null proc) (not nei-external-server))
         (progn 
           (message "Starting nei server")
@@ -110,7 +110,7 @@ To set the env per file set this as a file variable e.g.
                              "/miniconda3/envs/" nei-env "/bin/python3")
                    nei-python-path))
                  (new-proc
-                 (start-process "lab-server"
+                 (start-process "nei-server"
                                 " *lab server log*" ;; Leading space hides the buffer
                                 python-path
                                 (expand-file-name nei-relative-server-path))))
@@ -128,7 +128,7 @@ To set the env per file set this as a file variable e.g.
 (defun stop-nei-server ()
   "Kills the nei server if it is currently running"
   (interactive)
-  (let ((proc (get-process "lab-server")))
+  (let ((proc (get-process "nei-server")))
     
     (if (not (null proc))
         (let ((proc-buffer  (process-buffer proc))) 
@@ -145,7 +145,7 @@ To set the env per file set this as a file variable e.g.
 (defun nei-server-log ()
   "View the server log buffer if the server process is running."
   (interactive)
-  (let ((proc (get-process "lab-server")))
+  (let ((proc (get-process "nei-server")))
     (if (not (null proc))
         (with-current-buffer (process-buffer proc)
           (clone-indirect-buffer " *lab server log*" t)
@@ -203,7 +203,7 @@ To set the env per file set this as a file variable e.g.
 
 
 
-(define-minor-mode lab-mode
+(define-minor-mode nei-mode
   "Nei for authoring notebooks in Emacs."
   :lighter " NEI"
   
@@ -227,11 +227,11 @@ To set the env per file set this as a file variable e.g.
   (if (not (string= major-mode "python-mode"))
       (python-mode))
   )
-(advice-add 'lab-mode :before #'nei--enable-python-mode-advice)
+(advice-add 'nei-mode :before #'nei--enable-python-mode-advice)
 
 
 ;; Future ideas
 ;; C-c f for 'focus on cell'
 ;; C-c p for 'ping cell' to scroll to cell.
 
-(provide 'lab-mode)
+(provide 'nei-mode)

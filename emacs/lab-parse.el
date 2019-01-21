@@ -1,5 +1,5 @@
 (require 's)
-(require 'lab-util)
+(require 'nei-util)
 
 (defun nei--markdown-cell (source)
   (list (cons 'mode "markdown") (cons 'source source))
@@ -78,4 +78,4 @@
     (s-join "\n\n" (reverse lines))
     )
 )
-(provide 'lab-parse)
+(provide 'nei-parse)
