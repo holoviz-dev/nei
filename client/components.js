@@ -20,7 +20,7 @@ Moon.component('cell-input', {
 
 Moon.component('cell-output', {
   props: ['uuid', 'output_refresh'], // style to horizontally align
-  template: `<div class='labmode-output-div'>
+  template: `<div class='nei-output-div'>
   <div m-for='index in indices()' >
     <div m-if='display(index)' m-html='output(index)'></div>
   </div>

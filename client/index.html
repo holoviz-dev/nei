@@ -25,7 +25,7 @@
     <script src="moon.js"></script>
     <script type="module" src="./comm.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="labmode.css">
+    <link rel="stylesheet" type="text/css" href="nei.css">
 
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js">
@@ -43,7 +43,7 @@
       </pre>
       <div id="app">
           <div m-for="uuid in uuids" >
-              <pre class="labmode-prompt" m-html='prompt(uuid)'></pre>
+              <pre class="nei-prompt" m-html='prompt(uuid)'></pre>
               <cell-input m-if="!removed.includes(uuid)"
                           uuid="{{uuid}}"
                           input_refresh="{{refresh(uuid, 'input')}}"></cell-input>

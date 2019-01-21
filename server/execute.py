@@ -98,7 +98,7 @@ class ThreadedExecutor(object):
     def interrupt_kernel(self):
         self.km.interrupt_kernel()
 
-    def shutdown_kernel(self): # TODO: Shutdown kernel but keep labmode running
+    def shutdown_kernel(self): # TODO: Shutdown kernel but keep nei running
         self.execution_count = 0
         self.km.request_shutdown()
         self.km.cleanup()
