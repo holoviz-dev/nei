@@ -8,21 +8,21 @@
 
 ;; Module for utilities
 
-(defun labutil--make-buffer-uninteresting ()
+(defun neiutil--make-buffer-uninteresting ()
   "rename the current buffer to begin with a space"
   (interactive)
   (unless (string-match-p "^ " (buffer-name))
     (rename-buffer (concat " " (buffer-name)))))
 
 
-(defun labutil--get-string-from-file (filepath)
+(defun neiutil--get-string-from-file (filepath)
   "Return filepath's file content."
   (with-temp-buffer
     (insert-file-contents filepath)
     (buffer-string))
   )
 
-(defun labutil--replace-in-string (what with in)
+(defun neiutil--replace-in-string (what with in)
   "Utility for easier regexp search and replace"
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 

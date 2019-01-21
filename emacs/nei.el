@@ -111,7 +111,7 @@ To set the env per file set this as a file variable e.g.
                    nei-python-path))
                  (new-proc
                  (start-process "nei-server"
-                                " *lab server log*" ;; Leading space hides the buffer
+                                " *nei server log*" ;; Leading space hides the buffer
                                 python-path
                                 (expand-file-name nei-relative-server-path))))
             (set-process-query-on-exit-flag new-proc nil)
@@ -148,7 +148,7 @@ To set the env per file set this as a file variable e.g.
   (let ((proc (get-process "nei-server")))
     (if (not (null proc))
         (with-current-buffer (process-buffer proc)
-          (clone-indirect-buffer " *lab server log*" t)
+          (clone-indirect-buffer " *nei server log*" t)
           )
       )
     )

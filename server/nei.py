@@ -86,7 +86,7 @@ class PeriodicOutputCallback(object):
             self.notebook.update_cell_outputs(connection, position, outnode)
 
 
-class LabServer(websocket.WebSocketHandler):
+class Server(websocket.WebSocketHandler):
 
     BROWSER_CONNECTIONS = []
 
@@ -104,14 +104,14 @@ class LabServer(websocket.WebSocketHandler):
         notebook = self.NOTEBOOKS.get(name, None)
 
         if notebook is None:  # Create notebook
-            # Note that there are multiple LabServer instances and we want only one notebook!
+            # Note that there are multiple Server instances and we want only one notebook!
             # (for now)
             notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue),
                                 name=name,
                                 cells=list())
             self.NOTEBOOKS[name] = notebook
 
-        LabServer.NOTEBOOK = notebook
+        Server.NOTEBOOK = notebook
         self.output_callback.switch_notebook(notebook)
 
 
@@ -127,17 +127,17 @@ class LabServer(websocket.WebSocketHandler):
         if payload.get('init', False) == 'browser':
             self.BROWSER_CONNECTIONS.append(self)
             logging.info('Added browser client connection')
-            if len(LabServer.NOTEBOOK.cells) > 0: # TODO: Needs updating
+            if len(Server.NOTEBOOK.cells) > 0: # TODO: Needs updating
                 logging.info("Restart with previously opened notebook")
-                LabServer.NOTEBOOK.reload(self)
+                Server.NOTEBOOK.reload(self)
                 # If you hit reload in the browser, the CSS needs to be re-sent
-                LabServer.NOTEBOOK.update_style(self, css=None)
+                Server.NOTEBOOK.update_style(self, css=None)
             return
 
         # SOME COMMANDS (e.g mirroring) should happen even without a browser tab open!
         connection = self.BROWSER_CONNECTIONS[0] if len(self.BROWSER_CONNECTIONS) else None
         self.toggle_notebook(payload['name'])
-        LabServer.NOTEBOOK.dispatch(connection, payload)
+        Server.NOTEBOOK.dispatch(connection, payload)
 
 
     def check_origin(self, origin):
@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
 
     tornado.web.Application([html_handler]).listen(8000)
-    ws_server = httpserver.HTTPServer(tornado.web.Application([(r"/", LabServer)]))
+    ws_server = httpserver.HTTPServer(tornado.web.Application([(r"/", Server)]))
     ws_server.listen(9999, "127.0.0.1")
     logging.info("STARTED: Server start listening")
     ioloop.IOLoop.instance().start()
