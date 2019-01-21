@@ -84,7 +84,7 @@ export function syntax_highlight(source) {
                 `<span class="hljs-meta">False</span>`);
   s = s.replace(`<span class="hljs-keyword">True</span>`,
                 `<span class="hljs-meta">True</span>`);
-  return "<pre class='labmode-code'>" + s + "</pre>"
+  return "<pre class='nei-code'>" + s + "</pre>"
 }
 
 export function update_style(css) {
