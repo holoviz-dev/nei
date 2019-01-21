@@ -14,7 +14,7 @@ BROWSER = 'firefox' # E.g 'chrome' or 'firefox'
 
 # TODO
 # [ ] Move scratch/learning content to a branch
-# [ ] Could add a kill buffer hook to shutdown server when all labmode buffers closed.
+# [ ] Could add a kill buffer hook to shutdown server when all nei buffers closed.
 
 
 # [ ] Add Yank hook.

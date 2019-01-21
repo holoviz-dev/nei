@@ -31,7 +31,7 @@
 ;;==================================;;
 
 
-(defun labmode--htmlize-css-to-highlight (css)
+(defun nei--htmlize-css-to-highlight (css)
   "Map the CSS from htmlize to the keywords used by highlight.js"
   (setq css (replace-regexp-in-string ".keyword" ".hljs-keyword" css))
   (setq css (replace-regexp-in-string ".comment" ".hljs-comment" css))
@@ -46,7 +46,7 @@
 
 
 
-(defun labmode--htmlize-css ()
+(defun nei--htmlize-css ()
   "Use htmlize to generate CSS for syntax highlighting"
   (let (( buf (generate-new-buffer "*htmlize-css*")) ( css nil ))
     (with-current-buffer buf
@@ -54,7 +54,7 @@
              (list font-lock-comment-face font-lock-comment-delimiter-face 
                    font-lock-doc-face font-lock-constant-face font-lock-function-name-face
                    font-lock-builtin-face font-lock-type-face font-lock-string-face
-                   font-lock-keyword-face font-lock-variable-name-face 'labmode-prompt-face)))
+                   font-lock-keyword-face font-lock-variable-name-face 'nei-prompt-face)))
         (htmlize-css-insert-head python-faces 
                                  (htmlize-make-face-map 
                                   (adjoin 'default  python-faces)))
@@ -62,7 +62,7 @@
       (setq css (buffer-substring (point-min) (point-max)))
       )
     (kill-buffer "*htmlize-css*")
-    (labmode--htmlize-css-to-highlight css)
+    (nei--htmlize-css-to-highlight css)
     )
 )
 

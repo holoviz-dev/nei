@@ -1,4 +1,4 @@
-# -*- mode: python; labmode-env : "analytics"; eval: (lab-mode)-*-
+# -*- mode: python; nei-env : "analytics"; eval: (lab-mode)-*-
 
 "Code before the first cell is ignored."
 

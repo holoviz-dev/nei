@@ -1,20 +1,20 @@
 (require 's)
 (require 'lab-util)
 
-(defun labmode--markdown-cell (source)
+(defun nei--markdown-cell (source)
   (list (cons 'mode "markdown") (cons 'source source))
   )
 
 
 ;; Can also supply 'input' (i.e HTML) from emacs. No longer used.
-(defun labmode--code-cell (source &optional prompt)
+(defun nei--code-cell (source &optional prompt)
   (list (cons 'mode "code")
         (cons 'source source)
         (cons 'prompt prompt)
         )
   )
 
-(defun labmode--split-newlines (string)
+(defun nei--split-newlines (string)
   (mapcar (lambda (x) (concat x "\n")) (split-string string "\n"))
   )
 
@@ -22,7 +22,7 @@
 ;; Parsing cells from .ipynb JSON file ;;
 ;;=====================================;;
 
-(defun labmode-parse-notebook-file (filename)
+(defun nei-parse-notebook-file (filename)
   "Given an .ipynb file return the parsed list of cells"
   (let* ((extracted)
          (data (json-read-file filename))
@@ -36,8 +36,8 @@
              (source  (s-join "" (assoc-value 'source cell)))
              (prompt (assoc-value 'execution_count cell))
              (labcell (if (string= mode "code")
-                         (labmode--code-cell source prompt)
-                       (labmode--markdown-cell source))))
+                         (nei--code-cell source prompt)
+                       (nei--markdown-cell source))))
         (setq extracted (push labcell extracted))
         )
       )
@@ -49,7 +49,7 @@
 ;; Rendering cells back to text ;;
 ;;==============================;;
 
-(defun labmode--code-cell-to-text (cell)
+(defun nei--code-cell-to-text (cell)
   "Given a code cell return the textual equivalent"
   (let* ((source (assoc-value 'source cell))
         (prompt (assoc-value 'prompt cell))
@@ -60,19 +60,19 @@
     )
 )
 
-(defun labmode--markdown-cell-to-text (cell)
+(defun nei--markdown-cell-to-text (cell)
   "Given a markdown cell return the textual equivalent"
   (s-concat "\"\"\"\n" (assoc-value 'source cell) "\n\"\"\"\n")
 )
 
 
-(defun labmode--cells-to-text (cells)
+(defun nei--cells-to-text (cells)
   "Given a list of cells return the textual equivalent"
   (let ((lines nil))
     (dolist (cell cells lines)
       (if (string= (assoc-value 'mode cell) "code")
-          (setq lines (push (labmode--code-cell-to-text cell) lines))
-        (setq lines (push (labmode--markdown-cell-to-text cell) lines))
+          (setq lines (push (nei--code-cell-to-text cell) lines))
+        (setq lines (push (nei--markdown-cell-to-text cell) lines))
         )
       )
     (s-join "\n\n" (reverse lines))
