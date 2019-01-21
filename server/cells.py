@@ -5,7 +5,11 @@ import sys
 import re
 import webbrowser
 
-import nbconvert
+try:
+    import nbconvert
+except:
+    nbconvert = None
+
 import nbformat
 
 from styles import process_css
@@ -188,6 +192,9 @@ class Cells(object):
             nb['cells'] = [cell.node(cleared=cleared) for cell in self.cells]
 
         if mode == 'html':
+            if nbconvert is None:
+                logging.info("nbconvert not available for HTML conversion")
+                return
             (data, resources) = nbconvert.exporters.export(nbconvert.HTMLExporter, nb)
         with open(filename, 'w') as f:
             if mode in ['cleared', 'full-notebook']:
