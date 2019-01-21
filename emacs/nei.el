@@ -234,4 +234,5 @@ To set the env per file set this as a file variable e.g.
 ;; C-c f for 'focus on cell'
 ;; C-c p for 'ping cell' to scroll to cell.
 
+
 (provide 'nei)
