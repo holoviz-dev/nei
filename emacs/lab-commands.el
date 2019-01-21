@@ -1,4 +1,4 @@
-(require 'lab-util)
+(require 'nei-util)
 (require 'json)
 
 
@@ -371,4 +371,4 @@
     )
   )
 
-(provide 'lab-commands)
+(provide 'nei-commands)

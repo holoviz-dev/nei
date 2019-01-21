@@ -66,4 +66,4 @@
     )
 )
 
-(provide 'lab-util)
+(provide 'nei-util)

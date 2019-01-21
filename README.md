@@ -105,7 +105,7 @@ and switch to a miniconda3 environment (here ``"example-env"``) by
 putting this line at the top of your Python file:
 
 ```
-# -*- mode: python; nei-env : "example-env"; eval: (lab-mode)-*-
+# -*- mode: python; nei-env : "example-env"; eval: (nei-mode)-*-
 ```
 
 The environment used will have to satisfy the Python dependencies listed
@@ -127,7 +127,7 @@ the ``emacs`` subdirectory of this repository:
 
 ```elisp
 (add-to-list 'load-path "~/nei/emacs")
-(require 'lab-mode)
+(require 'nei-mode)
 ```
 
 Eventually a MELPA package will be offered for NEI.
