@@ -150,7 +150,7 @@ class Server(websocket.WebSocketHandler):
 
         self.output_callback.stop()
 
-if __name__ == "__main__":
+def serve():
     import tornado.options
     tornado.options.parse_command_line()
 
@@ -164,3 +164,6 @@ if __name__ == "__main__":
     ws_server.listen(9999, "127.0.0.1")
     logging.info("STARTED: Server start listening")
     ioloop.IOLoop.instance().start()
+
+if __name__ == "__main__":
+    serve()
