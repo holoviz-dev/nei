@@ -1,6 +1,6 @@
 # NEI
 
-**Notebooks. In plaintext. In *your* editor.**
+**Notebook Emacs Integration.**
 
 
 <img src="https://s3-eu-west-1.amazonaws.com/misc-static-assets/labmode-README.gif" width="90%"><img>
