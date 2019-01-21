@@ -34,12 +34,12 @@
   </head>
 
   <body>
-      <pre>
- _       _                         _
-| | __ _| |__  _ __ ___   ___   __| | ___
-| |/ _` | '_ \| '_ ` _ \ / _ \ / _` |/ _ \
-| | (_| | |_) | | | | | | (_) | (_| |  __/
-|_|\__,_|_.__/|_| |_| |_|\___/ \__,_|\___|       <a href="#" onclick="commlink.send_message('download_python_notebook', {});return false;">py</a> . <a href="#" onclick="commlink.send_message('download_cleared_notebook', {});return false;">cleared</a> . <a href="#" onclick="commlink.send_message('download_full_notebook', {});return false;" >full</a> . <a href="#" onclick="commlink.send_message('view_notebook', {});return false;" target="_blank">view</a>
+    <pre>
+            _
+ _ __   ___(_)
+| '_ \ / _ \ |
+| | | |  __/ |
+|_| |_|\___|_|       <a href="#" onclick="commlink.send_message('download_python_notebook', {});return false;">py</a> . <a href="#" onclick="commlink.send_message('download_cleared_notebook', {});return false;">cleared</a> . <a href="#" onclick="commlink.send_message('download_full_notebook', {});return false;" >full</a> . <a href="#" onclick="commlink.send_message('view_notebook', {});return false;" target="_blank">view</a>
       </pre>
       <div id="app">
           <div m-for="uuid in uuids" >
