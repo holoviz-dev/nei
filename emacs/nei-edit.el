@@ -192,4 +192,4 @@
     )
   )
 
-(provide 'nei-interface)
+(provide 'nei-edit)

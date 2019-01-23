@@ -3,7 +3,7 @@
 (require 'json)
 
 (require 'nei-parse)
-(require 'nei-interface)
+(require 'nei-edit)
 (require 'nei-commands)
 
 
