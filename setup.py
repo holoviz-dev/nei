@@ -22,6 +22,7 @@ setup_args = dict(
     platforms=['Windows', 'Mac OS X', 'Linux'],
     license='BSD',
     provides=["nei"],
+    packages=["nei"],
     include_package_data = True,
     python_requires=">=3.5",
     install_requires=install_requires,
