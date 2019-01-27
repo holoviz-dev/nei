@@ -90,6 +90,7 @@ export class CommManager {
     let comm = this.comms[comm_id];
     comm.trigger(msg);
   }
+}
 
 
 function notebook_name_from_URL() {
