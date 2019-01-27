@@ -4,6 +4,7 @@ install_requires = [
     'jupyter_client',
     'nbformat',
     'tornado==5.1.1',
+    'ipykernel'
 ]
 
 extras_require = {
@@ -19,7 +20,7 @@ setup_args = dict(
     name='nei',
     version='0.0.3',
     description='Notebook Emacs Interface',
-    platforms=['Windows', 'Mac OS X', 'Linux'],
+    platforms=['Mac OS X', 'Linux'],
     license='BSD',
     provides=["nei"],
     packages=["nei"],
