@@ -5,19 +5,8 @@
 (require 'nei-parse)
 (require 'nei-edit)
 (require 'nei-commands)
+(require 'nei-server)
 
-
-(defvar nei-env "root"
-  "Nei assumes the use of miniconda3 with the stated env if nei-python-path is nil
-
-To set the env per file set this as a file variable e.g.
-# -*- mode: python; nei-env \"example-env\": nil; eval: (nei-mode)-*-")
-
-(defvar nei-python-path nil
-  "Explicit path to the Python executable used to launch the nei server.")
-
-(defvar nei-relative-server-path "../server/nei.py"
-  "Relative path from elisp directory to the nei server script." )
 
 (defvar ws-connection nil
   "The websocket client connection.")
@@ -90,67 +79,6 @@ To set the env per file set this as a file variable e.g.
         )
     (if (not nei-external-server)
         (message "Error: Server process not running. Is the conda env specified?"))
-    )
-  )
-
-;;=============================;;
-;; Managing the server process ;;
-;;=============================;;
-
-(defun start-nei-server (&optional verbose)
-  "Starts the nei server if it isn't already running using nei-python-path"
-  (interactive)
-  (let ((proc (get-process "nei-server")))
-    (if (and (null proc) (not nei-external-server))
-        (progn 
-          (message "Starting nei server")
-          (let* ((python-path
-                 (if (null nei-python-path)
-                     (concat (expand-file-name "~")
-                             "/miniconda3/envs/" nei-env "/bin/python3")
-                   nei-python-path))
-                 (new-proc
-                 (start-process "nei-server"
-                                " *nei server log*" ;; Leading space hides the buffer
-                                python-path
-                                (expand-file-name nei-relative-server-path))))
-            (set-process-query-on-exit-flag new-proc nil)
-            (sleep-for 2)
-            )
-          )
-      (if (and verbose (not nei-external-server))
-          (message "Nei server already running"))
-      )
-    )
-  )
-
-
-(defun stop-nei-server ()
-  "Kills the nei server if it is currently running"
-  (interactive)
-  (let ((proc (get-process "nei-server")))
-    
-    (if (not (null proc))
-        (let ((proc-buffer  (process-buffer proc))) 
-          (kill-process proc)
-          (sleep-for 0 500)
-          (kill-buffer proc-buffer)
-          )
-      )
-    )
-  )
-
-
-
-(defun nei-server-log ()
-  "View the server log buffer if the server process is running."
-  (interactive)
-  (let ((proc (get-process "nei-server")))
-    (if (not (null proc))
-        (with-current-buffer (process-buffer proc)
-          (clone-indirect-buffer " *nei server log*" t)
-          )
-      )
     )
   )
 
