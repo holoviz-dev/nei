@@ -80,7 +80,7 @@ class ThreadedExecutor(object):
 
     def start(self):
         self.km = KernelManager(kernel_name='python',
-                                client_class='execute.Client')
+                                client_class='nei.execute.Client')
         self.km.start_kernel()
         self.kc = self.km.client()
         self.kc.start_channels()

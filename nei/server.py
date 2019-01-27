@@ -14,8 +14,8 @@ import webbrowser
 import nbformat
 from queue import Queue
 
-from execute import ThreadedExecutor
-from cells import Notebook
+from .execute import ThreadedExecutor
+from .cells import Notebook
 
 
 STATIC_PATH = os.path.join(os.path.split(__file__)[0], '..', 'client')

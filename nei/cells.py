@@ -12,7 +12,7 @@ except:
 
 import nbformat
 
-from styles import process_css
+from .styles import process_css
 
 BROWSER = 'firefox' # E.g 'chrome' or 'firefox'
 
