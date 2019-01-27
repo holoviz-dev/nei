@@ -18,7 +18,7 @@ from .execute import ThreadedExecutor
 from .cells import Notebook
 
 
-STATIC_PATH = os.path.join(os.path.split(__file__)[0], '..', 'client')
+STATIC_PATH = os.path.join(os.path.split(__file__)[0], 'client')
 Notebook.STATIC_PATH = STATIC_PATH
 
 class PeriodicOutputCallback(object):
