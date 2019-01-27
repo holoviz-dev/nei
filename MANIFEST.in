@@ -1,0 +1,8 @@
+include README.md
+include LICENSE.txt
+include nei/client/*.css
+include nei/client/*.js
+include nei/client/*.html
+global-exclude *.py[co]
+global-exclude *~
+global-exclude *.ipynb_checkpoints/*
