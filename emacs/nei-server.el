@@ -10,11 +10,12 @@
 ;; ========= ;;
 
 (defun nei--cmd-stdout (cmd)
+  "Run a shell command with shell-command-to-string and trim"
   (string-trim-right (shell-command-to-string cmd)))
 
 
 (defun get-exit-code (program &rest args) ;
-  "Run PROGRAM with ARGS and return the exit code and output in a list."
+  "Run PROGRAM with ARGS and return the exit code."
   (with-temp-buffer
     (apply 'call-process program nil (current-buffer) nil args)))
 
@@ -24,6 +25,7 @@
 
 
 (defun nei--python-path ()
+  "Get the path associated with the current 'python' command"
   (nei--cmd-stdout "python -c 'import sys;print(sys.executable)'")
   )
 
@@ -53,7 +55,7 @@
 ;; ==================== ;;
 
 (defun start-nei-server (&optional verbose)
-  "Starts the nei server if it isn't already running using nei-python-path"
+  "Starts the nei server if not already running"
   (interactive)
   (let ((proc (get-process "nei-server")))
     (if (null proc)
@@ -156,6 +158,7 @@ you can now run the nei-pip-install-server command.
 
 
 (defun nei--diagnose-missing-server ()
+  "Present a buffer with help information if the server does not start"
   (with-output-to-temp-buffer "NEI server configuration"
     (let ((executable
            (if (null (get-exit-code "python"))
