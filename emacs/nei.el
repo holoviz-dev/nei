@@ -20,9 +20,6 @@
 (defvar nei--execution-count 0
   "The number of kernel executions invoked from nei")
 
-(defvar nei-external-server nil
-  "Whether to run the server process in emacs or externally. Used for debugging.")
-
 (defvar nei-browser "firefox"
   "The browser used by nei when launch new tabs.")
 
@@ -69,7 +66,7 @@
   (start-nei-server)
   (if ws-closed (setq ws-connection nil))
 
-  (if (and (not nei-external-server) (get-process "nei-server"))
+  (if ((get-process "nei-server"))
       (while (null ws-connection)
         (sleep-for 0 200)
         (message "No connection (waiting)")
@@ -77,8 +74,6 @@
           (nei--open-connection)
           )
         )
-    (if (not nei-external-server)
-        (message "Error: Server process not running. Is the conda env specified?"))
     )
   )
 
