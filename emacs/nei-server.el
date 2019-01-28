@@ -14,7 +14,7 @@
   (string-trim-right (shell-command-to-string cmd)))
 
 
-(defun get-exit-code (program &rest args) ;
+(defun nei--get-exit-code (program &rest args) ;
   "Run PROGRAM with ARGS and return the exit code."
   (with-temp-buffer
     (apply 'call-process program nil (current-buffer) nil args)))
@@ -31,7 +31,7 @@
 
 (defun nei--server-version ()
   "Returns the nei version string is available in Python, otherwise nil"
-  (if (eq (get-exit-code "python") 0)
+  (if (eq (nei--get-exit-code "python") 0)
       (let ((stdout (nei--cmd-stdout "python -c 'import nei;print(nei.__version__)'")))
         (if (s-starts-with? "v" stdout)
             stdout))))
@@ -54,7 +54,7 @@
 ;; Launching the server ;;
 ;; ==================== ;;
 
-(defun start-nei-server (&optional verbose)
+(defun nei--launch-server-process (&optional verbose)
   "Starts the nei server if not already running"
   (interactive)
   (let ((proc (get-process "nei-server")))
@@ -74,7 +74,7 @@
   )
 
 
-(defun nei--launch-server (&optional env)
+(defun nei--start-server (&optional env)
   "Check if nei is importable in Python after optionally activating a
    conda environment (if conda-mode available). If the check fails, open
    a help window with information to help diagnose and fix the problem."
@@ -87,7 +87,7 @@
     (if (null version) (nei--diagnose-missing-server)
       (progn
         (message "Launching NEI server version %s" version)
-        (start-nei-server)
+        (nei--launch-server-process)
        )
       )
     )
@@ -97,7 +97,7 @@
 ;; Managing the server process ;;
 ;;=============================;;
 
-(defun stop-nei-server ()
+(defun nei--stop-nei-server ()
   "Kills the nei server if it is currently running"
   (interactive)
   (let ((proc (get-process "nei-server")))
@@ -161,7 +161,7 @@ you can now run the nei-pip-install-server command.
   "Present a buffer with help information if the server does not start"
   (with-output-to-temp-buffer "NEI server configuration"
     (let ((executable
-           (if (null (get-exit-code "python"))
+           (if (null (nei--get-exit-code "python"))
                "Python executable not found"
              (nei--python-path))))
       (princ (format  nei--diagnose-server-msg executable))

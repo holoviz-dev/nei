@@ -63,7 +63,7 @@
 (defun nei--wait-connection ()
   "Start server if not already running and loop connection attempts 
    until connection established "
-  (start-nei-server)
+  (nei--start-server)
   (if ws-closed (setq ws-connection nil))
 
   (if ((get-process "nei-server"))
