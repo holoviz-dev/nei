@@ -18,10 +18,10 @@
   "Flag indicating whether the websocket connection is closed or not")
 
 (defvar nei--execution-count 0
-  "The number of kernel executions invoked from nei")
+  "The number of kernel executions invoked from NEI")
 
 (defvar nei-browser "firefox"
-  "The browser used by nei when launch new tabs.")
+  "The browser used by NEI when launch new tabs.")
 
 
 
@@ -66,7 +66,7 @@
   (nei--start-server)
   (if ws-closed (setq ws-connection nil))
 
-  (if ((get-process "nei-server"))
+  (if (get-process "nei-server")
       (while (null ws-connection)
         (sleep-for 0 200)
         (message "No connection (waiting)")
