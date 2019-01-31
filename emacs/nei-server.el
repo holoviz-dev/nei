@@ -57,7 +57,7 @@
 ;; Launching the server ;;
 ;; ==================== ;;
 
-(defun nei--launch-server-process (&optional verbose)
+(defun nei--launch-server-process ()
   "Starts the nei server if not already running"
   (interactive)
   (let ((proc (get-process "nei-server")))
@@ -71,13 +71,13 @@
             (set-process-query-on-exit-flag new-proc nil)
             (sleep-for 2))
           )
-      (if verbose (message "Nei server already running"))
+      (message "Nei server already running")
       )
     )
   )
 
 
-(defun nei--start-server (&optional env)
+(defun nei--start-server (&optional env port)
   "Check if nei is importable in Python after optionally activating a
    conda environment (if conda-mode available). If the check fails, open
    a help window with information to help diagnose and fix the problem."
@@ -86,13 +86,17 @@
         (conda-env-activate (or env nei-default-conda-env))
     )
 
-  (let ((status (nei--server-status 9999)))  ;; FIX HARDCODED PORT
-    (if (null status) (nei--diagnose-missing-server)
-      (progn
-        (message "Launching NEI server version %s" status)
-        (nei--launch-server-process)
-       )
-      )
+  (let ((status (nei--server-status (or port 9999))))
+    (cond ((null status) (nei--diagnose-missing-server))
+          ((and (s-equals? status "port unavailable")
+           (y-or-n-p (format "Port %s unavailable. Attempt external server connection?"
+                             (or port 9999)))) (message "Connecting to external server..."))
+          ( t (progn
+                (message "Launching NEI server. Status:  %s" status)
+                (nei--launch-server-process)
+                )
+              )
+          )
     )
   )
 
