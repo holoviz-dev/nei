@@ -58,7 +58,7 @@
 ;; ==================== ;;
 
 (defun nei--launch-server-process ()
-  "Starts the nei server if not already running"
+  "Starts the nei server as an emacs process if not already running"
   (interactive)
   (let ((proc (get-process "nei-server")))
     (if (null proc)
@@ -78,9 +78,10 @@
 
 
 (defun nei--start-server (&optional env port)
-  "Check if nei is importable in Python after optionally activating a
-   conda environment (if conda-mode available). If the check fails, open
-   a help window with information to help diagnose and fix the problem."
+  "Check if NEI is importable in Python after optionally activating a
+   conda environment (if conda-mode available). If the check fails and
+   it is not due to a port conflict, open a help window with information
+   to help diagnose and fix the problem."
 
   (if (and (fboundp 'conda-env-activate) (or env nei-default-conda-env))
         (conda-env-activate (or env nei-default-conda-env))
