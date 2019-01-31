@@ -29,11 +29,14 @@
   (nei--cmd-stdout "python -c 'import sys;print(sys.executable)'")
   )
 
-(defun nei--server-version ()
-  "Returns the nei version string is available in Python, otherwise nil"
+(defun nei--server-status (port)
+  "Returns the nei version string if available in Python, the string
+  'port unavailable' if the port is unavailable, otherwise nil if nei is
+   unavailable"
   (if (eq (nei--get-exit-code "python") 0)
-      (let ((stdout (nei--cmd-stdout "python -c 'import nei;print(nei.__version__)'")))
-        (if (s-starts-with? "v" stdout)
+      (let* ((cmd (format "python -c 'import nei;nei.server_status(%s)'" port))
+             (stdout (nei--cmd-stdout cmd)))
+        (if (or (s-equals? stdout "port unavailable") (s-starts-with? "v" stdout))
             stdout))))
 
 
@@ -83,10 +86,10 @@
         (conda-env-activate (or env nei-default-conda-env))
     )
 
-  (let ((version (nei--server-version)))
-    (if (null version) (nei--diagnose-missing-server)
+  (let ((status (nei--server-status 9999)))  ;; FIX HARDCODED PORT
+    (if (null status) (nei--diagnose-missing-server)
       (progn
-        (message "Launching NEI server version %s" version)
+        (message "Launching NEI server version %s" status)
         (nei--launch-server-process)
        )
       )
