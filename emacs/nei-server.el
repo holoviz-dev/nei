@@ -1,7 +1,7 @@
 ;; For starting up the server
 
 
-
+(require 's)
 (defvar nei-default-conda-env "nei")
 
 
@@ -11,7 +11,7 @@
 
 (defun nei--cmd-stdout (cmd)
   "Run a shell command with shell-command-to-string and trim"
-  (string-trim-right (shell-command-to-string cmd)))
+  (s-trim-right (shell-command-to-string cmd)))
 
 
 (defun nei--get-exit-code (program &rest args) ;
