@@ -41,12 +41,12 @@
     )
   )
 
-(defun nei--open-connection (&optional quiet)
+(defun nei--open-ws-connection (&optional quiet)
   "Opens a new websocket connection if needed"
   (if (or (null ws-connection) nei--unexpected-disconnect)
       (progn
-        (nei--open-websocket)
         (setq nei--unexpected-disconnect nil)
+        (nei--open-websocket)
         )
     (if (not quiet)
         (message "Websocket connection already open")
@@ -54,27 +54,48 @@
     )
   )
 
-(defun nei--close-connection ()
+
+(defun nei-connect ()
+  "Start the NEI server, establish the websocket connection and begin mirroring"
+  (interactive)
+  (nei--start-server)
+  (nei--open-ws-connection)
+  (nei--with-connection 'nei-start-mirroring)
+  )
+
+(defun nei-disconnect ()
+  "Close the websocket and shutdown the server"
+  (interactive)
+  ;; TODO: Terminate emacs server if present
+  (nei--close-ws-connection)
+  )
+
+(defun nei--close-ws-connection ()
   "Close the websocket connection."
   (websocket-close ws-connection)
+  (setq ws-connection nil)
   )
 
 
-(defun nei--wait-connection ()
-  "Start server if not already running and loop connection attempts 
-   until connection established "
-  (nei--start-server)
-  (if ws-closed (setq ws-connection nil))
 
-  (if (get-process "nei-server")
-      (while (null ws-connection)
-        (sleep-for 0 200)
-        (message "No connection (waiting)")
-        (ignore-errors
-          (nei--open-connection)
-          )
+;; (nei--with-connection (lambda () (message "EXECUTE THIS")))
+;; (nei--with-connection 'nei--command-ws &optional args)
+
+(defun nei--disconnection-error ()
+  (message "Unexpected disconnection")
+  (setq nei--unexpected-disconnect nil)
+  )
+
+(defun nei--with-connection (callback &optional warn)
+  "Runs the callback if there is a connection and handles unexpected disconnects.
+   If warn is non nil, a warning is issues if the connection is not available"
+  (cond (nei--unexpected-disconnect (nei--disconnection-error))
+        ((null ws-connection) (if warn (message "Not connected to NEI server")))
+        (t (progn
+             (funcall callback)
+             (if nei--unexpected-disconnect (nei--disconnection-error)))
         )
-    )
+        )
   )
 
 ;;========================;;
