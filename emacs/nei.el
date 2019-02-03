@@ -14,7 +14,7 @@
 (defvar ws-messages nil
   "Messages received over the websocket connection.")
 
-(defvar ws-closed nil
+(defvar nei--unexpected-disconnect nil
   "Flag indicating whether the websocket connection is closed or not")
 
 (defvar nei--execution-count 0
@@ -33,7 +33,7 @@
                               (push (websocket-frame-text frame) ws-messages)
                               (message "ws frame: %S" (websocket-frame-text frame))
                               (error "Test error (expected)"))
-                :on-close (lambda (_websocket) (setq ws-closed t))
+                :on-close (lambda (_websocket) (setq nei--unexpected-disconnect t))
                 ;; New connection, reset execution count.
                 :on-open (lambda (_websocket) (setq nei--execution-count 0)))
           )
@@ -43,10 +43,10 @@
 
 (defun nei--open-connection (&optional quiet)
   "Opens a new websocket connection if needed"
-  (if (or (null ws-connection) ws-closed)
+  (if (or (null ws-connection) nei--unexpected-disconnect)
       (progn
         (nei--open-websocket)
-        (setq ws-closed nil)
+        (setq nei--unexpected-disconnect nil)
         )
     (if (not quiet)
         (message "Websocket connection already open")
