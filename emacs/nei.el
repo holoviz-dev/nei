@@ -66,8 +66,8 @@
 (defun nei-disconnect ()
   "Close the websocket and shutdown the server"
   (interactive)
-  ;; TODO: Terminate emacs server if present
   (nei--close-ws-connection)
+  (nei--stop-nei-server)
   )
 
 (defun nei--close-ws-connection ()
