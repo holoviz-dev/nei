@@ -36,8 +36,7 @@
 
 (defun nei-interrupt-kernel ()
   "Send an interrupt-kernel  message"
-  (interactive)
-  (nei--wait-connection)
+  (interactive)  
   (nei--send-json (nei--server-cmd "interrupt_kernel" (list)))
   (message "Sent interrupt kernel message")
 )
@@ -45,7 +44,6 @@
 (defun nei-restart-kernel ()
   "Send an restart-kernel  message"
   (interactive)
-  (nei--wait-connection)
   (setq nei--execution-count 0)
   (nei--send-json (nei--server-cmd "restart_kernel" (list)))
   (message "Sent restart kernel message")
@@ -55,7 +53,6 @@
 (defun nei-clear-all-cell-outputs ()
   "Send a clear_all_cell_outputs message to server"
   (interactive)
-  (nei--wait-connection)
   (nei--send-json (nei--server-cmd "clear_all_cell_outputs" (list)))
   (message "Cleared all cell outputs")
 )
@@ -64,7 +61,6 @@
 (defun nei-clear-notebook-and-restart ()
   "Send a clear_notebook message to server followed by a restart_kernel message"
   (interactive)
-  (nei--wait-connection)
   (nei--send-json (nei--server-cmd "clear_notebook" (list)))
   (nei-restart-kernel)
   (erase-buffer)
@@ -74,7 +70,6 @@
 (defun nei-view-notebook ()
   "View nbconverted notebook in the browser"
   (interactive)
-  (nei--wait-connection)
   (nei--send-json (nei--server-cmd "view_notebook" (list)))
   (message "Sent interrupt kernel message")
   )
@@ -83,7 +78,6 @@
 (defun nei-exec-silently (code)
   "Send an 'exec_silently' message to server to run the given code for its side-effects"
   (interactive "MCode:")
-  (nei--wait-connection)
   (nei--send-json (nei--server-cmd "exec_silently" (list (cons "code" code))))
   )
 
@@ -91,7 +85,6 @@
 (defun nei-exec-by-line ()
   "Send an 'exec_cell_by_line' message to server at the current line"
   (interactive)
-  (nei--wait-connection)
   (setq nei--execution-count (1+ nei--execution-count))
   (nei--update-exec-prompt nei--execution-count) ;; TODO: Bump only if in code cell
   (nei--send-json (nei--server-cmd "exec_cell_by_line"
@@ -197,7 +190,7 @@
     filename
     )
   (let ((filename (call-interactively 'nei--prompt-for-filename)))
-    (nei--wait-connection)
+    
     (nei--send-json (nei--server-cmd "write_notebook"
                                              (list 
                                               (cons "mode" mode)
@@ -211,7 +204,7 @@
 
 (defun nei--load-from-file (cells filename)
   "Send a load_from_file message to server with .ipynb parsed cells and filename"
-  (nei--wait-connection)
+  
   (nei--send-json (nei--server-cmd "load_from_file"
                                            (list 
                                             (cons "json_string"
@@ -242,7 +235,6 @@
 
 
 (defun nei--insert-notebook-command (filename text line-number)
-  (nei--wait-connection)
   (nei--send-json (nei--server-cmd "insert_file_at_point"
                                            (list 
                                             (cons "filename" (expand-file-name filename))
@@ -297,7 +289,6 @@
 
 (defun nei-start-mirroring ()
   (interactive)
-  (nei--wait-connection)
   (let ((text (buffer-substring (point-min)  (point-max))))
     (nei--send-json (nei--server-cmd "start_mirror"
                                              (list 
