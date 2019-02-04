@@ -77,11 +77,9 @@
   )
 
 
-
-;; (nei--with-connection (lambda () (message "EXECUTE THIS")))
-;; (nei--with-connection 'nei--command-ws &optional args)
-
 (defun nei--disconnection-error ()
+  (nei-stop-mirroring)
+  (websocket-close ws-connection)
   (message "Unexpected disconnection")
   (setq nei--unexpected-disconnect nil)
   )
