@@ -60,7 +60,7 @@
   (interactive)
   (nei--start-server)
   (nei--open-ws-connection)
-  (nei--with-connection 'nei-start-mirroring)
+  (nei-start-mirroring)
   )
 
 (defun nei-disconnect ()
@@ -85,33 +85,28 @@
   )
 
 
-(defmacro nei--with-connection (callback &optional warn)
-  "Runs the callback if there is a connection and handles unexpected disconnects."
-  `(cond (nei--unexpected-disconnect (nei--disconnection-error))
-        ((null ws-connection) (if ,warn (message "Not connected to NEI server")))
-        (t (progn
-             ,callback
-             (if nei--unexpected-disconnect (nei--disconnection-error)))
-        )
-        )
   )
 
 ;;========================;;
 ;; Sending data to server ;;
 ;;========================;;
 
-(defun nei--send-data (text)
-  "Send some text/data over the websocket connection if it is open"
-  (if (null ws-connection)
-      (message "Websocket session has not been initialized")
-    (websocket-send-text ws-connection text)
-    )
+
+(defun nei--send-data (text &optional warn-no-connection)
+  "Runs the callback if there is a connection and handles unexpected disconnects."
+  (cond (nei--unexpected-disconnect (nei--disconnection-error))
+        ((null ws-connection) (if warn (message "Not connected to NEI server")))
+        (t (progn
+             (websocket-send-text ws-connection text)
+             (if nei--unexpected-disconnect (nei--disconnection-error)))
+           )
+        )
   )
 
-(defun nei--send-json (obj)
+(defun nei--send-json (obj &optional warn-no-connection)
     "JSON encode an object and send it over the websocket connection."
-  (nei--send-data (json-encode obj))
-  )
+    (nei--send-data (json-encode obj) warn-no-connection)
+    )
 
 
 

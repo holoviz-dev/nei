@@ -124,6 +124,8 @@
 (defun nei--set-scroll-hook ()
   (push 'nei--scroll-hook window-scroll-functions) 
   )
+
+
 (defun nei-exec-by-line-and-move-to-next-cell ()
   "Executes cell at current line and moves point to next cell"
   (interactive)
@@ -134,54 +136,45 @@
 
 (defun nei-clear-cell-by-line ()
   (interactive)
-  (nei--wait-connection)
   (nei--send-json (nei--server-cmd "clear_cell_output_by_line"
-                                           (list 
-                                              (cons "line_number"
-                                                    (line-number-at-pos))
-                                              )
-                                           )
-                      )
+                                   (list 
+                                    (cons "line_number"
+                                          (line-number-at-pos))
+                                    )
+                                   )
+                  )
   )
+
 
 (defun nei-update-css ()
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
-  (nei--with-connection
-   (nei--send-json (nei--server-cmd "update_style"
-                                    (list 
-                                     (cons "css" (nei--htmlize-css))
-                                     )))
-   t ) ;; Warn if no connection
+  (nei--send-json (nei--server-cmd "update_style"
+                                   (list 
+                                    (cons "css" (nei--htmlize-css))
+                                    )) t)
   )
   
-
-
-
 
 (defun nei-update-config ()
   "Set the config dictionary on the notebook"
   (interactive)
-  (nei--with-connection
-     (nei--send-json
-      (nei--server-cmd "update_config"
-                       (list 
-                        (cons "config"
-                              (list (cons 'browser nei-browser))
-                              ))))
-   )
+  (nei--send-json
+   (nei--server-cmd "update_config"
+                    (list 
+                     (cons "config"
+                           (list (cons 'browser nei-browser))
+                           ))) t)
   )
 
 
 (defun nei-view-browser ()
   "Open a browser tab to view the output"
   (interactive)
-  (nei--with-connection
    (progn
-     (nei--send-json (nei--server-cmd "view_browser" (list)))
+     (nei--send-json (nei--server-cmd "view_browser" (list)) t)
      (sleep-for 5) ;; Let the browser open and the page load
      (nei-update-css))
-   )
   )
 
 ;;==============;;
