@@ -59,10 +59,15 @@
 (defun nei-connect ()
   "Start the NEI server, establish the websocket connection and begin mirroring"
   (interactive)
-  (nei--start-server)
-  (nei--open-ws-connection)
-  (nei-update-config)
-  (nei-start-mirroring)
+  (if (and ws-connection (null nei--unexpected-disconnect))
+      (message "Already connected to NEI server")
+    (progn 
+      (nei--start-server)
+      (nei--open-ws-connection)
+      (nei-update-config)
+      (nei-start-mirroring)
+      )
+    )
   )
 
 (defun nei-disconnect ()
