@@ -147,14 +147,15 @@
 (defun nei-update-css ()
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
-  (nei--wait-connection)
-  (nei--send-json (nei--server-cmd "update_style"
-                                           (list 
-                                            (cons "css" (nei--htmlize-css))
-                                            )
-                                           )
-                      )
-)
+  (nei--with-connection
+   (lambda ()
+     (nei--send-json (nei--server-cmd "update_style"
+                                      (list 
+                                       (cons "css" (nei--htmlize-css))
+                                       ))))
+   t ) ;; Warn if no connection
+  )
+  
 
 
 
@@ -162,16 +163,16 @@
 (defun nei-update-config ()
   "Set the config dictionary on the notebook"
   (interactive)
-  (nei--wait-connection)
-  (nei--send-json (nei--server-cmd "update_config"
-                                           (list 
-                                            (cons "config"
-                                                  (list (cons 'browser nei-browser))
-                                                  )
-                                            )
-                                           )
-                      )
-)
+  (nei--with-connection
+   (lambda ()
+     (nei--send-json
+      (nei--server-cmd "update_config"
+                       (list 
+                        (cons "config"
+                              (list (cons 'browser nei-browser))
+                              )))))
+   )
+  )
 
 
 
@@ -183,7 +184,12 @@
 (defun nei-view-browser ()
   "Open a browser tab to view the output"
   (interactive)
-  (nei--with-connection 'nei--view-browser-ws)
+  (nei--with-connection
+   (lambda ()
+     (progn
+       (nei--send-json (nei--server-cmd "view_browser" (list)))
+       (nei-update-css)))
+   )
   (sleep-for 2) ;; Let the page load
   )
 
