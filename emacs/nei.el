@@ -60,6 +60,7 @@
   (interactive)
   (nei--start-server)
   (nei--open-ws-connection)
+  (nei-update-config)
   (nei-start-mirroring)
   )
 
@@ -82,9 +83,7 @@
   (websocket-close ws-connection)
   (message "Unexpected disconnection")
   (setq nei--unexpected-disconnect nil)
-  )
-
-
+  (nei--close-ws-connection)
   )
 
 ;;========================;;
@@ -146,15 +145,7 @@
   
   :keymap (let ((map (make-sparse-keymap)))
             (nei-bindings map))
-
-  (if (not nei-external-server)
-      (progn
-        (nei-update-config)
-        (nei-start-mirroring)
-        )
-    )
   (nei-fontify)
-
   )
   
 
