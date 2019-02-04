@@ -84,13 +84,13 @@
   (setq nei--unexpected-disconnect nil)
   )
 
-(defun nei--with-connection (callback &optional warn)
-  "Runs the callback if there is a connection and handles unexpected disconnects.
-   If warn is non nil, a warning is issues if the connection is not available"
-  (cond (nei--unexpected-disconnect (nei--disconnection-error))
-        ((null ws-connection) (if warn (message "Not connected to NEI server")))
+
+(defmacro nei--with-connection (callback &optional warn)
+  "Runs the callback if there is a connection and handles unexpected disconnects."
+  `(cond (nei--unexpected-disconnect (nei--disconnection-error))
+        ((null ws-connection) (if ,warn (message "Not connected to NEI server")))
         (t (progn
-             (funcall callback)
+             ,callback
              (if nei--unexpected-disconnect (nei--disconnection-error)))
         )
         )

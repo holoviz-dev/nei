@@ -148,11 +148,10 @@
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
   (nei--with-connection
-   (lambda ()
-     (nei--send-json (nei--server-cmd "update_style"
-                                      (list 
-                                       (cons "css" (nei--htmlize-css))
-                                       ))))
+   (nei--send-json (nei--server-cmd "update_style"
+                                    (list 
+                                     (cons "css" (nei--htmlize-css))
+                                     )))
    t ) ;; Warn if no connection
   )
   
@@ -164,33 +163,25 @@
   "Set the config dictionary on the notebook"
   (interactive)
   (nei--with-connection
-   (lambda ()
      (nei--send-json
       (nei--server-cmd "update_config"
                        (list 
                         (cons "config"
                               (list (cons 'browser nei-browser))
-                              )))))
+                              ))))
    )
   )
 
-
-
-(defun nei--view-browser-ws ()
-  (nei--send-json (nei--server-cmd "view_browser" (list)))
-  (nei-update-css)
-  )
 
 (defun nei-view-browser ()
   "Open a browser tab to view the output"
   (interactive)
   (nei--with-connection
-   (lambda ()
-     (progn
-       (nei--send-json (nei--server-cmd "view_browser" (list)))
-       (nei-update-css)))
+   (progn
+     (nei--send-json (nei--server-cmd "view_browser" (list)))
+     (sleep-for 5) ;; Let the browser open and the page load
+     (nei-update-css))
    )
-  (sleep-for 2) ;; Let the page load
   )
 
 ;;==============;;
