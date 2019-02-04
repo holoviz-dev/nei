@@ -175,13 +175,16 @@
 
 
 
+(defun nei--view-browser-ws ()
+  (nei--send-json (nei--server-cmd "view_browser" (list)))
+  (nei-update-css)
+  )
+
 (defun nei-view-browser ()
   "Open a browser tab to view the output"
   (interactive)
-  (nei--wait-connection)
-  (nei--send-json (nei--server-cmd "view_browser" (list)))
+  (nei--with-connection 'nei--view-browser-ws)
   (sleep-for 2) ;; Let the page load
-  (nei-update-css)
   )
 
 ;;==============;;
