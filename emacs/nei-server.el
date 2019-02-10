@@ -25,16 +25,17 @@
   (nei--cmd-stdout "python -c 'import sys;print(sys.executable)'")
   )
 
-(defun nei--server-status (&optional port)
-  "Returns the nei version string if available in Python, the string
-  'port unavailable' if the port is unavailable, otherwise nil if nei is
-   unavailable"
+(defun nei--server-available (&optional port)
+  "Returns t if NEI available in Python, the string 'port
+  unavailable' if the port is unavailable, otherwise nil if nei
+  is unavailable"
   (if (eq (nei--get-exit-code "python") 0)
       (let* ((port (or port 9999))
              (cmd (format "python -c 'import nei;nei.server_status(%s)'" port))
              (stdout (nei--cmd-stdout cmd)))
-        (if (or (s-equals? stdout "port unavailable") (s-starts-with? "v" stdout))
-            stdout))))
+        (if (s-equals? stdout "port unavailable")
+            stdout
+          t))))
 
 
 (defun nei-pip-install-server ()
@@ -80,13 +81,13 @@
    it is not due to a port conflict, open a help window with information
    to help diagnose and fix the problem."
 
-  (let ((status (nei--server-status (or port 9999))))
+  (let ((status (nei--server-available (or port 9999))))
     (cond ((null status) (nei--diagnose-missing-server))
           ((and (s-equals? status "port unavailable")
            (y-or-n-p (format "Port %s unavailable. Attempt external server connection?"
                              (or port 9999)))) (message "Connecting to external server..."))
           ( t (progn
-                (message "Launching NEI server. Status:  %s" status)
+                (message "Launching NEI server.")
                 (nei--launch-server-process)
                 )
               )
@@ -181,13 +182,14 @@ you can now run the nei-pip-install-server command.
 
 (defun nei-server-info ()
   (interactive)
-  (let ((status (nei--server-status)))
+  (let ((status (nei--server-available)))
     (if (null status)
         (nei--diagnose-missing-server)
       (let ((py-path (nei--python-path))
-            (nei-path (nei--cmd-stdout "python -c 'import nei;print(nei.__file__)'")))
+            (nei-path (nei--cmd-stdout "python -c 'import nei;print(nei.__file__)'"))
+            (nei-version (nei--cmd-stdout "python -c 'import nei;print(nei.__version__)'")))
         (with-output-to-temp-buffer "NEI server info"
-          (princ (format nei--server-info-msg status py-path nei-path)))))
+          (princ (format nei--server-info-msg nei-version py-path nei-path)))))
       )
     )
 
