@@ -139,18 +139,17 @@ This issue can be addressed as follows:
 1. Manually run 'pip install nei' to make the nei package importable by
 the Python executable above.
 
-2. If the path above is inappropriate and you are setting your default
-Python in your shell (e.g via .bash_profile) you can install the
+2. If the python path above is inappropriate and you are setting your
+default Python in your shell (e.g via .bash_profile) you can install the
 exec-path-from-shell package from MELPA. Then by running
-(exec-path-from-shell-initialize) in your emacs session you can select a
-more appropriate Python environment for NEI to use by default. Commonly
-applicable on MacOS.
+(exec-path-from-shell-initialize) in your emacs session (e.g your
+.emacs) you can make this default Python environment available to
+NEI. Commonly applicable on MacOS.
 
 3. If you are using either Anaconda distribution or Miniconda, you can
 install conda-mode from MELPA. You can then use the conda-env-activate
 function to select an appropriate environment before running the NEI
-server. To select a default conda environment for running the NEI
-server, you can customize the nei-default-conda-env variable.
+server (e.g using a file local variable).
 
 If you are happy to install NEI in the Python environment listed above,
 you can now run the nei-pip-install-server command.
