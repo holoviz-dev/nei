@@ -287,6 +287,8 @@ class Notebook(Cells):
                          'scroll_by' :       self.scroll_by,
                          'scroll_to_line' :  self.scroll_to_line,
 
+                         'terminate' :       self.terminate, # Used for debugging
+
                          'write_notebook':   self.write_notebook,
                          'exec_silently':    self.exec_silently,
                          'interrupt_kernel': self.interrupt_kernel,
@@ -342,6 +344,10 @@ class Notebook(Cells):
 
     def update_config(self, connection, config):
         self.config = config
+
+    def terminate(self, connection): # Used for debugging
+        logging.info("Received termination request. Terminating")
+        sys.exit(1)
 
     def scroll_by(self, connection, offset):
         self.message(connection, 'scroll_by', {'offset': offset})

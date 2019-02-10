@@ -19,6 +19,16 @@
 )
 
 
+
+
+(defun nei--terminate-server ()
+  "Used to terminate the server remotely- used for debugging"
+  (nei--send-json (nei--server-cmd "terminate" (list)))
+  )
+
+
+
+
 ;;======================;;
 ;; Interactive commands ;;
 ;;======================;;
