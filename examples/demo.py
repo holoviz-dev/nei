@@ -1,4 +1,4 @@
-# -*- mode: python; eval: (nei-mode)-*-
+# -*- mode: python; eval: (nei-mode); eval: (conda-env-activate "nei")-*-
 
 "Code before the first cell is ignored."
 
