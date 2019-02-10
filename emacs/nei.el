@@ -100,7 +100,8 @@
 (defun nei--send-data (text &optional warn-no-connection)
   "Runs the callback if there is a connection and handles unexpected disconnects."
   (cond (nei--unexpected-disconnect (nei--disconnection-error))
-        ((null ws-connection) (if warn (message "Not connected to NEI server")))
+        ((null ws-connection)
+         (if warn-no-connection (message "Not connected to NEI server")))
         (t (progn
              (websocket-send-text ws-connection text)
              (if nei--unexpected-disconnect (nei--disconnection-error)))
