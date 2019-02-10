@@ -133,11 +133,14 @@
 
 
 (defvar nei--server-info-msg
-      "NEI server information:
+      "NEI is available in the current Python environment:
 
-NEI version: %s
-Python path: %s
-NEI installation path: %s
+NEI version:      %s
+NEI install path: %s
+Python path:      %s
+
+If you are using conda.el, you may change your current Python
+environment using the conda-env-activate command.
 ")
 
 
@@ -189,7 +192,7 @@ you can now run the nei-pip-install-server command.
             (nei-path (nei--cmd-stdout "python -c 'import nei;print(nei.__file__)'"))
             (nei-version (nei--cmd-stdout "python -c 'import nei;print(nei.__version__)'")))
         (with-output-to-temp-buffer "NEI server info"
-          (princ (format nei--server-info-msg nei-version py-path nei-path)))))
+          (princ (format nei--server-info-msg nei-version nei-path py-path)))))
       )
     )
 
