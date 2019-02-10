@@ -45,6 +45,10 @@
     ["Connect" nei-connect (not ws-connection)]
     ["Disconnect" nei-disconnect ws-connection]
     "---"
+    ("Server"
+     ["Info" nei-server-info t]
+     ["Message Log" nei-server-log t]
+     )
     ["View Browser" nei-view-browser t]
     ("Cell"
      ["Execute" nei-exec-by-line-and-move-to-next-cell t]
@@ -56,8 +60,6 @@
      ["Write Notebook" nei-write-notebook]
      ["Insert Notebook" nei-insert-notebook]
      )
-    ["Server Log" nei-server-log t]
-    ["Server Info" nei-server-info t]
     )
   )
 

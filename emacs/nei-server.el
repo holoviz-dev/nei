@@ -122,6 +122,7 @@
         (with-current-buffer (process-buffer proc)
           (clone-indirect-buffer " *nei server log*" t)
           )
+      (message "NEI server not currently running as emacs process")
       )
     )
   )
