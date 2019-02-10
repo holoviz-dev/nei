@@ -127,7 +127,11 @@
   (let ((proc (get-process "nei-server")))
     (if (or (not (null proc)) terminated)
         (with-current-buffer (get-buffer " *nei server log*")
-          (clone-indirect-buffer " *nei server log*" t)
+          (let ((contents (buffer-string)))
+            (with-output-to-temp-buffer "NEI server Log"
+              (princ contents)
+             )
+            )
           )
       (message "NEI server not currently running as emacs process")
       )
