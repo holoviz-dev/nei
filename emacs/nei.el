@@ -118,8 +118,7 @@
   "Nei for authoring notebooks in Emacs."
   :lighter " NEI"
   
-  :keymap (let ((map (make-sparse-keymap)))
-            (nei-bindings map))
+  :keymap nei-mode-map
   (nei-fontify)
   )
   
