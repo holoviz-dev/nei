@@ -55,6 +55,10 @@
 ;; Launching the server ;;
 ;; ==================== ;;
 
+(defun nei--server-process-sentinel (process event)
+  (if (s-starts-with? "exited abnormally with code" event)
+      (nei-server-log t))
+  )
 (defun nei--launch-server-process ()
   "Starts the nei server as an emacs process if not already running"
   (interactive)
@@ -67,7 +71,10 @@
                                 " *nei server log*" ;; Leading space hides the buffer
                                 "python" "-c" "import nei;nei.serve()")))
             (set-process-query-on-exit-flag new-proc nil)
-            (sleep-for 2))
+            (set-process-sentinel new-proc 'nei--server-process-sentinel)             
+            (sleep-for 2)
+            (message "Started")
+            )
           )
       (message "Nei server already running")
       )
@@ -114,12 +121,12 @@
     )
   )
 
-(defun nei-server-log ()
+(defun nei-server-log (&optional terminated)
   "View the server log buffer if the server process is running."
   (interactive)
   (let ((proc (get-process "nei-server")))
-    (if (not (null proc))
-        (with-current-buffer (process-buffer proc)
+    (if (or (not (null proc)) terminated)
+        (with-current-buffer (get-buffer " *nei server log*")
           (clone-indirect-buffer " *nei server log*" t)
           )
       (message "NEI server not currently running as emacs process")
