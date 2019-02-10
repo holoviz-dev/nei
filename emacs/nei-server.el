@@ -1,9 +1,5 @@
 ;; For starting up the server
-
-
 (require 's)
-(defvar nei-default-conda-env "nei")
-
 
 ;; ========= ;;
 ;; Utilities ;;
@@ -77,15 +73,11 @@
   )
 
 
-(defun nei--start-server (&optional env port)
+(defun nei--start-server (&optional port) ;; Make port mandatory here?
   "Check if NEI is importable in Python after optionally activating a
    conda environment (if conda-mode available). If the check fails and
    it is not due to a port conflict, open a help window with information
    to help diagnose and fix the problem."
-
-  (if (and (fboundp 'conda-env-activate) (or env nei-default-conda-env))
-        (conda-env-activate (or env nei-default-conda-env))
-    )
 
   (let ((status (nei--server-status (or port 9999))))
     (cond ((null status) (nei--diagnose-missing-server))
