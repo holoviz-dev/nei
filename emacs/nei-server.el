@@ -25,12 +25,13 @@
   (nei--cmd-stdout "python -c 'import sys;print(sys.executable)'")
   )
 
-(defun nei--server-status (port)
+(defun nei--server-status (&optional port)
   "Returns the nei version string if available in Python, the string
   'port unavailable' if the port is unavailable, otherwise nil if nei is
    unavailable"
   (if (eq (nei--get-exit-code "python") 0)
-      (let* ((cmd (format "python -c 'import nei;nei.server_status(%s)'" port))
+      (let* ((port (or port 9999))
+             (cmd (format "python -c 'import nei;nei.server_status(%s)'" port))
              (stdout (nei--cmd-stdout cmd)))
         (if (or (s-equals? stdout "port unavailable") (s-starts-with? "v" stdout))
             stdout))))
