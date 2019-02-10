@@ -130,6 +130,16 @@
 ;; Help information ;;
 ;; ================ ;;
 
+
+(defvar nei--server-info-msg
+      "NEI server information:
+
+NEI version: %s
+Python path: %s
+NEI installation path: %s
+")
+
+
 (defvar nei--diagnose-server-msg
       "Could not import nei in the following Python environment:
 
@@ -168,6 +178,18 @@ you can now run the nei-pip-install-server command.
       )
     )
   )
+
+(defun nei-server-info ()
+  (interactive)
+  (let ((status (nei--server-status)))
+    (if (null status)
+        (nei--diagnose-missing-server)
+      (let ((py-path (nei--python-path))
+            (nei-path (nei--cmd-stdout "python -c 'import nei;print(nei.__file__)'")))
+        (with-output-to-temp-buffer "NEI server info"
+          (princ (format nei--server-info-msg status py-path nei-path)))))
+      )
+    )
 
 
 

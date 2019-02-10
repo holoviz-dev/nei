@@ -57,6 +57,7 @@
      ["Insert Notebook" nei-insert-notebook]
      )
     ["Server Log" nei-server-log t]
+    ["Server Info" nei-server-info t]
     )
   )
 
