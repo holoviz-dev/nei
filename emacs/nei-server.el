@@ -40,14 +40,17 @@
 
 (defun nei-server-pip-install ()
   "Installs NEI with pip in the current Python environment"
-  (let* ((template "import sys, subprocess;subprocess.call(%s)")
-         (arglist "[sys.executable, '-m', 'pip', 'install', 'nei']")
-         (cmd (format template arglist))
+  (interactive)
+  (if (yes-or-no-p (format "Pip install NEI in %s?"  (nei--server-python-path)))
+      (let* ((template "import sys, subprocess;subprocess.call(%s)")
+             (arglist "[sys.executable, '-m', 'pip', 'install', 'nei']")
+             (cmd (format template arglist))
          )
-    (start-process "nei-server-pip-install"
-                   " *nei pip install log*" ;; Leading space hides the buffer
-                   "python" "-c" cmd)
-    (switch-to-buffer " *nei pip install log*")
+        (start-process "nei-server-pip-install"
+                       " *nei pip install log*" ;; Leading space hides the buffer
+                       "python" "-c" cmd)
+        (switch-to-buffer " *nei pip install log*")
+        )
     )
   )
 
