@@ -44,6 +44,7 @@
   '("NEI"
     ["Connect" nei-connect (not ws-connection)]
     ["Disconnect" nei-disconnect ws-connection]
+    ["Enable Dired Mode" nei-enable-dired-mode t] ;; Change to toggle
     "---"
     ("Server"
      ["Information" nei-server-info t]
