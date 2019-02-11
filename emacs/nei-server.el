@@ -20,7 +20,7 @@
 ;; ===================================== ;;
 
 
-(defun nei--python-path ()
+(defun nei--server-python-path ()
   "Get the path associated with the current 'python' command"
   (nei--cmd-stdout "python -c 'import sys;print(sys.executable)'")
   )
@@ -59,7 +59,9 @@
   (if (s-starts-with? "exited abnormally with code" event)
       (nei-server-log t))
   )
-(defun nei--launch-server-process ()
+  
+
+(defun nei--server-launch-process ()
   "Starts the nei server as an emacs process if not already running"
   (interactive)
   (let ((proc (get-process "nei-server")))
@@ -89,13 +91,13 @@
    to help diagnose and fix the problem."
 
   (let ((status (nei--server-available (or port 9999))))
-    (cond ((null status) (nei--diagnose-missing-server))
+    (cond ((null status) (nei--server-diagnose))
           ((and (s-equals? status "port unavailable")
            (y-or-n-p (format "Port %s unavailable. Attempt external server connection?"
                              (or port 9999)))) (message "Connecting to external server..."))
           ( t (progn
                 (message "Launching NEI server.")
-                (nei--launch-server-process)
+                (nei--server-launch-process)
                 )
               )
           )
@@ -106,7 +108,7 @@
 ;; Managing the server process ;;
 ;;=============================;;
 
-(defun nei--stop-nei-server ()
+(defun nei--server-stop ()
   "Kills the nei server if it is currently running"
   (interactive)
   (let ((proc (get-process "nei-server")))
@@ -156,7 +158,7 @@ environment using the conda-env-activate command.
 ")
 
 
-(defvar nei--diagnose-server-msg
+(defvar nei--server-diagnose-msg
       "Could not import nei in the following Python environment:
 
 %s
@@ -183,14 +185,14 @@ you can now run the nei-server-pip-install command.
 ")
 
 
-(defun nei--diagnose-missing-server ()
+(defun nei--server-diagnose ()
   "Present a buffer with help information if the server does not start"
   (with-output-to-temp-buffer "NEI server configuration"
     (let ((executable
            (if (null (nei--get-exit-code "python"))
                "Python executable not found"
-             (nei--python-path))))
-      (princ (format  nei--diagnose-server-msg executable))
+             (nei--server-python-path))))
+      (princ (format  nei--server-diagnose-msg executable))
       )
     )
   )
@@ -199,8 +201,8 @@ you can now run the nei-server-pip-install command.
   (interactive)
   (let ((status (nei--server-available)))
     (if (null status)
-        (nei--diagnose-missing-server)
-      (let ((py-path (nei--python-path))
+        (nei--server-diagnose)
+      (let ((py-path (nei--server-python-path))
             (nei-path (nei--cmd-stdout "python -c 'import nei;print(nei.__file__)'"))
             (nei-version (nei--cmd-stdout "python -c 'import nei;print(nei.__version__)'")))
         (with-output-to-temp-buffer "NEI server info"

@@ -74,7 +74,7 @@
   "Close the websocket and shutdown the server"
   (interactive)
   (nei--close-ws-connection)
-  (nei--stop-nei-server)
+  (nei--server-stop)
   )
 
 (defun nei--close-ws-connection ()
