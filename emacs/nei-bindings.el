@@ -44,13 +44,13 @@
   '("NEI"
     ["Connect" nei-connect (not ws-connection)]
     ["Disconnect" nei-disconnect ws-connection]
+    ["View" nei-view-browser ws-connection]
     "---"
     ("Server"
      ["Info" nei-server-info t]
      ["Message Log" nei-server-log t]
      ["Pip install" nei-server-pip-install (not (nei--server-available))]
      )
-    ["View Browser" nei-view-browser t]
     ("Cell"
      ["Execute" nei-exec-by-line-and-move-to-next-cell t]
      )
