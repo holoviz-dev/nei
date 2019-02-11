@@ -38,13 +38,13 @@
           t))))
 
 
-(defun nei-pip-install-server ()
+(defun nei-server-pip-install ()
   "Installs NEI with pip in the current Python environment"
   (let* ((template "import sys, subprocess;subprocess.call(%s)")
          (arglist "[sys.executable, '-m', 'pip', 'install', 'nei']")
          (cmd (format template arglist))
          )
-    (start-process "nei-pip-install-server"
+    (start-process "nei-server-pip-install"
                    " *nei pip install log*" ;; Leading space hides the buffer
                    "python" "-c" cmd)
     (switch-to-buffer " *nei pip install log*")
@@ -179,7 +179,7 @@ function to select an appropriate environment before running the NEI
 server (e.g using a file local variable).
 
 If you are happy to install NEI in the Python environment listed above,
-you can now run the nei-pip-install-server command.
+you can now run the nei-server-pip-install command.
 ")
 
 

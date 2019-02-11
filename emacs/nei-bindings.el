@@ -48,6 +48,7 @@
     ("Server"
      ["Info" nei-server-info t]
      ["Message Log" nei-server-log t]
+     ["Pip install" nei-server-pip-install t]
      )
     ["View Browser" nei-view-browser t]
     ("Cell"
