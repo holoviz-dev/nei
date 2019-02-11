@@ -44,23 +44,51 @@
   '("NEI"
     ["Connect" nei-connect (not ws-connection)]
     ["Disconnect" nei-disconnect ws-connection]
-    ["View" nei-view-browser ws-connection]
     "---"
     ("Server"
-     ["Info" nei-server-info t]
-     ["Message Log" nei-server-log t]
-     ["Pip install" nei-server-pip-install (not (nei--server-available))]
+     ["Information" nei-server-info t]
+     ("Kernel"
+      ["Interrupt" nei-interrupt-kernel ws-connection]
+      ["Restart" nei-restart-kernel ws-connection]
+      )
+     ("Environment"
+      ["Pip install" nei-server-pip-install (not (nei--server-available))]
+      ["Message Log" nei-server-log t]
+      )
      )
-    ("Cell"
-     ["Execute" nei-exec-by-line-and-move-to-next-cell t]
+    ("Client"
+     ["View" nei-view-browser ws-connection]
+     ["HTML Preview" nei-view-notebook ws-connection] 
+     "---"
+     ["Scroll up" nei-scroll-up ws-connection]
+     ["Scroll down" nei-scroll-down ws-connection]
+     ["Update CSS" nei-update-css ws-connection]
      )
-    ("Kernel"
-     ["Restart" nei--menu-stub ws-connection]
+    "---"
+    ("Edit"
+     ("Buffer"
+      ["Insert mode line" nei--menu-stub t]
+      ["Toggle Fontify" nei-toggle-fontify t]
+      )
+     ["Insert Code" nei-insert-code-cell t]
+     ["Insert Markdown" nei-insert-markdown-cell t]
+     "---"
+     ["Next Cell" nei-move-point-to-next-cell t]
+     ["Previous Cell" nei-move-point-to-previous-cell t]
+     "---"
+     ["Move Cell Up" nei-move-cell-up t]
+     ["Move Cell Down" nei-move-cell-down t]
      )
-    ("Notebook"
-     ["Write Notebook" nei-write-notebook]
-     ["Insert Notebook" nei-insert-notebook]
+    ("Interact"
+     ["Execute In Place" nei-exec-by-line ws-connection]
+     ["Execute and Move" nei-exec-by-line-and-move-to-next-cell ws-connection]
+     ["Clear cell output"  nei-clear-cell-by-line ws-connection]
+     ["Clear all cell output"  nei-clear-all-cell-outputs ws-connection]
+     ["Clear Notebook and Restart" nei-clear-notebook-and-restart ws-connection]
      )
+    ("Document"
+     ["Insert Notebook" nei-insert-notebook] ;; Insert Notebook At Point?
+     ["Write Notebook" nei-write-notebook])
     )
   )
 
