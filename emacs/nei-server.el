@@ -58,11 +58,30 @@
 ;; Launching the server ;;
 ;; ==================== ;;
 
+
 (defun nei--server-process-sentinel (process event)
+  "Sentinel to show the server log if it exits unexpectedly"
   (if (s-starts-with? "exited abnormally with code" event)
       (nei-server-log t))
   )
-  
+
+(defun nei--server-insertion-filter (proc string)
+  "Process filter to monitor the server process for errors"
+  (when (buffer-live-p (process-buffer proc))
+    (with-current-buffer (process-buffer proc)
+      (let ((moving (= (point) (process-mark proc))))
+        (save-excursion
+          ;; Insert the text, advancing the process marker.
+          (goto-char (process-mark proc))
+          (insert string)                    
+          (set-marker (process-mark proc) (point)))
+        (if moving (goto-char (process-mark proc))))
+      ;; Only non-standard part of the process filter - show buffer if
+      ;; it contains the string 'ERROR'
+      (if (s-contains? "ERROR" (buffer-string))
+          (nei-server-log))
+      )))
+
 
 (defun nei--server-launch-process ()
   "Starts the nei server as an emacs process if not already running"
@@ -75,6 +94,8 @@
                  (start-process "nei-server"
                                 " *nei server log*" ;; Leading space hides the buffer
                                 "python" "-c" "import nei;nei.serve()")))
+
+            (set-process-filter new-proc 'nei--server-insertion-filter) 
             (set-process-query-on-exit-flag new-proc nil)
             (set-process-sentinel new-proc 'nei--server-process-sentinel)             
             (sleep-for 2)

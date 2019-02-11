@@ -346,8 +346,7 @@ class Notebook(Cells):
         self.config = config
 
     def terminate(self, connection): # Used for debugging
-        logging.info("Received termination request. Terminating")
-        sys.exit(1)
+        logging.info("ERROR: Termination requested")
 
     def scroll_by(self, connection, offset):
         self.message(connection, 'scroll_by', {'offset': offset})
