@@ -24,21 +24,25 @@
 
 (defun nei-parse-notebook-file (filename)
   "Given an .ipynb file return the parsed list of cells"
+  (nei-parse-json (json-read-file filename))
+  )
+
+(defun nei-parse-json (data)
+  "Extract structure from JSON parsed using json-read-file or json-read-from-string" 
   (let* ((extracted)
-         (data (json-read-file filename))
          (cells (assoc-value 'cells data))
          (metadata (assoc-value 'metadata data))
          (nbformat (assoc-value 'nbformat data))
          (nbformat-minor (assoc-value 'nbformat_minor data)))
     (dolist (cell (append cells nil) extracted)
-
+      
       (let* ((mode (assoc-value 'cell_type cell))
              (source  (s-join "" (assoc-value 'source cell)))
              (prompt (assoc-value 'execution_count cell))
-             (neicell (if (string= mode "code")
-                         (nei--code-cell source prompt)
-                       (nei--markdown-cell source))))
-        (setq extracted (push neicell extracted))
+             (nei-cell (if (string= mode "code")
+                           (nei--code-cell source prompt)
+                         (nei--markdown-cell source))))
+        (setq extracted (push nei-cell extracted))
         )
       )
     (reverse extracted)
