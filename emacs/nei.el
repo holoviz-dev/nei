@@ -7,6 +7,7 @@
 (require 'nei-commands)
 (require 'nei-server)
 (require 'nei-bindings)
+(require 'nei-tools)
 
 
 (defvar ws-connection nil
@@ -115,43 +116,11 @@
     )
 
 
-(defun nei-enable-dired-mode () ;; Make into toggle
-  "Uses magic-fallback-mode-alist to handle .ipynb files opened in dired mode"
-  (interactive)
-  (setq magic-fallback-mode-alist
-            (append
-             '(("{\n \"cells\": \\[\n  {\n" . nei-mode))
-             magic-fallback-mode-alist))
-  )
-
-
-(defun nei--convert-ipynb-buffer (filename text)
-  "Create a new Python buffer in NEI mode if a raw IPYNB file is opened"
-  (if (string-match "{\n \"cells\": \\[\n  {\n" text)
-      (progn
-        (let* ((cells (nei-parse-json (json-read-from-string text)))
-               (text (nei--cells-to-text cells))
-               (new-buffer (get-buffer-create
-                            (s-replace ".ipynb" ".py" filename))
-                           ))
-          (with-current-buffer new-buffer
-            (insert "# -*- mode: python; eval: (nei-mode)-*-\n\n")
-            (insert text)
-            )
-          (set-buffer new-buffer)
-          (beginning-of-buffer)
-          (nei-mode)
-          )
-        )
-    )
-  )
-
 (define-minor-mode nei-mode
   "Nei for authoring notebooks in Emacs."
   :lighter " NEI"
   
   :keymap nei-mode-map
-  (nei--convert-ipynb-buffer (buffer-name) (buffer-string))
   (nei-fontify)
   )
   
