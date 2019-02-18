@@ -121,11 +121,14 @@
   :lighter " NEI"
   
   :keymap nei-mode-map
+  
   (nei-fontify)
   (if (symbolp 'eldoc-mode)     ;; Disable eldoc mode! Why is is active?
       (eldoc-mode -1)
     )
-  
+
+  (nconc mode-line-format
+         (list '(:eval (if ws-connection "NEI:Connected" "NEI:Disconnected"))))
   )
   
 
