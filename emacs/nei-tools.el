@@ -53,7 +53,8 @@
   (condition-case nil
       (nei--cells-to-text
        (nei-parse-json (json-read-from-string (nei--marked-source backoff))))
-    (error (nei-parse-json (json-read-from-string (buffer-string))))
+    (error (nei--cells-to-text
+            (nei-parse-json (json-read-from-string (buffer-string)))))
     )
   )
 
