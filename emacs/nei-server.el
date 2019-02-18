@@ -31,11 +31,16 @@
   is unavailable"
   (if (eq (nei--get-exit-code "python") 0)
       (let* ((port (or port 9999))
-             (cmd (format "python -c 'import nei;nei.server_status(%s)'" port))
-             (stdout (nei--cmd-stdout cmd)))
-        (if (s-equals? stdout "port unavailable")
-            stdout
-          t))))
+               (cmd (format "python -c 'import nei;nei.server_status(%s)'" port))
+               (stdout (nei--cmd-stdout cmd)))
+        (cond
+         ((s-equals? stdout "port unavailable") stdout)
+         ((s-equals? stdout "") t)
+         (t nil) ; Output will be an import error
+         )
+        )
+    )
+  )
 
 
 (defun nei-server-pip-install ()
