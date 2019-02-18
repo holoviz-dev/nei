@@ -122,6 +122,10 @@
   
   :keymap nei-mode-map
   (nei-fontify)
+  (if (symbolp 'eldoc-mode)     ;; Disable eldoc mode! Why is is active?
+      (eldoc-mode -1)
+    )
+  
   )
   
 
