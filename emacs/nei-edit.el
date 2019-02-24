@@ -17,7 +17,7 @@
     (((class color) (background  dark)) :background "grey20"))
   "Face for highlighting the current cell.")
 
-(defvar nei-fontified nil
+(defvar nei--fontified nil
   "Whether or not the nei buffer is currently fontified")
 
 (defvar nei--highlight-overlay nil
@@ -103,7 +103,7 @@
   (save-excursion
     (font-lock-fontify-keywords-region (point-min) (point-max))
     )
-  (setq nei-fontified t)
+  (setq nei--fontified t)
   )
 
 (defun nei-defontify ()
@@ -115,13 +115,13 @@
   (save-excursion
     (font-lock-fontify-keywords-region (point-min) (point-max))
     )
-  (setq nei-fontified nil)
+  (setq nei--fontified nil)
   )
 
 
 (defun nei-toggle-fontify ()
   (interactive)
-  (if nei-fontified (nei-defontify) (nei-fontify))
+  (if nei--fontified (nei-defontify) (nei-fontify))
 )
 
 ;;==================================;;

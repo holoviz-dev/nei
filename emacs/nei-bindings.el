@@ -67,7 +67,7 @@
     ("Buffer"
       ;; Switch buffer?
       ["Insert mode line" nei--menu-stub t]
-      ["Fontify" nei-toggle-fontify :style radio :selected nei-fontified]
+      ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
       )
     ("Edit"
      ["Insert Code" nei-insert-code-cell t]
