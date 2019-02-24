@@ -3,6 +3,7 @@ from setuptools import setup
 install_requires = [
     'jupyter_client',
     'nbformat',
+    'nbconvert',
     'tornado==5.1.1',
     'ipykernel'
 ]
@@ -11,8 +12,7 @@ extras_require = {
     'pyviz': [
         'bokeh',
         'holoviews',
-        'cssutils',
-        'nbconvert'
+        'cssutils'
     ]
 }
 
