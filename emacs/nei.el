@@ -16,15 +16,15 @@
 (defvar ws-messages nil
   "Messages received over the websocket connection.")
 
+(defvar nei-browser "firefox"
+  "The browser used by NEI when launch new tabs.")
+(defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
+
 (defvar nei--unexpected-disconnect nil
   "Flag indicating whether the websocket connection is closed or not")
 
 (defvar nei--execution-count 0
   "The number of kernel executions invoked from NEI")
-
-(defvar nei-browser "firefox"
-  "The browser used by NEI when launch new tabs.")
-
 
 
 (defun nei--open-websocket ()
@@ -115,8 +115,6 @@
     (nei--send-data (json-encode obj) warn-no-connection)
     )
 
-
-(defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
 
 (defun nei--buffer-switch-hook ()
   (if (not (active-minibuffer-window))

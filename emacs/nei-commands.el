@@ -1,10 +1,9 @@
+;; Module for commands sent to and from the server
 (require 'nei-util)
 (require 'json)
 
 
-(defvar nei--currently-mirroring nil)
-;; Module for commands sent to and from the server
-
+(defvar-local nei--currently-mirroring nil)
 (defvar nei-scroll-pixels 300)
 
 
@@ -318,6 +317,7 @@
   (add-hook 'after-change-functions #'nei--mirror nil t)
   (add-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
   (run-with-idle-timer 0.2 t 'nei--update-highlight-cell)
+  (setq nei--currently-mirroring t)
 )
 
 
@@ -327,6 +327,7 @@
   (remove-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
   (cancel-function-timers 'nei--update-highlight-cell)
   (nei-defontify)
+  (setq nei--currently-mirroring nil)
   )
 
 (defun nei-toggle-mirroring ()
