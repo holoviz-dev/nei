@@ -120,13 +120,11 @@ class Cell(object):
 class Cells(object):
     "Notebook state is represented as a list of Cell objects"
 
-    def __init__(self, executor, text=None, cells=[]):
+    def __init__(self, text=None, cells=[]):
         if text is None:
             self.cells = cells
         else:
             self.load(ParseNotebook.extract_cells(text))
-
-        self.executor = executor
 
     @property
     def hashes(self):
@@ -211,12 +209,6 @@ class Cells(object):
         if connection is None:
             webbrowser.get(self.config['browser']).open("http://localhost:8000/index.html")
 
-    def interrupt_kernel(self, connection):
-        self.executor.interrupt_kernel()
-
-    def restart_kernel(self, connection):
-        self.executor.restart_kernel()
-
 
 class OutputMessage(object):
     """
@@ -277,8 +269,8 @@ class Notebook(Cells):
 
     STATIC_PATH = None
 
-    def __init__(self, executor, name=None, **kwargs):
-        super(Notebook, self).__init__(executor, **kwargs)
+    def __init__(self, name=None, **kwargs):
+        super(Notebook, self).__init__(**kwargs)
         self.name = name
         self.mirrorbuffer = MirrorBuffer()
         self.commands = {'view_browser': self.view_browser, # Opens browser connection
@@ -290,15 +282,11 @@ class Notebook(Cells):
                          'terminate' :       self.terminate, # Used for debugging
 
                          'write_notebook':   self.write_notebook,
-                         'exec_silently':    self.exec_silently,
-                         'interrupt_kernel': self.interrupt_kernel,
-                         'restart_kernel':   self.restart_kernel,
                          'start_mirror':     self.start_mirror,
                          'mirror':           self.mirror,
                          'hold_mode':        self.hold_mode,
                          # Cell commands
                          'add_cell':            self.add_cell,
-                         'exec_cell':           self.exec_cell,
                          'update_cell_outputs': self.update_cell_outputs,
                          'update_cell_input':   self.update_cell_input,
                          'clear_cell_output':   self.clear_cell_output,
@@ -315,13 +303,7 @@ class Notebook(Cells):
                          'view_notebook':             self.view_notebook,
                          'update_style':              self.update_style,
                          # Derived 'by_line' methods
-                         'exec_cell_by_line':         self.exec_cell_by_line,
                          'clear_cell_output_by_line': self.clear_cell_output_by_line,
-                         # For JS testing only...
-                         'add_cell_exec': self.add_cell_exec,
-
-                         'comm_open': self.comm_open,    # Request from JS to open comm
-                         'comm_msg' : self.comm_msg # Message send from JS
                          }
         self.css = "" # Last CSS sent to browser
         self.config = {'browser':'firefox'}
@@ -388,47 +370,6 @@ class Notebook(Cells):
         self.message(connection, 'add_cell', args)
 
 
-    def exec_silently(self, connection, code):
-        self.executor(code, stop_on_error=False, cell=None, silent=True)
-
-    def comm_open(self, connection, target_name, comm_id, data=None, metadata=None):
-        # Request to open a comm from JS
-        self.executor.comms.comm_open(comm_id=comm_id,
-                                      target_name=target_name,
-                                      data=data, metadata=metadata)
-
-    def comm_msg(self, connection, target_name, comm_id, data, metadata=None):
-        # Message from JS comm to Python
-        self.executor.comms.comm_msg(comm_id=comm_id,
-                                     target_name=target_name,
-                                     data=data, metadata=metadata)
-
-    def exec_cell(self, connection, position):
-        if position >= len(self.cells):
-            logging.info("WARNING: Position %d is out of bounds" % position)
-            return
-        cell = self.cells[position]
-        if cell.mode == 'markdown': return
-        self.clear_cell_output(connection, position)
-        self.executor(cell.source, stop_on_error=True, cell=cell)
-
-
-    def add_cell_exec(self, connection, source, input=None,
-                      mode='code', prompt=None, position=None):
-        """
-        Needed to solve concurrency issues in JS where add_cell messages arrive
-        before the corresponding executions. Should only be used for JS tests.
-        """
-        position = len(self.cells) if position is None else position
-        self.add_cell(connection, source, input, mode, prompt, position)
-        self.exec_cell(connection, position)
-
-
-    def exec_cell_by_line(self, connection, line_number):
-        position =  self.by_line(line_number)
-        if position is None: return
-        self.exec_cell(connection, position)
-
     def update_cell_outputs(self, connection, position, outputs):
         "Call with outputs of None to simply update the prompt"
         cell = self.cells[position]
@@ -476,7 +417,7 @@ class Notebook(Cells):
         self.mirrorbuffer(start, end, length, added, size)
         if not self.mirrorbuffer.hold:
             cells = ParseNotebook.extract_cells(str(self.mirrorbuffer))
-            src = Notebook(executor=None, cells=list())
+            src = Notebook(cells=list())
             src.load(cells)
             SyncNotebooks.sync(connection, src, self)
 
@@ -494,7 +435,7 @@ class Notebook(Cells):
         # Mirror buffer expected to be already updated by mirror insertion from editor
         buffer_text = str(self.mirrorbuffer)
         cells = ParseNotebook.extract_cells(buffer_text)
-        src = Notebook(executor=None, cells=list())
+        src = Notebook(cells=list())
         src.load(cells)
 
         with open(filename, 'r') as f:
@@ -579,6 +520,79 @@ class Notebook(Cells):
 
         process_css(self, connection, "\n".join(lines[1:-1]))
         self.message(connection, 'update_style', {'css':"\n".join(lines[1:-1])})
+
+
+
+class ExecutableNotebook(Notebook):
+    """
+    ExecutableNotebook is a notebook with executable state i.e a Python
+    kernel along with methods for executing code.
+    """
+    def __init__(self, executor, name=None, **kwargs):
+        self.executor = executor
+        super(ExecutableNotebook, self).__init__(name=name, **kwargs)
+        exec_commands = {
+            'exec_silently':    self.exec_silently,
+            'exec_cell':        self.exec_cell,
+            'exec_cell_by_line':self.exec_cell_by_line,
+            # For JS testing only...
+            'add_cell_exec':    self.add_cell_exec,
+            'comm_open':        self.comm_open,    # Request from JS to open comm
+            'comm_msg' :        self.comm_msg, # Message send from JS
+            'interrupt_kernel': self.interrupt_kernel,
+            'restart_kernel':   self.restart_kernel
+        }
+        self.commands.update(exec_commands)
+
+
+    def exec_silently(self, connection, code):
+        self.executor(code, stop_on_error=False, cell=None, silent=True)
+
+    def comm_open(self, connection, target_name, comm_id, data=None, metadata=None):
+        # Request to open a comm from JS
+        self.executor.comms.comm_open(comm_id=comm_id,
+                                      target_name=target_name,
+                                      data=data, metadata=metadata)
+
+    def comm_msg(self, connection, target_name, comm_id, data, metadata=None):
+        # Message from JS comm to Python
+        self.executor.comms.comm_msg(comm_id=comm_id,
+                                     target_name=target_name,
+                                     data=data, metadata=metadata)
+
+    def exec_cell(self, connection, position):
+        if position >= len(self.cells):
+            logging.info("WARNING: Position %d is out of bounds" % position)
+            return
+        cell = self.cells[position]
+        if cell.mode == 'markdown': return
+        self.clear_cell_output(connection, position)
+        self.executor(cell.source, stop_on_error=True, cell=cell)
+
+
+    def add_cell_exec(self, connection, source, input=None,
+                      mode='code', prompt=None, position=None):
+        """
+        Needed to solve concurrency issues in JS where add_cell messages arrive
+        before the corresponding executions. Should only be used for JS tests.
+        """
+        position = len(self.cells) if position is None else position
+        self.add_cell(connection, source, input, mode, prompt, position)
+        self.exec_cell(connection, position)
+
+
+    def exec_cell_by_line(self, connection, line_number):
+        position =  self.by_line(line_number)
+        if position is None: return
+        self.exec_cell(connection, position)
+
+    def interrupt_kernel(self, connection):
+        self.executor.interrupt_kernel()
+
+    def restart_kernel(self, connection):
+        self.executor.restart_kernel()
+
+
 
 
 class MirrorBuffer(object):

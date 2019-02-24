@@ -15,11 +15,11 @@ import nbformat
 from queue import Queue
 
 from .execute import ThreadedExecutor
-from .cells import Notebook
+from .cells import ExecutableNotebook
 
 
 STATIC_PATH = os.path.join(os.path.split(__file__)[0], 'client')
-Notebook.STATIC_PATH = STATIC_PATH
+ExecutableNotebook.STATIC_PATH = STATIC_PATH
 
 class PeriodicOutputCallback(object):
     """
@@ -106,9 +106,9 @@ class Server(websocket.WebSocketHandler):
         if notebook is None:  # Create notebook
             # Note that there are multiple Server instances and we want only one notebook!
             # (for now)
-            notebook = Notebook(ThreadedExecutor("threaded-kernel", self.queue),
-                                name=name,
-                                cells=list())
+            notebook = ExecutableNotebook(ThreadedExecutor("threaded-kernel", self.queue),
+                                          name=name,
+                                          cells=list())
             self.NOTEBOOKS[name] = notebook
 
         Server.NOTEBOOK = notebook
