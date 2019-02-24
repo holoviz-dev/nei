@@ -183,9 +183,8 @@
   (interactive)
    (progn
      (nei--send-json (nei--server-cmd "view_browser" (list)) t)
-     (sleep-for 5) ;; Let the browser open and the page load
-     (nei-update-css))
-  )
+     (run-with-idle-timer 5 1 'nei-update-css))
+   )
 
 ;;==============;;
 ;; IO commands ;;
@@ -307,6 +306,7 @@
 (defun nei-start-mirroring ()
   (interactive)
   (let ((text (buffer-substring (point-min)  (point-max))))
+    (setq nei--currently-mirroring t)
     (nei--send-json (nei--server-cmd "start_mirror"
                                              (list 
                                               (cons "text"  text)
@@ -317,17 +317,16 @@
   (add-hook 'after-change-functions #'nei--mirror nil t)
   (add-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
   (run-with-idle-timer 0.2 t 'nei--update-highlight-cell)
-  (setq nei--currently-mirroring t)
 )
 
 
 (defun nei-stop-mirroring ()
   (interactive)
+  (setq nei--currently-mirroring nil)
   (remove-hook 'after-change-functions #'nei--mirror t)
   (remove-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
   (cancel-function-timers 'nei--update-highlight-cell)
   (nei-defontify)
-  (setq nei--currently-mirroring nil)
   )
 
 (defun nei-toggle-mirroring ()
