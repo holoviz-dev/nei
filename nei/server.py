@@ -106,9 +106,9 @@ class Server(websocket.WebSocketHandler):
         if notebook is None:  # Create notebook
             # Note that there are multiple Server instances and we want only one notebook!
             # (for now)
-            notebook = ExecutableNotebook(ThreadedExecutor("threaded-kernel", self.queue),
-                                          name=name,
-                                          cells=list())
+            notebook = ExecutableNotebook(
+                (ThreadedExecutor, "threaded-kernel", self.queue),
+                name=name, cells=list())
             self.NOTEBOOKS[name] = notebook
 
         Server.NOTEBOOK = notebook

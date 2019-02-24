@@ -44,6 +44,14 @@
   )
 
 
+(defun nei-start-kernel ()
+  "Send an interrupt-kernel  message"
+  (interactive)  
+  (nei--send-json (nei--server-cmd "start_kernel" (list)))
+  (message "Sent start kernel message")
+)
+
+
 (defun nei-interrupt-kernel ()
   "Send an interrupt-kernel  message"
   (interactive)  

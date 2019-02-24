@@ -528,10 +528,11 @@ class ExecutableNotebook(Notebook):
     ExecutableNotebook is a notebook with executable state i.e a Python
     kernel along with methods for executing code.
     """
-    def __init__(self, executor, name=None, **kwargs):
-        self.executor = executor
+    def __init__(self, executor_init, name=None, **kwargs):
+        self.executor_init = executor_init
+        self.executor = None # Initialized by start_kernel
         super(ExecutableNotebook, self).__init__(name=name, **kwargs)
-        exec_commands = {
+        self.exec_commands = {
             'exec_silently':    self.exec_silently,
             'exec_cell':        self.exec_cell,
             'exec_cell_by_line':self.exec_cell_by_line,
@@ -539,11 +540,19 @@ class ExecutableNotebook(Notebook):
             'add_cell_exec':    self.add_cell_exec,
             'comm_open':        self.comm_open,    # Request from JS to open comm
             'comm_msg' :        self.comm_msg, # Message send from JS
+            'start_kernel':     self.start_kernel,
             'interrupt_kernel': self.interrupt_kernel,
             'restart_kernel':   self.restart_kernel
         }
-        self.commands.update(exec_commands)
+        self.commands.update(self.exec_commands)
 
+
+    def dispatch(self, connection, payload):
+        kernel_required = [cmd for cmd in self.exec_commands if cmd != 'start_kernel']
+        if self.executor is None and (payload['cmd'] in kernel_required):
+            logging.info("WARNING: Kernel needs to be started before execution can occur")
+            return
+        super(ExecutableNotebook, self).dispatch(connection, payload)
 
     def exec_silently(self, connection, code):
         self.executor(code, stop_on_error=False, cell=None, silent=True)
@@ -585,6 +594,10 @@ class ExecutableNotebook(Notebook):
         position =  self.by_line(line_number)
         if position is None: return
         self.exec_cell(connection, position)
+
+    def start_kernel(self, connection):
+        exec_cls, name, queue = self.executor_init
+        self.executor  = exec_cls(name, queue)
 
     def interrupt_kernel(self, connection):
         self.executor.interrupt_kernel()
