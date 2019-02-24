@@ -116,6 +116,29 @@
     )
 
 
+(defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
+
+(defun nei--buffer-switch-hook ()
+  (if (not (active-minibuffer-window))
+      (if (bound-and-true-p nei-mode)
+          (if (not (eq (buffer-name) nei--last-buffer))
+              (if (eq (buffer-name) (buffer-name (elt (buffer-list) 0)))
+                  (progn
+                    ;; Timer used to ensure stack cleared to prevent recursion issues.
+                    (run-with-timer 0 nil 'nei-update-css)
+                    (setq nei--last-buffer (buffer-name))
+                    )
+                )
+            
+            )
+          )
+    )
+  )
+
+(defun nei-set-buffer-hook () ;; TODO: Set hooks nicely in one place
+  (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook)
+  )
+
 (define-minor-mode nei-mode
   "Nei for authoring notebooks in Emacs."
   :lighter " NEI"
@@ -123,6 +146,7 @@
   :keymap nei-mode-map
   
   (nei-fontify)
+  (nei-set-buffer-hook)
   (if (symbolp 'eldoc-mode)     ;; Disable eldoc mode! Why is is active?
       (eldoc-mode -1)
     )
