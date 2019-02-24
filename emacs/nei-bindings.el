@@ -42,10 +42,9 @@
 (easy-menu-define nei-mode-menu nei-mode-map
   "Notebook Emacs Interface"
   '("NEI"
-    ["Connect" nei-connect (not ws-connection)]
-    ["Disconnect" nei-disconnect ws-connection]
-    "---"
     ("Server"
+     ["Connect" nei-connect (not ws-connection)]
+     ["Disconnect" nei-disconnect ws-connection]
      ["Information" nei-server-info t]
      ("Kernel"
       ["Interrupt" nei-interrupt-kernel ws-connection]
