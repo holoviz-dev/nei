@@ -124,7 +124,7 @@ class Cells(object):
         if text is None:
             self.cells = cells
         else:
-            self.load(parser.extract_cells(text))
+            self.load(ParseNotebook.extract_cells(text))
 
         self.executor = executor
 
@@ -846,12 +846,3 @@ class ParseNotebook(object):
                     extracted.append(code_cell)
 
         return cls.unique_prompts(extracted) if unique_prompts else extracted
-
-
-if __name__ == '__main__':
-    filename = sys.argv[1]
-
-    parser = ParseNotebook()
-
-    with open(filename, 'r') as f:
-        cells = Notebook(executor=None, text=f.read())
