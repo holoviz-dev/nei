@@ -65,11 +65,12 @@
      ["Update CSS" nei-update-css ws-connection]
      )
     "---"
-    ("Edit"
-     ("Buffer"
+    ("Buffer"
+      ;; Switch buffer?
       ["Insert mode line" nei--menu-stub t]
       ["Toggle Fontify" nei-toggle-fontify t]
       )
+    ("Edit"
      ["Insert Code" nei-insert-code-cell t]
      ["Insert Markdown" nei-insert-markdown-cell t]
      "---"
