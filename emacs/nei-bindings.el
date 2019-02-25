@@ -47,13 +47,14 @@
      ["Disconnect" nei-disconnect ws-connection]
      ["Information" nei-server-info t]
      ("Kernel"
+      ["Start" nei-start-kernel ws-connection]
       ["Interrupt" nei-interrupt-kernel ws-connection]
       ["Restart" nei-restart-kernel ws-connection]
       )
-     ("Environment"
+     ("Installation"
       ["Pip install" nei-server-pip-install (not (nei--server-available))]
-      ["Message Log" nei-server-log t]
       )
+     ["Message Log" nei-server-log t]
      )
     ("Client"
      ["View" nei-view-browser ws-connection]
