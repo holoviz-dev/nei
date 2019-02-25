@@ -78,7 +78,7 @@
    keep-original - kill original buffer or not"
   (let* ((text (nei-parse-buffer backoff))
          (new-buffer (get-buffer-create
-                      (s-prepend "NEI:" (buffer-name)))
+                      (s-prepend "NEI>" (buffer-name)))
                      ))
 
     (with-current-buffer new-buffer
