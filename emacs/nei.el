@@ -18,6 +18,10 @@
 
 (defvar nei-browser "firefox"
   "The browser used by NEI when launch new tabs.")
+
+(defvar nei-autoconnect t
+  "Boolean that determines whether to try to autoconnect when a NEI buffer is open")
+
 (defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
 
 (defvar nei--unexpected-disconnect nil
@@ -148,9 +152,8 @@
   (if (symbolp 'eldoc-mode)     ;; Disable eldoc mode! Why is is active?
       (eldoc-mode -1)
     )
-
-  (nconc mode-line-format
-         (list '(:eval (if ws-connection "NEI:Connected" "NEI:Disconnected"))))
+  (if nei-autoconnect (nei-connect))
+  
   )
   
 
