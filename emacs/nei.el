@@ -78,6 +78,7 @@
   (interactive)
   (nei--close-ws-connection)
   (nei--server-stop)
+  (remove-hook 'buffer-list-update-hook 'nei--buffer-switch-hook)
   )
 
 (defun nei--close-ws-connection ()
