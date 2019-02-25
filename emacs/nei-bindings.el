@@ -42,15 +42,15 @@
 (easy-menu-define nei-mode-menu nei-mode-map
   "Notebook Emacs Interface"
   '("NEI"
+    ("Kernel"
+      ["Start" nei-start-kernel ws-connection]
+      ["Interrupt" nei-interrupt-kernel nil] ; Needs per-buffer kernel state
+      ["Restart" nei-restart-kernel nil]     ; Needs per-buffer kernel state
+      )
     ("Server"
      ["Connect" nei-connect (not ws-connection)]
      ["Disconnect" nei-disconnect ws-connection]
      ["Information" nei-server-info t]
-     ("Kernel"
-      ["Start" nei-start-kernel ws-connection]
-      ["Interrupt" nei-interrupt-kernel ws-connection]
-      ["Restart" nei-restart-kernel ws-connection]
-      )
      ("Installation"
       ["Pip install" nei-server-pip-install (not (nei--server-available))]
       )
