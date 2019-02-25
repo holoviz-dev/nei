@@ -82,14 +82,14 @@
      ["Move Cell Up" nei-move-cell-up t]
      ["Move Cell Down" nei-move-cell-down t]
      )
-    ("Interact"
+    ("Operations"
      ["Execute In Place" nei-exec-by-line ws-connection]
      ["Execute and Move" nei-exec-by-line-and-move-to-next-cell ws-connection]
      ["Clear cell output"  nei-clear-cell-by-line ws-connection]
      ["Clear all cell output"  nei-clear-all-cell-outputs ws-connection]
      ["Clear Notebook and Restart" nei-clear-notebook-and-restart ws-connection]
      )
-    ("Document"
+    ("Notebook"
      ["Insert Notebook" nei-insert-notebook] ;; Insert Notebook At Point?
      ["Write Notebook" nei-write-notebook])
     )
