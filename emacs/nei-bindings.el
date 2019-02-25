@@ -48,12 +48,14 @@
       ["Restart" nei-restart-kernel nil]     ; Needs per-buffer kernel state
       )
     ("Server"
-     ["Connect" nei-connect (not ws-connection)]
-     ["Disconnect" nei-disconnect ws-connection]
-     ["Information" nei-server-info t]
-     ("Installation"
+     ("Actions"
+      ["Start and Connect" nei-connect (not ws-connection)]
+      ["Halt and Disconnect" nei-disconnect ws-connection]
+      )
+     ("Install"
       ["Pip install" nei-server-pip-install (not (nei--server-available))]
       )
+     ["Information" nei-server-info t]
      ["Message Log" nei-server-log t]
      )
     ("Client"
