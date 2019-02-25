@@ -58,6 +58,16 @@
   (message "Sent interrupt kernel message")
 )
 
+
+(defun nei-reload-page ()
+  "Send an restart-kernel  message"
+  (interactive)
+  (nei--send-json (nei--server-cmd "reload_page" (list)))
+  (message "Sent reload page message")
+)
+
+
+
 (defun nei-restart-kernel ()
   "Send an restart-kernel  message"
   (interactive)

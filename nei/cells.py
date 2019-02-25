@@ -401,6 +401,7 @@ class Notebook(Cells):
         Called when the browser tab is initially opened or reloaded and
         the notebook has cell state.
         """
+        self.message(connection, 'clear_notebook', {})
         for pos, cell in enumerate(self.cells):
             # TODO: Pass prompt to JS
             self.message(connection, 'add_cell', {'mode':cell.mode,

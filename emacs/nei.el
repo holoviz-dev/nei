@@ -124,7 +124,7 @@
               (if (eq (buffer-name) (buffer-name (elt (buffer-list) 0)))
                   (progn
                     ;; Timer used to ensure stack cleared to prevent recursion issues.
-                    (run-with-timer 0 nil 'nei-update-css)
+                    (run-with-timer 0 nil 'nei-reload-page)
                     (setq nei--last-buffer (buffer-name))
                     )
                 )
@@ -149,7 +149,8 @@
       (eldoc-mode -1)
     )
   (if nei-autoconnect (nei-connect))
-  
+  (if (not nei--currently-mirroring)
+      (nei-start-mirroring))
   )
   
 

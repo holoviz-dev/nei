@@ -137,6 +137,13 @@ class Server(websocket.WebSocketHandler):
         # SOME COMMANDS (e.g mirroring) should happen even without a browser tab open!
         connection = self.BROWSER_CONNECTIONS[0] if len(self.BROWSER_CONNECTIONS) else None
         self.toggle_notebook(payload['name'])
+
+        if payload.get('cmd', False) == 'reload_page':
+            # Reload over the browser connection (currently assuming only one)
+            if len(self.BROWSER_CONNECTIONS) > 0:
+                Server.NOTEBOOK.reload(self.BROWSER_CONNECTIONS[0])
+            return
+
         Server.NOTEBOOK.dispatch(connection, payload)
 
 
