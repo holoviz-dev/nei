@@ -60,7 +60,6 @@
     )
   )
 
-
 (defun nei-connect ()
   "Start the NEI server, establish the websocket connection and begin mirroring"
   (interactive)
@@ -70,7 +69,6 @@
       (nei--start-server)
       (nei--open-ws-connection)
       (nei-update-config)
-      (nei-start-mirroring)
       )
     )
   )
@@ -119,7 +117,6 @@
     (nei--send-data (json-encode obj) warn-no-connection)
     )
 
-
 (defun nei--buffer-switch-hook ()
   (if (not (active-minibuffer-window))
       (if (bound-and-true-p nei-mode)
@@ -142,10 +139,9 @@
   )
 
 (define-minor-mode nei-mode
-  "Nei for authoring notebooks in Emacs."
-  :lighter " NEI"
-  
+  "Nei for authoring notebooks in Emacs."  
   :keymap nei-mode-map
+  :lighter (:eval (format " NEI:%s" (if ws-connection "Connected" "Disconnected")))
   
   (nei-fontify)
   (nei-set-buffer-hook)
