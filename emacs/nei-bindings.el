@@ -58,7 +58,7 @@
      ["Information" nei-server-info t]
      ["Message Log" nei-server-log t]
      )
-    ("Client"
+    ("Browser"
      ["View" nei-view-browser ws-connection]
      ["HTML Preview" nei-view-notebook ws-connection] 
      "---"
