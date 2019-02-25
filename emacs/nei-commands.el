@@ -7,14 +7,16 @@
 (defvar nei-scroll-pixels 300)
 
 
-(defun nei--server-cmd (command args)
+(defun nei--server-cmd (command args &optional warn-no-connection)
   "Given a command string and its assoc list of args, return the JSON command object"
+  (nei--send-json
    (list (cons "cmd" command) (cons "args" args) (cons "name" (buffer-name)))
+   warn-no-connection)
   )
 
 (defun nei--scroll-by (offset)
   "Send a scroll-by message"
-  (nei--send-json (nei--server-cmd "scroll_by" (list (cons "offset" offset))))
+   (nei--server-cmd "scroll_by" (list (cons "offset" offset)))
 )
 
 
@@ -22,7 +24,7 @@
 
 (defun nei--terminate-server ()
   "Used to terminate the server remotely- used for debugging"
-  (nei--send-json (nei--server-cmd "terminate" (list)))
+  (nei--server-cmd "terminate" (list))
   )
 
 
@@ -46,7 +48,7 @@
 (defun nei-start-kernel ()
   "Send an interrupt-kernel  message"
   (interactive)  
-  (nei--send-json (nei--server-cmd "start_kernel" (list)))
+  (nei--server-cmd "start_kernel" (list))
   (message "Sent start kernel message")
 )
 
@@ -54,7 +56,7 @@
 (defun nei-interrupt-kernel ()
   "Send an interrupt-kernel  message"
   (interactive)  
-  (nei--send-json (nei--server-cmd "interrupt_kernel" (list)))
+  (nei--server-cmd "interrupt_kernel" (list))
   (message "Sent interrupt kernel message")
 )
 
@@ -62,7 +64,7 @@
 (defun nei-reload-page ()
   "Send an restart-kernel  message"
   (interactive)
-  (nei--send-json (nei--server-cmd "reload_page" (list)))
+  (nei--server-cmd "reload_page" (list))
   (message "Sent reload page message")
 )
 
@@ -72,7 +74,7 @@
   "Send an restart-kernel  message"
   (interactive)
   (setq nei--execution-count 0)
-  (nei--send-json (nei--server-cmd "restart_kernel" (list)))
+  (nei--server-cmd "restart_kernel" (list))
   (message "Sent restart kernel message")
 )
 
@@ -80,7 +82,7 @@
 (defun nei-clear-all-cell-outputs ()
   "Send a clear_all_cell_outputs message to server"
   (interactive)
-  (nei--send-json (nei--server-cmd "clear_all_cell_outputs" (list)))
+  (nei--server-cmd "clear_all_cell_outputs" (list))
   (message "Cleared all cell outputs")
 )
 
@@ -88,7 +90,7 @@
 (defun nei-clear-notebook-and-restart ()
   "Send a clear_notebook message to server followed by a restart_kernel message"
   (interactive)
-  (nei--send-json (nei--server-cmd "clear_notebook" (list)))
+  (nei--server-cmd "clear_notebook" (list))
   (nei-restart-kernel)
   (erase-buffer)
   (message "Cleared notebook and restarted kernel")
@@ -97,7 +99,7 @@
 (defun nei-view-notebook ()
   "View nbconverted notebook in the browser"
   (interactive)
-  (nei--send-json (nei--server-cmd "view_notebook" (list)))
+  (nei--server-cmd "view_notebook" (list))
   (message "Sent interrupt kernel message")
   )
 
@@ -105,7 +107,7 @@
 (defun nei-exec-silently (code)
   "Send an 'exec_silently' message to server to run the given code for its side-effects"
   (interactive "MCode:")
-  (nei--send-json (nei--server-cmd "exec_silently" (list (cons "code" code))))
+  (nei--server-cmd "exec_silently" (list (cons "code" code)))
   )
 
   
@@ -114,13 +116,12 @@
   (interactive)
   (setq nei--execution-count (1+ nei--execution-count))
   (nei--update-exec-prompt nei--execution-count) ;; TODO: Bump only if in code cell
-  (nei--send-json (nei--server-cmd "exec_cell_by_line"
-                                           (list 
-                                              (cons "line_number"
-                                                    (line-number-at-pos))
-                                              )
-                                           )
-                      )
+  (nei--server-cmd "exec_cell_by_line"
+                   (list 
+                    (cons "line_number"
+                          (line-number-at-pos))
+                    )
+                   )
   )
 
 
@@ -129,17 +130,16 @@
   (let ((buffer-mode (with-current-buffer 
                          (window-buffer (selected-window)) major-mode)))
     (if (eq buffer-mode 'python-mode) ;; TODO: Needs a better check
-        (nei--send-json (nei--server-cmd "scroll_to_line"
-                                                 (list 
-                                                  (cons "line"
-                                                        (line-number-at-pos (window-start))
-                                                        )
-                                                  )
-                                                 )
-                            )
+        (nei--server-cmd "scroll_to_line"
+                         (list 
+                          (cons "line"
+                                (line-number-at-pos (window-start))
+                                )
+                          )
+                         )
       )
     )
-)
+  )
 
 
 (defun nei-exec-by-line-and-move-to-next-cell ()
@@ -152,35 +152,34 @@
 
 (defun nei-clear-cell-by-line ()
   (interactive)
-  (nei--send-json (nei--server-cmd "clear_cell_output_by_line"
-                                   (list 
-                                    (cons "line_number"
-                                          (line-number-at-pos))
-                                    )
-                                   )
-                  )
+  (nei--server-cmd "clear_cell_output_by_line"
+                   (list 
+                    (cons "line_number"
+                          (line-number-at-pos))
+                    )
+                   )
+  
   )
 
 
 (defun nei-update-css ()
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
-  (nei--send-json (nei--server-cmd "update_style"
-                                   (list 
-                                    (cons "css" (nei--htmlize-css))
-                                    )) t)
+  (nei--server-cmd "update_style"
+                   (list 
+                    (cons "css" (nei--htmlize-css))
+                    ) t)
   )
   
 
 (defun nei-update-config ()
   "Set the config dictionary on the notebook"
   (interactive)
-  (nei--send-json
-   (nei--server-cmd "update_config"
-                    (list 
-                     (cons "config"
-                           (list (cons 'browser nei-browser))
-                           ))) t)
+  (nei--server-cmd "update_config"
+                   (list 
+                    (cons "config"
+                          (list (cons 'browser nei-browser))
+                          )) t)
   )
 
 
@@ -188,7 +187,7 @@
   "Open a browser tab to view the output"
   (interactive)
    (progn
-     (nei--send-json (nei--server-cmd "view_browser" (list)) t)
+     (nei--server-cmd "view_browser" (list) t)
      (run-with-idle-timer 1 1 'nei-update-css))
    )
 
@@ -212,14 +211,12 @@
     filename
     )
   (let ((filename (call-interactively 'nei--prompt-for-filename)))
-    
-    (nei--send-json (nei--server-cmd "write_notebook"
-                                             (list 
-                                              (cons "mode" mode)
-                                              (cons "filename" filename)
-                                              )
-                                             )
-                        )
+    (nei--server-cmd "write_notebook"
+                     (list 
+                      (cons "mode" mode)
+                      (cons "filename" filename)
+                      )
+                     )
     )
   )
 
@@ -227,14 +224,13 @@
 (defun nei--load-from-file (cells filename)
   "Send a load_from_file message to server with .ipynb parsed cells and filename"
   
-  (nei--send-json (nei--server-cmd "load_from_file"
-                                           (list 
-                                            (cons "json_string"
-                                                  (json-encode cells))
-                                            (cons "filename" (expand-file-name filename))
-                                            )
-                                           )
-                      )
+  (nei--server-cmd "load_from_file"
+                   (list 
+                    (cons "json_string"
+                          (json-encode cells))
+                    (cons "filename" (expand-file-name filename))
+                    )
+                   )
   )
 
 
@@ -257,16 +253,13 @@
 
 
 (defun nei--insert-notebook-command (filename text line-number)
-  (nei--send-json (nei--server-cmd "insert_file_at_point"
-                                           (list 
-                                            (cons "filename" (expand-file-name filename))
-                                            (cons "text" text)
-                                            (cons "line_number" line-number)
-                                            )
-                                           )
-                      )
-  
-
+  (nei--server-cmd "insert_file_at_point"
+                   (list 
+                    (cons "filename" (expand-file-name filename))
+                    (cons "text" text)
+                    (cons "line_number" line-number)
+                    )
+                   )
   )
   
 (defun nei-insert-notebook (filename)
@@ -294,16 +287,15 @@
 (defun nei--mirror (start end length)
   (let* ((src (current-buffer)))
     (with-current-buffer src
-      (nei--send-json (nei--server-cmd "mirror"
-                                               (list 
-                                                (cons "start" start)
-                                                (cons "end" end)
-                                                (cons "length" length)
-                                                (cons "added" (buffer-substring start end))
-                                                (cons "size" (buffer-size src))
-                                                )
-                                               )
+      (nei--server-cmd "mirror"
+                       (list 
+                        (cons "start" start)
+                        (cons "end" end)
+                        (cons "length" length)
+                        (cons "added" (buffer-substring start end))
+                        (cons "size" (buffer-size src))
                         )
+                       )
       )
     )  
   )
@@ -313,12 +305,11 @@
   (interactive)
   (let ((text (buffer-substring (point-min)  (point-max))))
     (setq nei--currently-mirroring t)
-    (nei--send-json (nei--server-cmd "start_mirror"
-                                             (list 
-                                              (cons "text"  text)
-                                              )
-                                             )
-                          )
+    (nei--server-cmd "start_mirror"
+                     (list 
+                      (cons "text"  text)
+                      )
+                     )
     )
   (add-hook 'after-change-functions #'nei--mirror nil t)
   (add-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
@@ -343,12 +334,11 @@
 
 (defun nei--hold-mode (mode)
   "Toggle the 'hold' state of the mirror"
-  (nei--send-json (nei--server-cmd "hold_mode"
-                                           (list 
-                                            (cons "mode"  mode)
-                                            )
-                                           )
-                      )
+  (nei--server-cmd "hold_mode"
+                   (list 
+                    (cons "mode"  mode)
+                    )
+                   )
   )
 
 ;;========================;;
