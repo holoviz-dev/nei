@@ -134,17 +134,14 @@
     )
   )
 
-(defun nei-set-buffer-hook () ;; TODO: Set hooks nicely in one place
-  (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook)
-  )
-
 (define-minor-mode nei-mode
   "Nei for authoring notebooks in Emacs."  
   :keymap nei-mode-map
   :lighter (:eval (format " NEI:%s" (if ws-connection "Connected" "Disconnected")))
   
   (nei-fontify)
-  (nei-set-buffer-hook)
+  (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook) ; Need one nice place to set up hooks
+  
   (if (symbolp 'eldoc-mode)     ;; Disable eldoc mode! Why is is active?
       (eldoc-mode -1)
     )
