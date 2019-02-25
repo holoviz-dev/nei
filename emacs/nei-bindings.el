@@ -81,6 +81,7 @@
      "---"
      ["Move Cell Up" nei-move-cell-up t]
      ["Move Cell Down" nei-move-cell-down t]
+     ["Toggle rgrep integration" nei-rgrep-integration t] ;; Should be a toggle
      )
     ("Operations"
      ["Execute In Place" nei-exec-by-line ws-connection]

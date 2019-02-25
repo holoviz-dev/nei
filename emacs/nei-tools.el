@@ -109,7 +109,7 @@
   (fundamental-mode)
   )
 
-(defun nei-tools () ;; Make into toggle
+(defun nei-rgrep-integration () ;; Make into toggle
   "Uses magic-fallback-mode-alist to handle .ipynb files opened in dired mode"
   (interactive)
   (add-hook 'next-error-hook #'nei-next-error-hook)
