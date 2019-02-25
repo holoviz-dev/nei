@@ -183,7 +183,7 @@
   (interactive)
    (progn
      (nei--send-json (nei--server-cmd "view_browser" (list)) t)
-     (run-with-idle-timer 5 1 'nei-update-css))
+     (run-with-idle-timer 1 1 'nei-update-css))
    )
 
 ;;==============;;
