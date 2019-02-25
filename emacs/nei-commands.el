@@ -141,10 +141,6 @@
     )
 )
 
-(defun nei--set-scroll-hook ()
-  (push 'nei--scroll-hook window-scroll-functions) 
-  )
-
 
 (defun nei-exec-by-line-and-move-to-next-cell ()
   "Executes cell at current line and moves point to next cell"

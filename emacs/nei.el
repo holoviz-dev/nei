@@ -127,6 +127,7 @@
                     ;; Timer used to ensure stack cleared to prevent recursion issues.
                     (run-with-timer 0 nil 'nei-reload-page)
                     (setq nei--last-buffer (buffer-name))
+                    (push 'nei--scroll-hook window-scroll-functions) 
                     )
                 )
             
@@ -135,13 +136,15 @@
     )
   )
 
+
 (define-minor-mode nei-mode
   "Nei for authoring notebooks in Emacs."  
   :keymap nei-mode-map
   :lighter (:eval (format " NEI:%s" (if ws-connection "Connected" "Disconnected")))
   
   (nei-fontify)
-  (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook) ; Need one nice place to set up hooks
+  ; Need one nice place to set up hooks
+  (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook) 
   
   (if (symbolp 'eldoc-mode)     ;; Disable eldoc mode! Why is is active?
       (eldoc-mode -1)
