@@ -9,7 +9,8 @@ pre {
 }
 
 .markdown-cell {
-    margin-left: 40px; 
+    margin-left: 40px;
+    font-family:    Arial, Helvetica, sans-serif
 }
 
 .nei-output-div {
