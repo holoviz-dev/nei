@@ -4,6 +4,8 @@
 
 
 (defvar-local nei--currently-mirroring nil)
+(defvar-local nei--attached-kernel nil)
+
 (defvar nei-scroll-pixels 300)
 
 
@@ -47,7 +49,8 @@
 
 (defun nei-start-kernel ()
   "Send an interrupt-kernel  message"
-  (interactive)  
+  (interactive)
+  (setq nei--attached-kernel t)
   (nei--server-cmd "start_kernel" (list))
   (message "Sent start kernel message")
 )
@@ -71,6 +74,7 @@
 (defun nei-stop-kernel ()
   "Send an stop-kernel  message"
   (interactive)
+  (setq nei--attached-kernel nil)
   (message "Not implemented: stop-kernel")
 )
 
