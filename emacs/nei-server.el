@@ -152,18 +152,23 @@
     )
   )
 
+
 (defun nei-server-log (&optional terminated)
   "View the server log buffer if the server process is running."
   (interactive)
   (let ((proc (get-process "nei-server")))
     (if (or (not (null proc)) terminated)
-        (with-current-buffer (get-buffer " *nei server log*")
-          (let ((contents (buffer-string)))
-            (with-output-to-temp-buffer "NEI server Log"
-              (princ contents)
-             )
+        (progn 
+          (if (null (get-buffer "NEI server Log"))
+              (progn 
+                (make-indirect-buffer (get-buffer " *nei server log*") "NEI server Log")
+                (with-current-buffer (get-buffer "NEI server Log")
+                  (help-mode)
+                  )
+                )
             )
-          )
+          (switch-to-buffer-other-window "NEI server Log")
+          ) 
       (message "NEI server not currently running as emacs process")
       )
     )
