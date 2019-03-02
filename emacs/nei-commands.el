@@ -60,22 +60,26 @@
   (message "Sent interrupt kernel message")
 )
 
-
-(defun nei-reload-page ()
-  "Send an restart-kernel  message"
-  (interactive)
-  (nei--server-cmd "reload_page" (list))
-  (message "Sent reload page message")
-)
-
-
-
 (defun nei-restart-kernel ()
   "Send an restart-kernel  message"
   (interactive)
   (setq nei--execution-count 0)
   (nei--server-cmd "restart_kernel" (list))
   (message "Sent restart kernel message")
+)
+
+(defun nei-stop-kernel ()
+  "Send an stop-kernel  message"
+  (interactive)
+  (message "Not implemented: stop-kernel")
+)
+
+
+(defun nei-reload-page ()
+  "Send an restart-kernel  message"
+  (interactive)
+  (nei--server-cmd "reload_page" (list))
+  (message "Sent reload page message")
 )
 
 
