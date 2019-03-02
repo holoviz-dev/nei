@@ -6,6 +6,7 @@ a {
 
 pre {
     margin:0px;
+    opacity: 0.6;
 }
 
 .markdown-cell {
@@ -15,9 +16,8 @@ pre {
 
 .nei-output-div {
     overflow: hidden;
-    width: 100%; 
-    font-style:oblique;
-    font-family: sans;
+    width: 100%;
+    font-family: Courier New;
     margin-top: 3px; 
     margin-left:10px; 
     /* background-color: rgba(256, 256, 256, 0.05);*/
