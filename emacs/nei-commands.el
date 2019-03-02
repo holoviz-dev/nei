@@ -53,6 +53,7 @@
   (setq nei--attached-kernel t)
   (nei--server-cmd "start_kernel" (list))
   (message "Sent start kernel message")
+  (nei--update-kernel-menu-entry t)
 )
 
 
@@ -71,11 +72,12 @@
   (message "Sent restart kernel message")
 )
 
-(defun nei-stop-kernel ()
-  "Send an stop-kernel  message"
+(defun nei-shutdown-kernel ()
+  "Send an shutdown-kernel  message"
   (interactive)
   (setq nei--attached-kernel nil)
-  (message "Not implemented: stop-kernel")
+  (message "Not implemented: shutdown-kernel")
+  (nei--update-kernel-menu-entry nil)
 )
 
 

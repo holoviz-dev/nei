@@ -43,6 +43,30 @@
   )
 
 
+(defun nei-list-buffers-with-kernels ()
+  "Opens a temporary buffer containing a list of buffers with attatched kernels"
+  (interactive)
+  (with-output-to-temp-buffer "NEI Kernels"
+    (dolist (buff (nei--buffers-with-kernels))
+      (princ (buffer-name buff))
+      )
+    )
+  )
+
+
+(defun nei--update-kernel-menu-entry (add-entry)
+  "Adds or removes a dynamic menu entry for buffers with attached kernels"
+  (lexical-let ((entry-name (buffer-name)))
+    (define-key nei-mode-map
+      (vector 'menu-bar 'NEI 'Kernel 'Live\ Kernels (make-symbol entry-name))
+      (if add-entry (cons (buffer-name)
+                          (lambda () (interactive) (switch-to-buffer entry-name))
+                          ) nil)
+      )
+    )
+  )
+
+
 (defun nei--menu-stub ()
   (interactive)
   (message "Menu stub")
@@ -52,9 +76,16 @@
   "Notebook Emacs Interface"
   '("NEI"
     ("Kernel"
-      ["Start" nei-start-kernel ws-connection]
-      ["Interrupt" nei-interrupt-kernel nil] ; Needs per-buffer kernel state
-      ["Restart" nei-restart-kernel nil]     ; Needs per-buffer kernel state
+      ["Start" nei-start-kernel (not nei--attached-kernel)]
+      ["Interrupt" nei-interrupt-kernel nei--attached-kernel]
+      ["Restart" nei-restart-kernel nei--attached-kernel]
+      ["Shutdown" nei-shutdown-kernel nei--attached-kernel]
+      "---"
+      ("Live Kernels"
+       "---"
+       ["Buffer List"
+        nei-list-buffers-with-kernels (nei--buffers-with-kernels)]
+       )
       )
     ("Server"
      ("Actions"
