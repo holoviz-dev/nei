@@ -72,7 +72,7 @@
   "Notebook Emacs Interface"
   '("NEI"
     ("Kernel"
-     ("Change State"
+     ("Interact"
       ["Start" nei-start-kernel (not nei--active-kernel)]
       ["Interrupt" nei-interrupt-kernel nei--active-kernel]
       ["Restart" nei-restart-kernel nei--active-kernel]
@@ -112,7 +112,7 @@
      ["Write Notebook" nei-write-notebook])
     "---"
     ("Server"
-     ("Change State"
+     ("Interact"
       ["Start and Connect" nei-connect (not ws-connection)]
       ["Halt and Disconnect" nei-disconnect ws-connection]
       )
