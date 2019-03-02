@@ -16,6 +16,15 @@
    warn-no-connection)
   )
 
+
+(defun nei--exec-cmd (command args &optional warn-no-connection)
+  "Similar to nei-server-cmd but warns if there is no buffer kernel"
+  (if nei--active-kernel
+      (nei--server-cmd command args warn-no-connection)
+    (message "No attached kernel. Execution skipped.")
+    )
+  )
+
 (defun nei--scroll-by (offset)
   "Send a scroll-by message"
    (nei--server-cmd "scroll_by" (list (cons "offset" offset)))
@@ -117,7 +126,7 @@
 (defun nei-exec-silently (code)
   "Send an 'exec_silently' message to server to run the given code for its side-effects"
   (interactive "MCode:")
-  (nei--server-cmd "exec_silently" (list (cons "code" code)))
+  (nei--exec-cmd "exec_silently" (list (cons "code" code)))
   )
 
   
@@ -130,12 +139,12 @@
         (nei--update-exec-prompt nei--execution-count) ;; TODO: Bump only if in code cell
         )
     )
-  (nei--server-cmd "exec_cell_by_line"
-                   (list 
-                    (cons "line_number"
-                          (line-number-at-pos))
-                    )
-                   )
+  (nei--exec-cmd "exec_cell_by_line"
+                 (list 
+                  (cons "line_number"
+                        (line-number-at-pos))
+                  )
+                 )
   )
 
 
