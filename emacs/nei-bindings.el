@@ -34,6 +34,15 @@
 (defvar nei-mode-map (nei--define-key-map (make-sparse-keymap))
   "The sparse keymap with NEI bindings.")
 
+
+(defun nei--buffers-with-kernels ()
+  "Returns a list of buffers with attached kernels"
+  (seq-filter
+   (lambda (buff) (buffer-local-value 'nei--attached-kernel buff))
+   (buffer-list))
+  )
+
+
 (defun nei--menu-stub ()
   (interactive)
   (message "Menu stub")
