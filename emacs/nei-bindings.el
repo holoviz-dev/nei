@@ -38,7 +38,7 @@
 (defun nei--buffers-with-kernels ()
   "Returns a list of buffers with attached kernels"
   (seq-filter
-   (lambda (buff) (buffer-local-value 'nei--attached-kernel buff))
+   (lambda (buff) (buffer-local-value 'nei--active-kernel buff))
    (buffer-list))
   )
 
@@ -76,10 +76,10 @@
   "Notebook Emacs Interface"
   '("NEI"
     ("Kernel"
-      ["Start" nei-start-kernel (not nei--attached-kernel)]
-      ["Interrupt" nei-interrupt-kernel nei--attached-kernel]
-      ["Restart" nei-restart-kernel nei--attached-kernel]
-      ["Shutdown" nei-shutdown-kernel nei--attached-kernel]
+      ["Start" nei-start-kernel (not nei--active-kernel)]
+      ["Interrupt" nei-interrupt-kernel nei--active-kernel]
+      ["Restart" nei-restart-kernel nei--active-kernel]
+      ["Shutdown" nei-shutdown-kernel nei--active-kernel]
       "---"
       ("Live Kernels"
        "---"

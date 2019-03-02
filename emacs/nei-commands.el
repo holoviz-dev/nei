@@ -4,7 +4,7 @@
 
 
 (defvar-local nei--currently-mirroring nil)
-(defvar-local nei--attached-kernel nil)
+(defvar-local nei--active-kernel nil)
 
 (defvar nei-scroll-pixels 300)
 
@@ -50,7 +50,7 @@
 (defun nei-start-kernel ()
   "Send an interrupt-kernel  message"
   (interactive)
-  (setq nei--attached-kernel t)
+  (setq nei--active-kernel t)
   (nei--server-cmd "start_kernel" (list))
   (message "Sent start kernel message")
   (nei--update-kernel-menu-entry t)
@@ -75,7 +75,7 @@
 (defun nei-shutdown-kernel ()
   "Send an shutdown-kernel  message"
   (interactive)
-  (setq nei--attached-kernel nil)
+  (setq nei--active-kernel nil)
   (message "Not implemented: shutdown-kernel")
   (nei--update-kernel-menu-entry nil)
 )
@@ -124,7 +124,7 @@
 (defun nei-exec-by-line ()
   "Send an 'exec_cell_by_line' message to server at the current line"
   (interactive)
-  (if nei--attached-kernel
+  (if nei--active-kernel
       (progn 
         (setq nei--execution-count (1+ nei--execution-count))
         (nei--update-exec-prompt nei--execution-count) ;; TODO: Bump only if in code cell
