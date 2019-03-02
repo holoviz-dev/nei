@@ -211,7 +211,7 @@
   (interactive)
    (progn
      (nei--server-cmd "view_browser" (list) t)
-     (run-with-idle-timer 1 1 'nei-update-css))
+     (run-with-idle-timer 1 nil 'nei-update-css))
    )
 
 ;;==============;;
