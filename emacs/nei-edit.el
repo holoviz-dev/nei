@@ -124,6 +124,21 @@
   (if nei--fontified (nei-defontify) (nei-fontify))
 )
 
+
+(defun nei-insert-mode-line ()
+  "Insert a file mode line to open the Python file in NEI mode"
+  (interactive)
+  (if (string= major-mode "python-mode")
+      (save-excursion 
+        (goto-char 0)
+        (if (looking-at "# -\\*- mode: python")
+            (message "Existing file mode line detected")
+            (insert "# -*- mode: python; eval: (nei-mode)-*-")
+          )
+        )
+    )
+  )
+
 ;;==================================;;
 ;; Navigation and prompt management ;;
 ;;==================================;;

@@ -68,29 +68,51 @@
     )
   )
 
-
-(defun nei--menu-stub ()
-  (interactive)
-  (message "Menu stub")
-  )
-
 (easy-menu-define nei-mode-menu nei-mode-map
   "Notebook Emacs Interface"
   '("NEI"
     ("Kernel"
+     ("Change State"
       ["Start" nei-start-kernel (not nei--active-kernel)]
       ["Interrupt" nei-interrupt-kernel nei--active-kernel]
       ["Restart" nei-restart-kernel nei--active-kernel]
       ["Shutdown" nei-shutdown-kernel nei--active-kernel]
-      "---"
-      ("Live Kernels"
+      )
+      ("Buffers"
        "---"
-       ["Buffer List"
+       ["List Buffers"
         nei-list-buffers-with-kernels (nei--buffers-with-kernels)]
        )
       )
+    ("Edit"
+     ["Insert Code" nei-insert-code-cell t]
+     ["Insert Markdown" nei-insert-markdown-cell t]
+     "---"
+     ["Next Cell" nei-move-point-to-next-cell t]
+     ["Previous Cell" nei-move-point-to-previous-cell t]
+     "---"
+     ["Move Cell Up" nei-move-cell-up t]
+     ["Move Cell Down" nei-move-cell-down t]
+     "---"
+     ;; Switch buffer?
+     ["Insert mode line" nei-insert-mode-line t]
+     ["Toggle rgrep integration" nei-rgrep-integration t] ;; Should be a toggle
+     ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
+     )
+    ("Actions"
+     ["Clear cell output"  nei-clear-cell-by-line ws-connection]
+     ["Clear all cell output"  nei-clear-all-cell-outputs ws-connection]
+     ["Clear Notebook and Restart" nei-clear-notebook-and-restart ws-connection]
+     "---"
+     ["Execute In Place" nei-exec-by-line ws-connection]
+     ["Execute and Move" nei-exec-by-line-and-move-to-next-cell ws-connection]
+     )
+    ("Notebook"
+     ["Insert Notebook" nei-insert-notebook] ;; Insert Notebook At Point?
+     ["Write Notebook" nei-write-notebook])
+    "---"
     ("Server"
-     ("Actions"
+     ("Change State"
       ["Start and Connect" nei-connect (not ws-connection)]
       ["Halt and Disconnect" nei-disconnect ws-connection]
       )
@@ -108,33 +130,6 @@
      ["Scroll down" nei-scroll-down ws-connection]
      ["Update CSS" nei-update-css ws-connection]
      )
-    "---"
-    ("Buffer"
-      ;; Switch buffer?
-      ["Insert mode line" nei--menu-stub t]
-      ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
-      )
-    ("Edit"
-     ["Insert Code" nei-insert-code-cell t]
-     ["Insert Markdown" nei-insert-markdown-cell t]
-     "---"
-     ["Next Cell" nei-move-point-to-next-cell t]
-     ["Previous Cell" nei-move-point-to-previous-cell t]
-     "---"
-     ["Move Cell Up" nei-move-cell-up t]
-     ["Move Cell Down" nei-move-cell-down t]
-     ["Toggle rgrep integration" nei-rgrep-integration t] ;; Should be a toggle
-     )
-    ("Operations"
-     ["Execute In Place" nei-exec-by-line ws-connection]
-     ["Execute and Move" nei-exec-by-line-and-move-to-next-cell ws-connection]
-     ["Clear cell output"  nei-clear-cell-by-line ws-connection]
-     ["Clear all cell output"  nei-clear-all-cell-outputs ws-connection]
-     ["Clear Notebook and Restart" nei-clear-notebook-and-restart ws-connection]
-     )
-    ("Notebook"
-     ["Insert Notebook" nei-insert-notebook] ;; Insert Notebook At Point?
-     ["Write Notebook" nei-write-notebook])
     )
   )
 
