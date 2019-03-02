@@ -20,6 +20,7 @@
   (define-key map (kbd "C-c k") 'nei-start-kernel)
   (define-key map (kbd "C-c i") 'nei-interrupt-kernel)
   (define-key map (kbd "C-c r") 'nei-restart-kernel)
+  (define-key map (kbd "C-c K") 'nei-shutdown-kernel)
   (define-key map (kbd "C-c l") 'nei-clear-cell-by-line)
   (define-key map (kbd "C-c n") 'nei-clear-notebook-and-restart)
 
