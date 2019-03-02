@@ -17,6 +17,7 @@
   (define-key map (kbd "C-c c") 'nei-insert-code-cell)
   (define-key map (kbd "C-c m") 'nei-insert-markdown-cell)
   (define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
+  (define-key map (kbd "C-c k") 'nei-start-kernel)
   (define-key map (kbd "C-c i") 'nei-interrupt-kernel)
   (define-key map (kbd "C-c r") 'nei-restart-kernel)
   (define-key map (kbd "C-c l") 'nei-clear-cell-by-line)
