@@ -124,8 +124,12 @@
 (defun nei-exec-by-line ()
   "Send an 'exec_cell_by_line' message to server at the current line"
   (interactive)
-  (setq nei--execution-count (1+ nei--execution-count))
-  (nei--update-exec-prompt nei--execution-count) ;; TODO: Bump only if in code cell
+  (if nei--attached-kernel
+      (progn 
+        (setq nei--execution-count (1+ nei--execution-count))
+        (nei--update-exec-prompt nei--execution-count) ;; TODO: Bump only if in code cell
+        )
+    )
   (nei--server-cmd "exec_cell_by_line"
                    (list 
                     (cons "line_number"

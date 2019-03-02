@@ -27,7 +27,7 @@
 (defvar nei--unexpected-disconnect nil
   "Flag indicating whether the websocket connection is closed or not")
 
-(defvar nei--execution-count 0
+(defvar-local nei--execution-count 0
   "The number of kernel executions invoked from NEI")
 
 
@@ -41,7 +41,7 @@
                               (error "Test error (expected)"))
                 :on-close (lambda (_websocket) (setq nei--unexpected-disconnect t))
                 ;; New connection, reset execution count.
-                :on-open (lambda (_websocket) (setq nei--execution-count 0)))
+                :on-open (lambda (_websocket) ))
           )
     (setq ws-connection conn)
     )
