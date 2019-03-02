@@ -140,7 +140,11 @@
 (define-minor-mode nei-mode
   "Nei for authoring notebooks in Emacs."  
   :keymap nei-mode-map
-  :lighter (:eval (format " NEI:%s" (if ws-connection "Connected" "Disconnected")))
+  :lighter (:eval (format " NEI:%s %s"
+                          (if ws-connection "Connected" "Disconnected")
+                          (if nei--active-kernel "[Kernel]" "[No Kernel]")
+                          )
+                  )
   
   (nei-fontify)
   ; Need one nice place to set up hooks
