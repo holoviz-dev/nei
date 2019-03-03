@@ -163,7 +163,7 @@
               (progn 
                 (make-indirect-buffer (get-buffer " *nei server log*") "NEI server log")
                 (with-current-buffer (get-buffer "NEI server log")
-                  (help-mode)
+                  (special-mode)
                   )
                 )
             )
