@@ -74,46 +74,48 @@
   "Notebook Emacs Interface"
   '("NEI"
     ("Kernel"
-     ("Interact"
-      ["Start" nei-start-kernel (not nei--active-kernel)]
-      ["Interrupt" nei-interrupt-kernel nei--active-kernel]
-      ["Restart" nei-restart-kernel nei--active-kernel]
-      ["Shutdown" nei-shutdown-kernel nei--active-kernel]
-      )
       ("Buffers"
        "---"
        ["List Buffers"
         nei-list-buffers-with-kernels (nei--buffers-with-kernels)]
        )
+      "---"
+      ["Start" nei-start-kernel (not nei--active-kernel)]
+      ["Interrupt" nei-interrupt-kernel nei--active-kernel]
+      ["Restart" nei-restart-kernel nei--active-kernel]
+      ["Shutdown" nei-shutdown-kernel nei--active-kernel]
       )
-    ("Edit"
-     ["Insert Code" nei-insert-code-cell t]
-     ["Insert Markdown" nei-insert-markdown-cell t]
+    ["Execute In Place" nei-exec-by-line nei--active-kernel]
+    ["Execute and Move" nei-exec-by-line-and-move-to-next-cell nei--active-kernel]
+    "---"
+    ["Next Cell" nei-move-point-to-next-cell t]
+    ["Previous Cell" nei-move-point-to-previous-cell t]
      "---"
-     ["Next Cell" nei-move-point-to-next-cell t]
-     ["Previous Cell" nei-move-point-to-previous-cell t]
+    ["Insert Code" nei-insert-code-cell t]
+    ["Insert Markdown" nei-insert-markdown-cell t]
+    "---"
+    ["Move Cell Up" nei-move-cell-up t]
+    ["Move Cell Down" nei-move-cell-down t]
+    "---"
+    ("Browser"
+     ["View" nei-view-browser nei--ws-connection]
+     ["HTML Preview" nei-view-notebook nei--ws-connection] 
      "---"
-     ["Move Cell Up" nei-move-cell-up t]
-     ["Move Cell Down" nei-move-cell-down t]
-     "---"
-     ;; Switch buffer?
-     ["Toggle rgrep integration" nei-rgrep-integration t] ;; Should be a toggle
-     ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
-     )
-    ("Actions"
      ["Clear cell output"  nei-clear-cell-by-line nei--ws-connection]
      ["Clear all cell output"  nei-clear-all-cell-outputs nei--ws-connection]
-     ["Clear Notebook and Restart" nei-clear-notebook-and-restart nei--ws-connection]
+     ["Update CSS" nei-update-css nei--ws-connection]
      "---"
-     ["Execute In Place" nei-exec-by-line nei--ws-connection]
-     ["Execute and Move" nei-exec-by-line-and-move-to-next-cell nei--ws-connection]
+     ["Scroll up" nei-scroll-up nei--ws-connection]
+     ["Scroll down" nei-scroll-down nei--ws-connection]
      )
-    ("Notebook"
-     ["Insert Notebook" nei-insert-notebook] ;; Insert Notebook At Point?
-     ["Write Notebook" nei-write-notebook])
-    "---"
+    ("Buffer"
+     ["Insert Notebook at Point" nei-insert-notebook]
+     ["Write Notebook" nei-write-notebook]
+     ["Clear Notebook and Restart Kernel" nei-clear-notebook-and-restart nei--active-kernel]
+     ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
+     )
     ("Server"
-     ("Interact"
+     ("Status"
       ["Start and Connect" nei-connect (not nei--ws-connection)]
       ["Halt and Disconnect" nei-disconnect nei--ws-connection]
       )
@@ -123,14 +125,10 @@
      ["Information" nei-server-info t]
      ["Message Log" nei-server-log t]
      )
-    ("Browser"
-     ["View" nei-view-browser nei--ws-connection]
-     ["HTML Preview" nei-view-notebook nei--ws-connection] 
-     "---"
-     ["Scroll up" nei-scroll-up nei--ws-connection]
-     ["Scroll down" nei-scroll-down nei--ws-connection]
-     ["Update CSS" nei-update-css nei--ws-connection]
+    ("Session"
+     ["Toggle rgrep integration" nei-rgrep-integration t] ;; Should be a toggle
      )
+
     )
   )
 
