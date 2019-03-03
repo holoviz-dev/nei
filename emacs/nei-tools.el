@@ -96,11 +96,11 @@
    background - switch to buffer.
    keep-original - kill original buffer or not"
   (let* ((text (nei-parse-ipynb-buffer backoff))
+         (ipynb-source-filename (buffer-file-name))
          (nei-buffer-name (s-prepend "NEI>" (buffer-name)))
          (new-bufferp (not (get-buffer nei-buffer-name)))
          (nei-buffer (get-buffer-create nei-buffer-name))
          )
-
       
       (with-current-buffer nei-buffer
         (let* ((point-and-clean-text (nei--locate-ipynb-point text))
@@ -109,7 +109,8 @@
              
           (if new-bufferp
               (progn (insert clean-text) (nei-mode)))
-      
+
+          (setq nei--ipynb-buffer-filename ipynb-source-filename)
           (if (not background)
               (progn 
                 (switch-to-buffer nei-buffer)

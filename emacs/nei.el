@@ -29,7 +29,10 @@
 (defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
 
 (defvar-local nei--execution-count 0
-  "The number of kernel executions invoked from NEI")
+  "Local variable tracking the number of kernel executions invoked from NEI")
+
+(defvar-local nei--ipynb-buffer-filename nil
+  "Local variable tracking the original filename for a view on an IPYNB file")
 
 
 (defun nei--open-websocket ()
