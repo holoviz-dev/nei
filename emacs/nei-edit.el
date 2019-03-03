@@ -1,3 +1,5 @@
+;;;  -*- lexical-binding: t; -*-
+
 (require 'nei-util)
 (require 'nei-parse)
 (require 'json)

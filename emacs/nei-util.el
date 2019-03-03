@@ -1,3 +1,5 @@
+;;;  -*- lexical-binding: t; -*-
+
 (require 'htmlize)
 
 (defun assoc-value (key alist)

@@ -1,3 +1,5 @@
+;;;  -*- lexical-binding: t; -*-
+
 (require 's)
 (require 'nei-util)
 

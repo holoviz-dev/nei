@@ -1,3 +1,5 @@
+;;;  -*- lexical-binding: t; -*-
+
 ;; File defining NEI key bindings and bindings to menu entries.
 (require 'nei-commands)
 

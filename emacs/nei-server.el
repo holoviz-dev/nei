@@ -1,3 +1,5 @@
+;;;  -*- lexical-binding: t; -*-
+
 ;; For starting up the server
 (require 's)
 

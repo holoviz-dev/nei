@@ -1,3 +1,5 @@
+;;;  -*- lexical-binding: t; -*-
+
 ;; Module for commands sent to and from the server
 (require 'nei-util)
 (require 'json)

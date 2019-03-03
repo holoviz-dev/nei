@@ -1,3 +1,4 @@
+;;;  -*- lexical-binding: t; -*-
 
 (defvar nei--detect-ipynb-regexp "{\n \"cells\": \\[\n  {\n" ;; e.g for string-match: 
   "Regular expression used to detect IPYNB JSON")

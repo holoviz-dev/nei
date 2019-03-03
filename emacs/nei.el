@@ -1,3 +1,5 @@
+;;;  -*- lexical-binding: t; -*-
+
 (require 'cl-lib) ;; For keyword argument support
 (require 'websocket)
 (require 'json)
