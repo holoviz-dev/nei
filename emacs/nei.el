@@ -171,7 +171,8 @@
 
 ;; Suggests the use of nei-view-ipynb if notebook JSON detected
 (setq magic-fallback-mode-alist
-      (append '((nei--detect-ipynb-regexp . nei--ipynb-suggestion))
+      (append
+       (cons (cons nei--detect-ipynb-regexp  'nei--ipynb-suggestion) nil)
        magic-fallback-mode-alist))
 
 (global-set-key (kbd "C-c I") 'nei-view-ipynb)
