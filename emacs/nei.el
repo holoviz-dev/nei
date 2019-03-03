@@ -165,7 +165,16 @@
   (if (not (string= major-mode "python-mode"))
       (python-mode))
   )
+
+
 (advice-add 'nei-mode :before #'nei--enable-python-mode-advice)
+
+;; Suggests the use of nei-view-ipynb if notebook JSON detected
+(setq magic-fallback-mode-alist
+      (append '((nei--detect-ipynb-regexp . nei--ipynb-suggestion))
+       magic-fallback-mode-alist))
+
+(global-set-key (kbd "C-c I") 'nei-view-ipynb)
 
 
 ;; Future ideas

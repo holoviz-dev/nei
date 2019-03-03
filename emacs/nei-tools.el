@@ -131,7 +131,8 @@
   )
 
 (defun nei--ipynb-suggestion ()
-  (message "Switch to NEI mode using the nei-view-ipynb command")
+  (message "Switch to NEI mode using nei-view-ipynb (%s)"
+           (mapconcat 'key-description (where-is-internal 'nei-view-ipynb) " "))
   (fundamental-mode)
   )
 
@@ -139,10 +140,6 @@
   "Uses magic-fallback-mode-alist to handle .ipynb files opened in dired mode"
   (interactive)
   (add-hook 'next-error-hook #'nei-next-error-hook)
-  (setq magic-fallback-mode-alist
-            (append
-             '(("{\n \"cells\": \\[\n  {\n" . nei--ipynb-suggestion))
-             magic-fallback-mode-alist))
-  )
+)
 
 (provide 'nei-tools)
