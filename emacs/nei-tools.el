@@ -91,14 +91,6 @@
     )
   )
 
-(defun nei-add-file-mode-line ()
-  "Add a file mode line"
-  (interactive)
-  (beginning-of-buffer)
-  (insert "# -*- mode: python; eval: (nei-mode)-*-\n\n")
-  )
-
-
 (defun nei-view-ipynb ()
   "Open a NEI view on an IPYNB file"
   (interactive)

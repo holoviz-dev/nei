@@ -97,7 +97,6 @@
      ["Move Cell Down" nei-move-cell-down t]
      "---"
      ;; Switch buffer?
-     ["Insert mode line" nei-insert-mode-line t]
      ["Toggle rgrep integration" nei-rgrep-integration t] ;; Should be a toggle
      ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
      )
