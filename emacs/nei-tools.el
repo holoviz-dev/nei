@@ -31,25 +31,34 @@
     )
   )
 
-(defun nei--jump-to-ipynb-point ()
-  (beginning-of-buffer)
-  (while (re-search-forward "NEI-POINT>" nil t)
-    (replace-match "" nil nil))
-  (point)
+
+(defun nei--locate-ipynb-point (text)
+  "Without mutating the current buffer, return a cons of the appropriate
+   point and text cleaned of the temporary marker"
+  (with-temp-buffer
+    (insert text)
+    (beginning-of-buffer)
+    (while (re-search-forward "NEI-POINT>" nil t)
+      (replace-match "" nil nil))
+    (cons (point) (buffer-string))
+    )
   )
 
+
 (defun nei--marked-source (&optional anywhere)
-  (save-excursion
-    (nei--insert-ipynb-point anywhere)
-    (let ((source  (buffer-string)))
-      (nei--jump-to-ipynb-point)
-      (set-buffer-modified-p nil)
-      source
+  (let ((buffer-contents (buffer-string))
+        (point-pos (point)))
+    (with-temp-buffer
+      (insert buffer-contents)
+      (goto-char point-pos)
+      (nei--insert-ipynb-point anywhere)
+      (buffer-string)
       )
     )
   )
 
-(defun nei-parse-buffer (backoff)
+(defun nei-parse-ipynb-buffer (backoff)
+  "Parse the JSON contents of an ipynb buffer returning the results as Python code"
   (condition-case nil
       (nei--cells-to-text
        (nei-parse-json (json-read-from-string (nei--marked-source backoff))))
@@ -76,23 +85,34 @@
   "backoff - attempt reparse. 
    background - switch to buffer.
    keep-original - kill original buffer or not"
-  (let* ((text (nei-parse-buffer backoff))
-         (new-buffer (get-buffer-create
-                      (s-prepend "NEI>" (buffer-name)))
-                     ))
+  (let* ((text (nei-parse-ipynb-buffer backoff))
+         (nei-buffer-name (s-prepend "NEI>" (buffer-name)))
+         (new-bufferp (not (get-buffer nei-buffer-name)))
+         (nei-buffer (get-buffer-create nei-buffer-name))
+         )
 
-    (with-current-buffer new-buffer
-      (if (not background) 
-          (switch-to-buffer new-buffer))
-      (erase-buffer) ;; The buffer may already exist (e.g visiting a different point)
-      (insert text)
-      (nei-mode)
-      (goto-char (nei--jump-to-ipynb-point))
-      )
+      
+      (with-current-buffer nei-buffer
+        (let* ((point-and-clean-text (nei--locate-ipynb-point text))
+               (new-point-pos (car point-and-clean-text))
+               (clean-text (cdr point-and-clean-text)))
+             
+          (if new-bufferp
+              (progn (insert clean-text) (nei-mode)))
+      
+          (if (not background)
+              (progn 
+                (switch-to-buffer nei-buffer)
+                (goto-char new-point-pos)
+                (recenter)
+                )
+            )
+          )
+        )
     
-    (if (not keep-original)
-        (kill-buffer (current-buffer)))
-    )
+      (if (not keep-original)
+          (kill-buffer (current-buffer)))
+      )
   (set-buffer-modified-p nil)
   )
 
