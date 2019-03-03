@@ -1,5 +1,23 @@
 ;;;  -*- lexical-binding: t; -*-
 
+
+
+
+(defun nei-write-ipynb-hook ()
+  (if (and (s-starts-with? "NEI>" (buffer-name))
+           (s-ends-with? ".ipynb" (buffer-name))
+           (null (buffer-file-name)))
+      (progn
+        (message "SAVING TO: %s" nei--ipynb-buffer-filename)
+        (nei--write-notebook "full-notebook" nei--ipynb-buffer-filename)
+        t
+        )
+    nil
+    )
+  )
+
+
+
 (defvar nei--detect-ipynb-regexp "{\n \"cells\": \\[\n  {\n" ;; e.g for string-match: 
   "Regular expression used to detect IPYNB JSON")
 
