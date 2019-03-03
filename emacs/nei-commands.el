@@ -224,6 +224,7 @@
 
 ;; Note the mirror buffer isn't the same as output using .text....
 (defun nei-write-notebook (mode)
+  "Interactive command that prompts for the mode and filename for writing the notebook"
   (interactive (list (completing-read
                       "Select an output type: "
                       '(("python" "python")
@@ -236,13 +237,18 @@
     filename
     )
   (let ((filename (call-interactively 'nei--prompt-for-filename)))
-    (nei--server-cmd "write_notebook"
-                     (list 
-                      (cons "mode" mode)
-                      (cons "filename" filename)
-                      )
-                     )
+    (nei--write-notebook mode filename)
     )
+  )
+
+
+(defun nei--write-notebook (mode filename)
+  (nei--server-cmd "write_notebook"
+                   (list 
+                    (cons "mode" mode)
+                    (cons "filename" filename)
+                    )
+                   )
   )
 
 
