@@ -2,6 +2,10 @@
 (defvar nei--detect-ipynb-regexp "{\n \"cells\": \\[\n  {\n" ;; e.g for string-match: 
   "Regular expression used to detect IPYNB JSON")
 
+(defvar nei--point-marker "NEI-POINT>"
+  "Magic string used to track the point from the JSON source in ipynb files"
+  )
+
 (defun nei--visited-file-type ()
   "Returns PY or IPYNB or nil if no file is being visited"
   (cond ((s-ends-with? ".ipynb" (buffer-file-name)) "IPYNB")
@@ -14,11 +18,12 @@
   "Added a special text marker for the point in IPYNB buffer to track the point.
    Returns t if the marker is added, nil otherwise.
 
-  If anywhere, will insert the marker at the point position which may break the JSON.
+   If anywhere is true, this function will insert the marker exactly at
+   the point position which may break the JSON.
   "
-  (if insert-anywhere (insert "NEI-POINT>")
+  (if insert-anywhere (insert nei--point-marker)
     (ignore-errors
-      (let ((nei-point-marker "NEI-POINT>")
+      (let ((nei-point-marker nei--point-marker)
             (line-boundary (and (looking-back "^    " 4)
                                 (s-equals? (string (char-after)) "\""))))
         (if line-boundary
@@ -38,7 +43,7 @@
   (with-temp-buffer
     (insert text)
     (beginning-of-buffer)
-    (while (re-search-forward "NEI-POINT>" nil t)
+    (while (re-search-forward nei--point-marker nil t)
       (replace-match "" nil nil))
     (cons (point) (buffer-string))
     )
