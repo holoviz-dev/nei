@@ -11,23 +11,22 @@
 (require 'nei-bindings)
 (require 'nei-tools)
 
-
-(defvar nei--ws-connection nil
-  "The websocket client connection.")
-
-(defvar ws-messages nil
-  "Messages received over the websocket connection.")
-
 (defvar nei-browser "firefox"
   "The browser used by NEI when launch new tabs.")
 
 (defvar nei-autoconnect t
   "Boolean that determines whether to try to autoconnect when a NEI buffer is open")
 
-(defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
+(defvar nei--ws-connection nil
+  "The websocket client connection.")
+
+(defvar nei--ws-messages nil
+  "Messages received over the websocket connection.")
 
 (defvar nei--unexpected-disconnect nil
   "Flag indicating whether the websocket connection is closed or not")
+
+(defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
 
 (defvar-local nei--execution-count 0
   "The number of kernel executions invoked from NEI")
@@ -38,7 +37,7 @@
     (setq conn (websocket-open
                 "ws://127.0.0.1:9999"
                 :on-message (lambda (_websocket frame)
-                              (push (websocket-frame-text frame) ws-messages)
+                              (push (websocket-frame-text frame) nei--ws-messages)
                               (message "ws frame: %S" (websocket-frame-text frame))
                               (error "Test error (expected)"))
                 :on-close (lambda (_websocket) (setq nei--unexpected-disconnect t))
