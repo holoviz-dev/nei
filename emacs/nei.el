@@ -12,7 +12,7 @@
 (require 'nei-tools)
 
 
-(defvar ws-connection nil
+(defvar nei--ws-connection nil
   "The websocket client connection.")
 
 (defvar ws-messages nil
@@ -45,13 +45,13 @@
                 ;; New connection, reset execution count.
                 :on-open (lambda (_websocket) ))
           )
-    (setq ws-connection conn)
+    (setq nei--ws-connection conn)
     )
   )
 
 (defun nei--open-ws-connection (&optional quiet)
   "Opens a new websocket connection if needed"
-  (if (or (null ws-connection) nei--unexpected-disconnect)
+  (if (or (null nei--ws-connection) nei--unexpected-disconnect)
       (progn
         (setq nei--unexpected-disconnect nil)
         (nei--open-websocket)
@@ -65,7 +65,7 @@
 (defun nei-connect ()
   "Start the NEI server, establish the websocket connection and begin mirroring"
   (interactive)
-  (if (and ws-connection (null nei--unexpected-disconnect))
+  (if (and nei--ws-connection (null nei--unexpected-disconnect))
       (message "Already connected to NEI server")
     (progn 
       (nei--start-server)
@@ -85,14 +85,14 @@
 
 (defun nei--close-ws-connection ()
   "Close the websocket connection."
-  (websocket-close ws-connection)
-  (setq ws-connection nil)
+  (websocket-close nei--ws-connection)
+  (setq nei--ws-connection nil)
   )
 
 
 (defun nei--disconnection-error ()
   (nei-stop-mirroring)
-  (websocket-close ws-connection)
+  (websocket-close nei--ws-connection)
   (message "Unexpected disconnection")
   (setq nei--unexpected-disconnect nil)
   (nei--close-ws-connection)
@@ -106,10 +106,10 @@
 (defun nei--send-data (text &optional warn-no-connection)
   "Runs the callback if there is a connection and handles unexpected disconnects."
   (cond (nei--unexpected-disconnect (nei--disconnection-error))
-        ((null ws-connection)
+        ((null nei--ws-connection)
          (if warn-no-connection (message "Not connected to NEI server")))
         (t (progn
-             (websocket-send-text ws-connection text)
+             (websocket-send-text nei--ws-connection text)
              (if nei--unexpected-disconnect (nei--disconnection-error)))
            )
         )
@@ -143,7 +143,7 @@
   "Nei for authoring notebooks in Emacs."  
   :keymap nei-mode-map
   :lighter (:eval (format " NEI:%s %s"
-                          (if ws-connection "Connected" "Disconnected")
+                          (if nei--ws-connection "Connected" "Disconnected")
                           (if nei--active-kernel "[Kernel]" "[No Kernel]")
                           )
                   )

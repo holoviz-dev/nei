@@ -102,12 +102,12 @@
      ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
      )
     ("Actions"
-     ["Clear cell output"  nei-clear-cell-by-line ws-connection]
-     ["Clear all cell output"  nei-clear-all-cell-outputs ws-connection]
-     ["Clear Notebook and Restart" nei-clear-notebook-and-restart ws-connection]
+     ["Clear cell output"  nei-clear-cell-by-line nei--ws-connection]
+     ["Clear all cell output"  nei-clear-all-cell-outputs nei--ws-connection]
+     ["Clear Notebook and Restart" nei-clear-notebook-and-restart nei--ws-connection]
      "---"
-     ["Execute In Place" nei-exec-by-line ws-connection]
-     ["Execute and Move" nei-exec-by-line-and-move-to-next-cell ws-connection]
+     ["Execute In Place" nei-exec-by-line nei--ws-connection]
+     ["Execute and Move" nei-exec-by-line-and-move-to-next-cell nei--ws-connection]
      )
     ("Notebook"
      ["Insert Notebook" nei-insert-notebook] ;; Insert Notebook At Point?
@@ -115,8 +115,8 @@
     "---"
     ("Server"
      ("Interact"
-      ["Start and Connect" nei-connect (not ws-connection)]
-      ["Halt and Disconnect" nei-disconnect ws-connection]
+      ["Start and Connect" nei-connect (not nei--ws-connection)]
+      ["Halt and Disconnect" nei-disconnect nei--ws-connection]
       )
      ("Install"
       ["Pip install" nei-server-pip-install (not (nei--server-available))]
@@ -125,12 +125,12 @@
      ["Message Log" nei-server-log t]
      )
     ("Browser"
-     ["View" nei-view-browser ws-connection]
-     ["HTML Preview" nei-view-notebook ws-connection] 
+     ["View" nei-view-browser nei--ws-connection]
+     ["HTML Preview" nei-view-notebook nei--ws-connection] 
      "---"
-     ["Scroll up" nei-scroll-up ws-connection]
-     ["Scroll down" nei-scroll-down ws-connection]
-     ["Update CSS" nei-update-css ws-connection]
+     ["Scroll up" nei-scroll-up nei--ws-connection]
+     ["Scroll down" nei-scroll-down nei--ws-connection]
+     ["Update CSS" nei-update-css nei--ws-connection]
      )
     )
   )
