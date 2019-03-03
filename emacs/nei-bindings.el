@@ -8,6 +8,7 @@
   ;; Capitalized commands
   (define-key map (kbd "C-c W") 'nei-write-notebook)
   (define-key map (kbd "C-c I") 'nei-insert-notebook)
+  (define-key map (kbd "C-c F") 'nei-open-notebook)
   (define-key map (kbd "C-c E") 'nei-exec-by-line)
   (define-key map (kbd "C-c L") 'nei-clear-all-cell-outputs)
   (define-key map (kbd "C-c C") 'nei-update-css)
@@ -109,6 +110,7 @@
      ["Scroll down" nei-scroll-down nei--ws-connection]
      )
     ("Buffer"
+     ["Open Notebook"  nei-open-notebook]
      ["Insert Notebook at Point" nei-insert-notebook]
      ["Write Notebook" nei-write-notebook]
      ["Clear Notebook and Restart Kernel" nei-clear-notebook-and-restart nei--active-kernel]

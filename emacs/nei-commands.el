@@ -265,7 +265,7 @@
   )
 
 
-(defun nei-load-notebook (filename)
+(defun nei-open-notebook (filename)
   "Prompt for filename, load it into a new python-mode buffer and start mirroring" 
   (interactive "FNotebook filename:")
   (setq nei--cells
