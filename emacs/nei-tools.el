@@ -84,8 +84,12 @@
 (defun nei-view-ipynb ()
   "Open a NEI view on an IPYNB file"
   (interactive)
-  (nei--ipynb-buffer t)
+  (condition-case nil
+      (nei--ipynb-buffer t)
+    (error (message "This buffer does not appear to be valid notebook JSON"))
+    )
   )
+
 
 (defun nei--ipynb-buffer (&optional backoff background keep-original)
   "backoff - attempt reparse. 
