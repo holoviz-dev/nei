@@ -28,7 +28,9 @@ def css_processor(code_generator):
     Create a CSS processor based on the given code generator.
     """
     def inner(notebook, connection, css):
-        if cssutils is None: return
+        if cssutils is None:
+            print('WARNING: cssutil is not available to handle CSS')
+            return
         code = code_generator(parse_CSS(css))
         if code is not None:
             notebook.exec_silently(connection, code)

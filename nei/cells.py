@@ -519,7 +519,6 @@ class Notebook(Cells):
             self.css = css
         lines = css.splitlines()
 
-        process_css(self, connection, "\n".join(lines[1:-1]))
         self.message(connection, 'update_style', {'css':"\n".join(lines[1:-1])})
 
 
@@ -605,6 +604,13 @@ class ExecutableNotebook(Notebook):
 
     def restart_kernel(self, connection):
         self.executor.restart_kernel()
+
+
+    def update_style(self, connection, css):
+        if self.executor and css:
+            lines = css.splitlines()
+            process_css(self, connection, "\n".join(lines[1:-1]))
+        super(ExecutableNotebook, self).update_style(connection, css)
 
 
 
