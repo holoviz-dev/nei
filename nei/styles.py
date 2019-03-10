@@ -70,12 +70,16 @@ def apply_holoviews_theme(parsed_css):
                     'text_color': opposed
                 },
                 'Axis': {
-                    'major_label_text_color' : opposed,
+                    'axis_label_text_color': opposed,
                     'axis_line_color' : opposed,
-                    'minor_tick_line_color' : opposed
+                    'minor_tick_line_color' : opposed,
+                    'major_label_text_color' : opposed,
+                    'major_tick_line_color': opposed
                 },
                 'ColorBar': {
-                    'background_fill_color' : bgcolor
+                    'background_fill_color' : bgcolor,
+                    'title_text_color': opposed,
+                    'major_label_text_color': opposed
                     }
             }
         }
