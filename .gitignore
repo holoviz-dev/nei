@@ -9,3 +9,7 @@ emacs/scripts
 dev/
 nei.egg-info/
 labmode/
+
+*.org
+dist/
+misc/
