@@ -73,7 +73,10 @@ def apply_holoviews_theme(parsed_css):
                     'major_label_text_color' : opposed,
                     'axis_line_color' : opposed,
                     'minor_tick_line_color' : opposed
-                }
+                },
+                'ColorBar': {
+                    'background_fill_color' : bgcolor
+                    }
             }
         }
 
