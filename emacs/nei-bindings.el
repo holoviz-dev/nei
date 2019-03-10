@@ -113,7 +113,6 @@
      ["Open Notebook"  nei-open-notebook]
      ["Insert Notebook at Point" nei-insert-notebook]
      ["Write Notebook" nei-write-notebook]
-     ["Clear execution prompts" nei-clear-execution-prompts]
      ["Clear Notebook and Restart Kernel" nei-clear-notebook-and-restart nei--active-kernel]
      ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
      )

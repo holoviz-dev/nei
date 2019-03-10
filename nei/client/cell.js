@@ -136,6 +136,7 @@ export class Notebook {
 
   clear_cell_output(position) {
     this.get_cell(position).update_output([]);
+    this.get_cell(position).prompt = null;
     this._set_refresh(this.uuid_at_pos(position), ['output']);
   }
 
