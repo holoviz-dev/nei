@@ -63,9 +63,10 @@ class PeriodicOutputCallback(object):
             return
         elif connection and (status == 'comm_msg'):
             buffers = result['buffers']
-
+            metadata = result.get('metadata', {})
             self.notebook.message(connection, 'comm_msg', # FIXME: redundant 'comm_msg'
                                   {'msg_type': 'comm_msg',
+                                   'metadata': metadata,
                                    'content': result['content']},
                                   buffers=buffers)
             return

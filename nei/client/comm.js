@@ -203,9 +203,10 @@ export class CommLink {
       this.comm_manager.comm_open(target_name, comm_id)
     }
     if (json.cmd == 'comm_msg') {
-      let {content, msg_type} = json.args;
+      let {content, msg_type, metadata} = json.args;
       let buffers = json.buffers ? json.buffers : [];
       this.comm_manager.dispatch_message({content:content,
+                                          metadata: metadata,
                                           msg_type:msg_type,
                                           buffers:buffers}, content.comm_id);
     }
