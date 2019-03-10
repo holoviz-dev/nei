@@ -18,6 +18,7 @@ class Channel(ThreadedZMQSocketChannel):
         msg_type = msg.get('msg_type',None)
         content = msg.get('content', None)
         buffers = msg.get('buffers', [])
+        metadata = msg.get('metadata', None)
 
         node = None
         if msg_type == 'execute_input':
@@ -31,10 +32,14 @@ class Channel(ThreadedZMQSocketChannel):
             pass # e.g content['execution_state'] == 'idle'
 
         elif msg_type == "comm_open":
-            self.queue.put(({'content':content, 'buffers':buffers}, 'comm_open'))
+            self.queue.put(({'content':content,
+                             'buffers':buffers,
+                             'metadata':metadata}, 'comm_open'))
             return
         elif msg_type == "comm_msg":
-            self.queue.put(({'content':content, 'buffers':buffers}, 'comm_msg'))
+            self.queue.put(({'content':content,
+                             'buffers':buffers,
+                             'metadata':metadata}, 'comm_msg'))
             return
         elif msg_type.startswith('comm'):
             print("Unhandled 'comm' message of type {msg_type} with {content}".format(
