@@ -1,6 +1,5 @@
 
 # In[ ]
-import panel
 import holoviews as hv, datashader as ds
 import dask.dataframe as dd
 from holoviews.operation.datashader import rasterize
@@ -16,4 +15,8 @@ points = hv.Points(df, ['dropoff_x', 'dropoff_y'], ['dropoff_hour','pickup_hour'
 
 
 # In[ ]
+rasterize(points).options(**opts)
+
+# In[ ]
+import panel
 panel.panel(rasterize(points).options(**opts))
