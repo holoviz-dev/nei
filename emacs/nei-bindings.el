@@ -71,6 +71,27 @@
     )
   )
 
+
+
+
+(defun nei-global-integration (add-file-menu-entry rgrep-integration)
+  "Function to enable global integrations, to be enabled in .emacs.
+
+  add-file-menu-entry: Add 'Visit New Notebook' to the File menu.
+  rgrep-integration:   Add next-error-hook for rgrep support
+  "
+  (if add-file-menu-entry
+      (progn
+        (global-set-key (kbd "C-c F") 'nei-open-notebook)
+        (define-key-after
+          (lookup-key global-map [menu-bar file])
+          [open-notebook] '("Visit New Notebook" . nei-open-notebook) 'new-file)
+        )
+    )
+  (if rgrep-integration (nei-rgrep-integration))
+)
+
+
 (easy-menu-define nei-mode-menu nei-mode-map
   "Notebook Emacs Interface"
   '("NEI"
@@ -127,10 +148,6 @@
      ["Information" nei-server-info t]
      ["Message Log" nei-server-log t]
      )
-    ("Session"
-     ["Toggle rgrep integration" nei-rgrep-integration t] ;; Should be a toggle
-     )
-
     )
   )
 
