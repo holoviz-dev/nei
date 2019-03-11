@@ -105,7 +105,8 @@
   "backoff - attempt reparse. 
    background - switch to buffer.
    keep-original - kill original buffer or not"
-  (let* ((text (nei-parse-ipynb-buffer backoff))
+  (let* ((nei-cells (nei-parse-json (json-read-from-string (buffer-string))))
+         (text (nei-parse-ipynb-buffer backoff))
          (ipynb-source-filename (buffer-file-name))
          (nei-buffer-name (s-prepend "NEI>" (buffer-name)))
          (new-bufferp (not (get-buffer nei-buffer-name)))
@@ -129,6 +130,10 @@
                 )
             )
           )
+
+        (nei--load-from-file nei-cells nei--ipynb-buffer-filename)
+          
+        
         )
     
       (if (not keep-original)

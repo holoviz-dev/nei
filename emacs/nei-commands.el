@@ -270,9 +270,6 @@
 (defun nei-open-notebook (filename)
   "Prompt for filename, load it into a new python-mode buffer and start mirroring" 
   (interactive "FFind notebook: ")
-  (let ((nei--cells (nei-parse-notebook-file filename)))
-    (nei--load-from-file nei--cells filename)
-    )
   (find-file filename)
   (nei-view-ipynb)
 )
