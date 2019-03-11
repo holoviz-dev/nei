@@ -1,9 +1,9 @@
 # NEI
 
-**Notebook Emacs Integration.**
+**Notebook Emacs Interface.**
 
 
-<img src="https://s3-eu-west-1.amazonaws.com/misc-static-assets/labmode-README.gif" width="90%"><img>
+<img src="https://s3-eu-west-1.amazonaws.com/misc-static-assets/nei-readme-5mb.gif" width="90%"><img>
 
 The goal of NEI is to allow Python [Jupyter
 notebooks](https://jupyter.org/) to be edited efficiently as plaintext,
@@ -16,6 +16,7 @@ in Firefox. The file in emacs is a regular Python file using vanilla
 Python syntax - the yellow code prompts are simply pretty printed for
 clarity. For instance, the yellow ``In[1]`` is simply the visual
 representation of the comment ``# In[1]``.
+
 
 ## Motivation
 
