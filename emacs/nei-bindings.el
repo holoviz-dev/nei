@@ -75,12 +75,15 @@
 
 
 
-(defun nei-global-config (add-file-menu-entry rgrep-integration connect)
+(defun nei-global-config (add-file-menu-entry rgrep-integration connect
+                                              magic-alist view-ipynb)
   "Function to enable global integrations, to be enabled in .emacs.
 
-  add-file-menu-entry: Add 'Visit New Notebook' to the File menu.
+  add-file-menu-entry: Add 'Visit New Notebook' to the File menu (C-c F).
   rgrep-integration:   Add next-error-hook for rgrep support
   connect:             Start NEI server and establish websocket connection
+  magic-alist:         Suggest hint when viewing notebook JSON in buffers
+  view-ipynb:          Set global shortcut for viewing ipynb buffers (C-c I)
   "
   (if add-file-menu-entry
       (progn
@@ -92,6 +95,18 @@
     )
   (if rgrep-integration (nei-rgrep-integration))
   (if connect (nei-connect))
+
+  (if magic-alist
+      ;; Suggests the use of nei-view-ipynb if notebook JSON detected
+      (setq magic-fallback-mode-alist
+            (append
+             (cons (cons nei--detect-ipynb-regexp  'nei--ipynb-suggestion) nil)
+             magic-fallback-mode-alist))
+    )
+  
+  (if view-ipynb
+      (global-set-key (kbd "C-c I") 'nei-view-ipynb)
+    )
 )
 
 
