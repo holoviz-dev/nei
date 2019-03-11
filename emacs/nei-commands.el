@@ -269,7 +269,7 @@
 
 (defun nei-open-notebook (filename)
   "Prompt for filename, load it into a new python-mode buffer and start mirroring" 
-  (interactive "FNotebook filename:")
+  (interactive "FFind notebook: ")
   (setq nei--cells
         (nei-parse-notebook-file filename))
   (let ((buffer-name 
@@ -297,7 +297,7 @@
   
 (defun nei-insert-notebook (filename)
   "Prompt for filename and insert it into the buffer" 
-  (interactive "FNotebook filename:")
+  (interactive "FFind notebook: ")
   (nei--hold-mode "on")
   (let* ((cells (nei-parse-notebook-file filename))
          (text (nei--cells-to-text cells))
