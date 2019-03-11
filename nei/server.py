@@ -118,12 +118,18 @@ class Server(websocket.WebSocketHandler):
 
     def on_message(self, message):
         "Websocket on_message handler. Tracks connection type."
-        logging.info(u"Received message: {0}".format(message))
+
         try:
             payload = json.loads(message)
         except Exception as e:
             logging.info('JSON parse exception: %s' % str(e))
             return
+
+        if 'cmd' in payload:
+            if payload['cmd'] in ['start_mirror']: # Verbose commands
+                logging.info(u"Received %s command" % payload['cmd'])
+            else:
+                logging.info(u"Received message: {0}".format(message))
 
         if payload.get('init', False) == 'browser':
             self.BROWSER_CONNECTIONS.append(self)
