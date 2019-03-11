@@ -35,7 +35,15 @@ class Channel(ThreadedZMQSocketChannel):
 
         node = None
         if msg_type == 'execute_input':
-            self.executions =  int(content['execution_count'])
+            assert 'execution_count' in content
+            try:
+                executions = int(content['execution_count'])
+                self.executions = executions
+            except:
+                print('ERROR: execution_count is not an integer %r' %
+                      content['execution_count'])
+                self.executions = None
+
         elif msg_type == 'error':
             node = output_from_msg(msg)
         # Capture print output
