@@ -575,7 +575,9 @@ class ExecutableNotebook(Notebook):
             return
         cell = self.cells[position]
         if cell.mode == 'markdown': return
-        self.clear_cell_output(connection, position)
+        if cell.outputs:
+            self.clear_cell_output(connection, position)
+
         self.executor(cell.source, stop_on_error=True, cell=cell)
 
 

@@ -1,4 +1,4 @@
-import os, time, logging, json, uuid
+import os, time, logging, json, uuid, weakref
 import atexit
 
 from collections import OrderedDict
@@ -14,6 +14,19 @@ class Channel(ThreadedZMQSocketChannel):
     executions = None
     queue = None
 
+    channels = weakref.WeakSet()
+
+    def __init__(self, *args, **kwargs):
+        super(Channel, self).__init__(*args, **kwargs)
+        self.channels.add(self)
+
+    @classmethod
+    def execution_number(cls):
+        "Gets the execution count if available on any of the channels"
+        counts = [c.executions for c in cls.channels if c.executions]
+        return counts[0] if len(counts)==1 else None
+
+
     def call_handlers(self, msg):
         msg_type = msg.get('msg_type',None)
         content = msg.get('content', None)
@@ -22,7 +35,7 @@ class Channel(ThreadedZMQSocketChannel):
 
         node = None
         if msg_type == 'execute_input':
-            self.executions = int(content['execution_count'])
+            self.executions =  int(content['execution_count'])
         elif msg_type == 'error':
             node = output_from_msg(msg)
         # Capture print output
@@ -59,7 +72,7 @@ class Channel(ThreadedZMQSocketChannel):
         if node:
             self.queue.put((node, self.executions))
         elif msg_type == 'execute_reply':
-            self.queue.put((None, self.executions))
+            self.queue.put((None, self.execution_number()))
 
 
 class Client(ThreadedKernelClient):

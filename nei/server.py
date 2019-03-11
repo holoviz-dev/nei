@@ -81,9 +81,9 @@ class PeriodicOutputCallback(object):
             position = self.notebook.cell_position(cell)
 
             if execution_count is None:
-                return # silent execution before *any* output
-            if outnode is None and (cell.prompt == execution_count):
-                return # no need to update prompt for silent execution
+                # For silent execution before *any* output
+                return
+            # What about silent execution after start?
             self.notebook.update_cell_outputs(connection, position, outnode)
 
 
