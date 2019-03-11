@@ -87,7 +87,12 @@
       ;; it contains the string 'ERROR'
       (if (s-contains? "ERROR" (buffer-string))
           (nei-server-log))
-      )))
+
+      (if (s-contains? "Traceback" (buffer-string))
+          (nei-server-log))
+      )
+    )
+  )
 
 
 (defun nei--server-launch-process ()
