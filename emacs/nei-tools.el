@@ -157,7 +157,7 @@
   )
 
 (defun nei-rgrep-integration () ;; Make into toggle
-  "Uses magic-fallback-mode-alist to handle .ipynb files opened in dired mode"
+  "Sets up custom next error hook for use from rgrep"
   (interactive)
   (add-hook 'next-error-hook #'nei-next-error-hook)
 )

@@ -23,9 +23,12 @@
   "Similar to nei-server-cmd but warns if there is no buffer kernel"
   (if nei--active-kernel
       (nei--server-cmd command args warn-no-connection)
-    (message "No attached kernel. Execution skipped.")
+    (message "Execution skipped. Start a kernel with %s"
+             (mapconcat 'key-description (where-is-internal 'nei-start-kernel) " ")
+             )
     )
   )
+
 
 (defun nei--scroll-by (offset)
   "Send a scroll-by message"
