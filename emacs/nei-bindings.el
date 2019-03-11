@@ -12,6 +12,7 @@
   (define-key map (kbd "C-c E") 'nei-exec-by-line)
   (define-key map (kbd "C-c L") 'nei-clear-all-cell-outputs)
   (define-key map (kbd "C-c C") 'nei-update-css)
+  (define-key map (kbd "C-c M") 'nei-server-log)
 
   (define-key map (kbd "C-c w") 'nei-move-cell-up)
   (define-key map (kbd "C-c s") 'nei-move-cell-down)
