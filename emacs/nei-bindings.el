@@ -103,7 +103,7 @@
      ["HTML Preview" nei-view-notebook nei--ws-connection] 
      "---"
      ["Clear cell output"  nei-clear-cell-by-line nei--ws-connection]
-     ["Clear all cell output"  nei-clear-all-cell-outputs nei--ws-connection]
+     ["Clear all outputs and prompts"  nei-clear-all-cell-outputs nei--ws-connection]
      ["Update CSS" nei-update-css nei--ws-connection]
      "---"
      ["Scroll up" nei-scroll-up nei--ws-connection]
