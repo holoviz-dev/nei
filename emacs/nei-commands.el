@@ -270,18 +270,11 @@
 (defun nei-open-notebook (filename)
   "Prompt for filename, load it into a new python-mode buffer and start mirroring" 
   (interactive "FFind notebook: ")
-  (setq nei--cells
-        (nei-parse-notebook-file filename))
-  (let ((buffer-name 
-         (s-concat (s-chop-suffix ".ipynb" 
-                                  (file-name-nondirectory filename)) ".py")))
-    (generate-new-buffer buffer-name)
-    (switch-to-buffer buffer-name)
-    (python-mode)
-    (insert (nei--cells-to-text nei--cells))
+  (let ((nei--cells (nei-parse-notebook-file filename)))
+    (nei--load-from-file nei--cells filename)
     )
-  (nei--load-from-file nei--cells filename)
-  (nei-start-mirroring)
+  (find-file filename)
+  (nei-view-ipynb)
 )
 
 
@@ -298,6 +291,7 @@
 (defun nei-insert-notebook (filename)
   "Prompt for filename and insert it into the buffer" 
   (interactive "FFind notebook: ")
+  (message "WARNING: nei-insert-notebook function needs updating")
   (nei--hold-mode "on")
   (let* ((cells (nei-parse-notebook-file filename))
          (text (nei--cells-to-text cells))
