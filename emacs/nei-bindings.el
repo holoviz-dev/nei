@@ -75,11 +75,12 @@
 
 
 
-(defun nei-global-integration (add-file-menu-entry rgrep-integration)
+(defun nei-global-config (add-file-menu-entry rgrep-integration connect)
   "Function to enable global integrations, to be enabled in .emacs.
 
   add-file-menu-entry: Add 'Visit New Notebook' to the File menu.
   rgrep-integration:   Add next-error-hook for rgrep support
+  connect:             Start NEI server and establish websocket connection
   "
   (if add-file-menu-entry
       (progn
@@ -90,6 +91,7 @@
         )
     )
   (if rgrep-integration (nei-rgrep-integration))
+  (if connect (nei-connect))
 )
 
 
