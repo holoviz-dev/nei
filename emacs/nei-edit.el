@@ -101,23 +101,29 @@
 
 
 (defun nei-fontify ()
-  (font-lock-add-keywords nil (nei-fontify-matcher))
-  (save-excursion
-    (font-lock-fontify-keywords-region (point-min) (point-max))
+  (let ((modified (buffer-modified-p)))
+    (font-lock-add-keywords nil (nei-fontify-matcher))
+    (save-excursion
+      (font-lock-fontify-keywords-region (point-min) (point-max))
+      )
+    (setq nei--fontified t)
+    (set-buffer-modified-p modified)
     )
-  (setq nei--fontified t)
   )
 
 (defun nei-defontify ()
-  (font-lock-remove-keywords nil (nei-fontify-matcher))
-  (remove-text-properties (point-min) (point-max) 
-                          (list 'display
-                                nei--prompt-regexp 'face 'nei-prompt-face))
-
-  (save-excursion
-    (font-lock-fontify-keywords-region (point-min) (point-max))
+  (let ((modified (buffer-modified-p)))
+    (font-lock-remove-keywords nil (nei-fontify-matcher))
+    (remove-text-properties (point-min) (point-max) 
+                            (list 'display
+                                  nei--prompt-regexp 'face 'nei-prompt-face))
+    
+    (save-excursion
+      (font-lock-fontify-keywords-region (point-min) (point-max))
+      )
+    (setq nei--fontified nil)
+    (set-buffer-modified-p modified)
     )
-  (setq nei--fontified nil)
   )
 
 
@@ -135,8 +141,12 @@
 (defun nei--update-exec-prompt (count)
   (save-excursion  ;; TODO: Insert prompt if missing
     (save-match-data
-      (re-search-forward nei--prompt-regexp nil t -1) ;; Needs to do nothing if no match
-      (replace-match (format "# In[%d]" count))
+      (let ((modified (buffer-modified-p)))
+        (re-search-forward nei--prompt-regexp nil t -1) ;; Needs to do nothing if no match
+        (replace-match (format "# In[%d]" count))
+        (set-buffer-modified-p modified)
+        )
+      
       )
     )
   )
