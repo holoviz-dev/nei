@@ -137,6 +137,10 @@
     ["Move Cell Up" nei-move-cell-up t]
     ["Move Cell Down" nei-move-cell-down t]
     "---"
+    ("File"
+     ["Visit New Notebook" nei-open-notebook nei--ws-connection]
+     ["Write Notebook" nei-write-notebook nei--ws-connection]
+     )
     ("Browser"
      ["View" nei-view-browser nei--ws-connection]
      ["HTML Preview" nei-view-notebook nei--ws-connection] 
@@ -149,9 +153,7 @@
      ["Scroll down" nei-scroll-down nei--ws-connection]
      )
     ("Buffer"
-     ["Open Notebook"  nei-open-notebook]
      ["Insert Notebook at Point" nei-insert-notebook]
-     ["Write Notebook" nei-write-notebook]
      ["Clear Notebook and Restart Kernel" nei-clear-notebook-and-restart nei--active-kernel]
      ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
      )
@@ -161,7 +163,8 @@
       ["Halt and Disconnect" nei-disconnect nei--ws-connection]
       )
      ("Install"
-      ["Pip install" nei-server-pip-install (not (nei--server-available))]
+      ["Pip install" nei-server-pip-install]
+      ;; Using (not (nei--server-available)) makes the menu slow
       )
      ["Information" nei-server-info t]
      ["Message Log" nei-server-log t]
