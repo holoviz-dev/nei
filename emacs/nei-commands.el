@@ -176,7 +176,9 @@
   "Executes cell at current line and moves point to next cell"
   (interactive)
   (nei-exec-by-line)
-  (nei-move-point-to-next-cell) ;; TODO - move into markdown cells too
+  (if nei--active-kernel
+      (nei-move-point-to-next-cell) ;; TODO - move into markdown cells too
+    )
 )
 
 
