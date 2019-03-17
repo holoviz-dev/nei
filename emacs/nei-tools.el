@@ -8,12 +8,40 @@
   )
 
 
+
 (defun nei--write-file-hook ()
-  (or (nei--write-ipynb-hook) (nei--write-python-hook))
+  (or (nei--write-ipynb-hook) (nei--write-python-hook) (nei--write-buffer-to-file-hook))
   )
 
-  )
 
+
+(defun nei--write-buffer-to-file-hook () ; TODO: Handle overwriting files
+  (if (and (not (buffer-file-name))
+           (not nei--ipynb-buffer-filename))
+      (let ((selected-filename 
+             (nei--prompt-for-filename-until-predicate
+              "File to save in: "
+              "Please specify a file ending in either .py or .ipynb"
+              (lambda (x) (or (s-ends-with? ".ipynb" x) (s-ends-with? ".py" x))))
+             )
+            )
+        (if (s-ends-with? ".py" selected-filename)
+            (progn
+              (set-visited-file-name selected-filename)
+              (nei--write-python-hook))
+          (progn
+            (nei--write-notebook
+             (if nei-write-notebook-output "full-notebook" "cleared")
+             selected-filename)
+            (kill-buffer)
+            (find-file selected-filename)
+            (nei-view-ipynb)
+            )
+         )
+        )
+    t
+    )
+  )
 
 (defun nei--write-python-hook ()
   (if (and (buffer-file-name)
@@ -33,10 +61,10 @@
            (and (null (buffer-file-name))
                 nei--ipynb-buffer-filename))
       (progn
-        (message "SAVING TO: %s" nei--ipynb-buffer-filename)
         (nei--write-notebook
          (if nei-write-notebook-output "full-notebook" "cleared")
          nei--ipynb-buffer-filename)
+        (set-buffer-modified-p nil)
         t
         )
     nil
