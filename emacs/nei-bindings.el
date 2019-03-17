@@ -22,7 +22,7 @@
   (define-key map (kbd "C-c m") 'nei-insert-markdown-cell)
 
   ;; Add a toggle for the shift+enter binding
-  ;;(define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
+  (define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
   (define-key map [(S-return)] 'nei-exec-by-line-and-move-to-next-cell)
   
   (define-key map (kbd "C-c k") 'nei-start-kernel)
