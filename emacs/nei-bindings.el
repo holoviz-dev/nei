@@ -20,7 +20,11 @@
   (define-key map (kbd "C-c <up>") 'nei-move-point-to-previous-cell)
   (define-key map (kbd "C-c c") 'nei-insert-code-cell)
   (define-key map (kbd "C-c m") 'nei-insert-markdown-cell)
-  (define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
+
+  ;; Add a toggle for the shift+enter binding
+  ;;(define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
+  (define-key map [(S-return)] 'nei-exec-by-line-and-move-to-next-cell)
+  
   (define-key map (kbd "C-c k") 'nei-start-kernel)
   (define-key map (kbd "C-c i") 'nei-interrupt-kernel)
   (define-key map (kbd "C-c r") 'nei-restart-kernel)
