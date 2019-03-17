@@ -12,10 +12,6 @@
   (or (nei--write-ipynb-hook) (nei--write-python-hook))
   )
 
-(defun nei--write-python-cleared-prompts ()
-  (write-region
-   (replace-regexp-in-string "# In\\[.*\\]" "# In[ ]" (buffer-string))
-   nil buffer-file-name nil t)
   )
 
 
@@ -23,8 +19,10 @@
   (if (and (buffer-file-name)
            (s-ends-with? ".py" (buffer-file-name))
            nei-write-cleared-python-prompts)
-      (progn 
-        (nei--write-python-cleared-prompts)
+      (progn
+        (write-region
+         (replace-regexp-in-string "# In\\[.*\\]" "# In[ ]" (buffer-string))
+         nil buffer-file-name nil t)
         t)
     nil)
   )
