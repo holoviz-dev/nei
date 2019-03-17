@@ -94,7 +94,13 @@
         )
     )
   (if rgrep-integration (nei-rgrep-integration))
-  (if connect (nei-connect))
+  (if connect
+      (condition-case nil
+          (nei-connect)
+        (error (message "Could not connect to NEI server"))
+        )
+    )
+        
 
   (if magic-alist
       ;; Suggests the use of nei-view-ipynb if notebook JSON detected
