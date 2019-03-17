@@ -19,7 +19,7 @@
     (((class color) (background  dark)) :background "grey20"))
   "Face for highlighting the current cell.")
 
-(defvar nei--fontified nil
+(defvar-local nei--fontified nil
   "Whether or not the nei buffer is currently fontified")
 
 (defvar nei--highlight-overlay nil
