@@ -32,7 +32,8 @@
 (defun nei--write-ipynb-hook ()
   (if (and (s-starts-with? "NEI>" (buffer-name))
            (s-ends-with? ".ipynb" (buffer-name))
-           (null (buffer-file-name)))
+           (and (null (buffer-file-name))
+                nei--ipynb-buffer-filename))
       (progn
         (message "SAVING TO: %s" nei--ipynb-buffer-filename)
         (nei--write-notebook
