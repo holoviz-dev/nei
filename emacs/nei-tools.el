@@ -9,7 +9,9 @@
            (null (buffer-file-name)))
       (progn
         (message "SAVING TO: %s" nei--ipynb-buffer-filename)
-        (nei--write-notebook "full-notebook" nei--ipynb-buffer-filename)
+        (nei--write-notebook
+         (if nei-write-notebook-output "full-notebook" "cleared")
+         nei--ipynb-buffer-filename)
         t
         )
     nil
