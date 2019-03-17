@@ -8,9 +8,28 @@
   )
 
 
+(defun nei--write-file-hook ()
+  (or (nei--write-ipynb-hook) (nei--write-python-hook))
+  )
+
+(defun nei--write-python-cleared-prompts ()
+  (write-region
+   (replace-regexp-in-string "# In\\[.*\\]" "# In[ ]" (buffer-string))
+   nil buffer-file-name nil t)
+  )
 
 
-(defun nei-write-ipynb-hook ()
+(defun nei--write-python-hook ()
+  (if (and (buffer-file-name)
+           (s-ends-with? ".py" (buffer-file-name))
+           nei-write-cleared-python-prompts)
+      (progn 
+        (nei--write-python-cleared-prompts)
+        t)
+    nil)
+  )
+
+(defun nei--write-ipynb-hook ()
   (if (and (s-starts-with? "NEI>" (buffer-name))
            (s-ends-with? ".ipynb" (buffer-name))
            (null (buffer-file-name)))

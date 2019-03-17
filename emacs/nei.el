@@ -162,7 +162,7 @@
   (if nei-autoconnect (nei-connect))
   (if (not nei--currently-mirroring)
       (nei-start-mirroring))
-  (add-hook 'write-contents-functions 'nei-write-ipynb-hook)
+  (add-hook 'write-contents-functions 'nei--write-file-hook)
   )
   
 
