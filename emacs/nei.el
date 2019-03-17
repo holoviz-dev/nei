@@ -146,7 +146,9 @@
   :keymap nei-mode-map
   :lighter (:eval (format " NEI:%s %s"
                           (if nei--ws-connection "Connected" "Disconnected")
-                          (if nei--active-kernel "[Kernel]" "[No Kernel]")
+                          (if nei--active-kernel
+                              (format "Kernel[%s]" nei--execution-count)
+                            "[No Kernel]")
                           )
                   )
   
