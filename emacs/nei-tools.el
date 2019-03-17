@@ -1,5 +1,12 @@
 ;;;  -*- lexical-binding: t; -*-
 
+(defvar nei--detect-ipynb-regexp "{\n \"cells\": \\[\n  {\n" ;; e.g for string-match: 
+  "Regular expression used to detect IPYNB JSON")
+
+(defvar nei--point-marker "NEI-POINT>"
+  "Magic string used to track the point from the JSON source in ipynb files"
+  )
+
 
 
 
@@ -18,14 +25,6 @@
     )
   )
 
-
-
-(defvar nei--detect-ipynb-regexp "{\n \"cells\": \\[\n  {\n" ;; e.g for string-match: 
-  "Regular expression used to detect IPYNB JSON")
-
-(defvar nei--point-marker "NEI-POINT>"
-  "Magic string used to track the point from the JSON source in ipynb files"
-  )
 
 (defun nei--visited-file-type ()
   "Returns PY or IPYNB or nil if no file is being visited"
