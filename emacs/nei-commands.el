@@ -238,16 +238,20 @@
                       "Select an output type: "
                       '(("python" "python")
                         ("cleared" "cleared")
-                        ("full-notebook" "full-notebook")
-                        ("html" "html"))
+                        ("full-notebook" "full-notebook"))
                       nil t "")))
   (defun nei--prompt-for-filename (filename)
-    (interactive "FNotebook:")
+    (interactive "FNotebook: ")
     filename
     )
   (let ((filename (call-interactively 'nei--prompt-for-filename)))
     (nei--write-notebook mode filename)
     )
+  )
+
+(defun nei-export-to-html (filename)
+  (interactive "FExport to HTML: ")
+  (nei--write-notebook "html" filename)
   )
 
 

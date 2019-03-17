@@ -150,6 +150,7 @@
     ("File"
      ["Visit New Notebook" nei-open-notebook nei--ws-connection]
      ["Write Notebook" nei-write-notebook nei--ws-connection]
+     ["Export to HTML" nei-export-to-html nei--ws-connection]
      )
     ("Browser"
      ["View" nei-view-browser nei--ws-connection]
