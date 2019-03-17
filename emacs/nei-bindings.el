@@ -94,7 +94,6 @@
     "---"
     ("File"
      ["Visit New Notebook" nei-open-notebook nei--ws-connection]
-     ["Write Notebook" nei-write-notebook nei--ws-connection]
      ["Export to HTML" nei-export-to-html nei--ws-connection]
      "---"
      ["Clear Python Prompts " nei-toggle-write-cleared-python-prompts
