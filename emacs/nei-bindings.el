@@ -123,7 +123,20 @@
 (defun nei-toggle-fontify ()
   (interactive)
   (if nei--fontified (nei-defontify) (nei-fontify))
-)
+  )
+
+(defun nei-toggle-write-cleared-python-prompts ()
+  (interactive)
+  (setq nei-write-cleared-python-prompts
+        (not nei-write-cleared-python-prompts))
+  )
+
+(defun nei-toggle-write-notebook-output ()
+  (interactive)
+  (setq nei-write-notebook-output
+        (not nei-write-notebook-output))
+  )
+
 (easy-menu-define nei-mode-menu nei-mode-map
   "Notebook Emacs Interface"
   '("NEI"
@@ -155,6 +168,11 @@
      ["Visit New Notebook" nei-open-notebook nei--ws-connection]
      ["Write Notebook" nei-write-notebook nei--ws-connection]
      ["Export to HTML" nei-export-to-html nei--ws-connection]
+     "---"
+     ["Write Notebook Output" nei-toggle-write-notebook-output
+      :style toggle :selected nei-write-notebook-output]
+     ["Clear Python Prompts " nei-toggle-write-cleared-python-prompts
+      :style toggle :selected nei-write-cleared-python-prompts]
      )
     ("Browser"
      ["View" nei-view-browser nei--ws-connection]

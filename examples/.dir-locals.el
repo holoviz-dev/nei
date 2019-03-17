@@ -3,6 +3,6 @@
 
 ((python-mode
   (eval conda-env-activate "nei")
-  (nei-write-format . "clean")
+  (nei-write-notebook-output . nil)
   (eval nei-mode)))
 

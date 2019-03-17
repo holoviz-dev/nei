@@ -8,6 +8,11 @@
 (defvar-local nei--currently-mirroring nil)
 (defvar-local nei--active-kernel nil)
 
+(defvar-local nei-write-cleared-python-prompts nil
+  "Whether to keep clear numbers when saving python")
+(defvar-local nei-write-notebook-output t
+  "Whether to write output when saving ipynb")
+
 (defvar nei-scroll-pixels 300)
 
 
