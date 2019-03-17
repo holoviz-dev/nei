@@ -188,6 +188,7 @@ class Cells(object):
             cleared = (mode == 'cleared')
             nb = nbformat.v4.new_notebook()
             nb['cells'] = [cell.node(cleared=cleared) for cell in self.cells]
+            nb['metadata'] = self.metadata
 
         if mode == 'html':
             if nbconvert is None:
@@ -272,6 +273,7 @@ class Notebook(Cells):
     def __init__(self, name=None, **kwargs):
         super(Notebook, self).__init__(**kwargs)
         self.name = name
+        self.metadata = None
         self.mirrorbuffer = MirrorBuffer()
         self.commands = {'view_browser': self.view_browser, # Opens browser connection
                          # Commands that do no need a browser connection
@@ -457,6 +459,7 @@ class Notebook(Cells):
         with open(filename, 'r') as f:
             nb = nbformat.v4.reads(f.read())
 
+        self.metadata = nb.metadata
         dict_cells = json.loads(json_string)
         if len(nb.cells) != len(dict_cells):
             raise Exception('Notebook length does not match provided JSON spec')
