@@ -65,7 +65,9 @@
   "Send an interrupt-kernel  message"
   (interactive)
   (setq nei--active-kernel t)
-  (nei--server-cmd "start_kernel" (list))
+  (nei--server-cmd "start_kernel"
+                   (list (cons "cwd" default-directory)))
+  
   (run-with-idle-timer 1 nil 'nei-update-css) ; E.g to update themes via Python
   (message "Sent start kernel message")
   (nei--update-kernel-menu-entry t)

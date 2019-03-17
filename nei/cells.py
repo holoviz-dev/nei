@@ -597,9 +597,10 @@ class ExecutableNotebook(Notebook):
         if position is None: return
         self.exec_cell(connection, position)
 
-    def start_kernel(self, connection):
+    def start_kernel(self, connection, cwd):
         exec_cls, name, queue = self.executor_init
         self.executor  = exec_cls(name, queue)
+        self.executor.start(cwd)
 
     def interrupt_kernel(self, connection):
         self.executor.interrupt_kernel()
