@@ -845,7 +845,11 @@ class ParseNotebook(object):
                 if len(accumulator) > 1 and accumulator[0] == '\n':
                     accumulator = accumulator[1:]  # Remove newline after prompt
                 raw_count = match.groups()[0]
-                count = int(raw_count) if raw_count not in [None, ' '] else None
+                try:
+                    count = int(raw_count) if raw_count not in [None, ' '] else None
+                except Exception as e:
+                    logging.info('WARNING: Parse failure for prompt count %r' % str(e))
+
             elif started:
                 accumulator += line
 
