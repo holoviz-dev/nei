@@ -115,7 +115,7 @@
   "Send a clear_all_cell_outputs message to server"
   (interactive)
   (nei--server-cmd "clear_all_cell_outputs" (list))
-  (nei-clear-execution-prompts)
+  (nei--clear-execution-prompts)
   (message "Cleared all cell outputs and prompts")
 )
 

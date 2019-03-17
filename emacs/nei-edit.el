@@ -199,7 +199,7 @@
     )
   )
 
-(defun nei-clear-execution-prompts () ;; TODO: Clear the remote prompts too
+(defun nei--clear-execution-prompts ()
   (interactive)
   (save-excursion 
     (perform-replace "# In\\[.*\\]" "# In[ ]" nil t nil nil nil (point-min) (point-max))
