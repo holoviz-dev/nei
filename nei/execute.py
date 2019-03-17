@@ -3,8 +3,19 @@ import atexit
 
 from collections import OrderedDict
 
-from jupyter_client import KernelManager
-from jupyter_client.threaded import ThreadedZMQSocketChannel, ThreadedKernelClient
+import warnings
+
+class VisibleDeprecationWarning(UserWarning):
+    """Warning issued by jupyter_client 5.2.4 about future deprecations in tornado"""
+    pass
+
+# Hopefully jupyter_client will keep working with latest tornado
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=VisibleDeprecationWarning)
+    warnings.simplefilter("ignore")
+    from jupyter_client import KernelManager
+    from jupyter_client.threaded import ThreadedZMQSocketChannel, ThreadedKernelClient
+
 
 from nbformat.v4 import output_from_msg
 from queue import Queue

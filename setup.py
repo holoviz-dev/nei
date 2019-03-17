@@ -1,10 +1,10 @@
 from setuptools import setup
 
 install_requires = [
-    'jupyter_client',
+    'jupyter_client==5.2.4',
     'nbformat',
     'nbconvert',
-    'tornado==5.1.1',
+    'tornado',
     'ipykernel'
 ]
 
