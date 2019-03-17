@@ -120,6 +120,10 @@
 )
 
 
+(defun nei-toggle-fontify ()
+  (interactive)
+  (if nei--fontified (nei-defontify) (nei-fontify))
+)
 (easy-menu-define nei-mode-menu nei-mode-map
   "Notebook Emacs Interface"
   '("NEI"

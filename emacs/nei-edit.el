@@ -127,12 +127,6 @@
   )
 
 
-(defun nei-toggle-fontify ()
-  (interactive)
-  (if nei--fontified (nei-defontify) (nei-fontify))
-)
-
-
 ;;==================================;;
 ;; Navigation and prompt management ;;
 ;;==================================;;
