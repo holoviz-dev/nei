@@ -169,10 +169,10 @@
      ["Write Notebook" nei-write-notebook nei--ws-connection]
      ["Export to HTML" nei-export-to-html nei--ws-connection]
      "---"
-     ["Write Notebook Output" nei-toggle-write-notebook-output
-      :style toggle :selected nei-write-notebook-output]
      ["Clear Python Prompts " nei-toggle-write-cleared-python-prompts
       :style toggle :selected nei-write-cleared-python-prompts]
+     ["Write Notebook Output" nei-toggle-write-notebook-output
+      :style toggle :selected nei-write-notebook-output]
      )
     ("Browser"
      ["View" nei-view-browser nei--ws-connection]
