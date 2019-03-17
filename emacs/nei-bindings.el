@@ -44,81 +44,9 @@
 (defvar nei-mode-map (nei--define-key-map (make-sparse-keymap))
   "The sparse keymap with NEI bindings.")
 
-
-(defun nei--buffers-with-kernels ()
-  "Returns a list of buffers with attached kernels"
-  (seq-filter
-   (lambda (buff) (buffer-local-value 'nei--active-kernel buff))
-   (buffer-list))
-  )
-
-
-(defun nei-list-buffers-with-kernels ()
-  "Opens a temporary buffer containing a list of buffers with attatched kernels"
-  (interactive)
-  (with-output-to-temp-buffer "NEI Kernels"
-    (dolist (buff (nei--buffers-with-kernels))
-      (princ (buffer-name buff))
-      )
-    )
-  )
-
-
-(defun nei--update-kernel-menu-entry (add-entry)
-  "Adds or removes a dynamic menu entry for buffers with attached kernels"
-  (lexical-let ((entry-name (buffer-name)))
-    (define-key nei-mode-map
-      (vector 'menu-bar 'NEI 'Kernel 'Live\ Kernels (make-symbol entry-name))
-      (if add-entry (cons (buffer-name)
-                          (lambda () (interactive) (switch-to-buffer entry-name))
-                          ) nil)
-      )
-    )
-  )
-
-
-
-
-(defun nei-global-config (add-file-menu-entry rgrep-integration connect
-                                              magic-alist view-ipynb)
-  "Function to enable global integrations, to be enabled in .emacs.
-
-  add-file-menu-entry: Add 'Visit New Notebook' to the File menu (C-c F).
-  rgrep-integration:   Add next-error-hook for rgrep support
-  connect:             Start NEI server and establish websocket connection
-  magic-alist:         Suggest hint when viewing notebook JSON in buffers
-  view-ipynb:          Set global shortcut for viewing ipynb buffers (C-c I)
-  "
-  (if add-file-menu-entry
-      (progn
-        (global-set-key (kbd "C-c F") 'nei-open-notebook)
-        (define-key-after
-          (lookup-key global-map [menu-bar file])
-          [open-notebook] '("Visit New Notebook" . nei-open-notebook) 'new-file)
-        )
-    )
-  (if rgrep-integration (nei-rgrep-integration))
-  (if connect
-      (condition-case nil
-          (nei-connect)
-        (error (message "Could not connect to NEI server"))
-        )
-    )
-        
-
-  (if magic-alist
-      ;; Suggests the use of nei-view-ipynb if notebook JSON detected
-      (setq magic-fallback-mode-alist
-            (append
-             (cons (cons nei--detect-ipynb-regexp  'nei--ipynb-suggestion) nil)
-             magic-fallback-mode-alist))
-    )
-  
-  (if view-ipynb
-      (global-set-key (kbd "C-c I") 'nei-view-ipynb)
-    )
-)
-
+;;==========;;
+;; NEI MENU ;;
+;;==========;;
 
 (defun nei-toggle-fontify ()
   (interactive)
@@ -205,5 +133,77 @@
     )
   )
 
+(defun nei--buffers-with-kernels ()
+  "Returns a list of buffers with attached kernels"
+  (seq-filter
+   (lambda (buff) (buffer-local-value 'nei--active-kernel buff))
+   (buffer-list))
+  )
+
+
+(defun nei-list-buffers-with-kernels ()
+  "Opens a temporary buffer containing a list of buffers with attatched kernels"
+  (interactive)
+  (with-output-to-temp-buffer "NEI Kernels"
+    (dolist (buff (nei--buffers-with-kernels))
+      (princ (buffer-name buff))
+      )
+    )
+  )
+
+
+(defun nei--update-kernel-menu-entry (add-entry)
+  "Adds or removes a dynamic menu entry for buffers with attached kernels"
+  (lexical-let ((entry-name (buffer-name)))
+    (define-key nei-mode-map
+      (vector 'menu-bar 'NEI 'Kernel 'Live\ Kernels (make-symbol entry-name))
+      (if add-entry (cons (buffer-name)
+                          (lambda () (interactive) (switch-to-buffer entry-name))
+                          ) nil)
+      )
+    )
+  )
+
+
+
+(defun nei-global-config (add-file-menu-entry rgrep-integration connect
+                                              magic-alist view-ipynb)
+  "Function to enable global integrations, to be enabled in .emacs.
+
+  add-file-menu-entry: Add 'Visit New Notebook' to the File menu (C-c F).
+  rgrep-integration:   Add next-error-hook for rgrep support
+  connect:             Start NEI server and establish websocket connection
+  magic-alist:         Suggest hint when viewing notebook JSON in buffers
+  view-ipynb:          Set global shortcut for viewing ipynb buffers (C-c I)
+  "
+  (if add-file-menu-entry
+      (progn
+        (global-set-key (kbd "C-c F") 'nei-open-notebook)
+        (define-key-after
+          (lookup-key global-map [menu-bar file])
+          [open-notebook] '("Visit New Notebook" . nei-open-notebook) 'new-file)
+        )
+    )
+  (if rgrep-integration (nei-rgrep-integration))
+  (if connect
+      (condition-case nil
+          (nei-connect)
+        (error (message "Could not connect to NEI server"))
+        )
+    )
+        
+
+  (if magic-alist
+      ;; Suggests the use of nei-view-ipynb if notebook JSON detected
+      (setq magic-fallback-mode-alist
+            (append
+             (cons (cons nei--detect-ipynb-regexp  'nei--ipynb-suggestion) nil)
+             magic-fallback-mode-alist))
+    )
+  
+  (if view-ipynb
+      (global-set-key (kbd "C-c I") 'nei-view-ipynb)
+    )
+)
 
 (provide 'nei-bindings)
