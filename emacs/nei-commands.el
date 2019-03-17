@@ -241,8 +241,7 @@
   "Interactive command that prompts for the mode and filename for writing the notebook"
   (interactive (list (completing-read
                       "Select an output type: "
-                      '(("python" "python")
-                        ("cleared" "cleared")
+                      '(("cleared" "cleared")
                         ("full-notebook" "full-notebook"))
                       nil t "")))
   (defun nei--prompt-for-filename (filename)
@@ -261,6 +260,7 @@
 
 
 (defun nei--write-notebook (mode filename)
+  "Mode can be one of \"python\", \"cleared\" or \"full-notebook\" "
   (nei--server-cmd "write_notebook"
                    (list 
                     (cons "mode" mode)
