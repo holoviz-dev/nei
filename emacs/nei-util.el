@@ -68,4 +68,20 @@
     )
 )
 
+(defun nei--prompt-for-filename-until-predicate (prompt error-msg predicate)
+  (let ((result nil))
+    (setq result (read-file-name prompt))
+    (if (not (funcall predicate result))
+        (progn
+          (message nil)
+          (sleep-for 0 50)
+          (message error-msg)
+          (sleep-for 1.5)
+          (setq result (nei--prompt-for-filename-until-predicate prompt error-msg predicate))
+          )
+      )
+    result
+    )
+  )
+
 (provide 'nei-util)
