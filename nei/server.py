@@ -54,6 +54,11 @@ class PeriodicOutputCallback(object):
         connection = (self.server.BROWSER_CONNECTIONS[0]
                       if self.server.BROWSER_CONNECTIONS else None)
 
+        if status == 'completion':
+            editor_connection = self.server.EDITOR_CONNECTIONS[0]
+            editor_connection.write_message(json.dumps(result))
+            return
+
         if connection and (status == 'comm_open'):
             logging.info("REQUEST TO OPEN COMM FOR JS: %s" % result)
             self.notebook.message(connection, 'comm_open', result['content'])
@@ -90,6 +95,7 @@ class PeriodicOutputCallback(object):
 class Server(websocket.WebSocketHandler):
 
     BROWSER_CONNECTIONS = []
+    EDITOR_CONNECTIONS = []
 
     NOTEBOOK = None
     NOTEBOOKS = {}
@@ -118,7 +124,6 @@ class Server(websocket.WebSocketHandler):
 
     def on_message(self, message):
         "Websocket on_message handler. Tracks connection type."
-
         try:
             payload = json.loads(message)
         except Exception as e:
@@ -130,6 +135,11 @@ class Server(websocket.WebSocketHandler):
                 logging.info(u"Received %s command" % payload['cmd'])
             else:
                 logging.info(u"Received message: {0}".format(message))
+
+        if payload.get('init', False) == 'editor':
+            self.EDITOR_CONNECTIONS.append(self)
+            assert len(self.EDITOR_CONNECTIONS) == 1, "Only one editor connection expected"
+            return
 
         if payload.get('init', False) == 'browser':
             self.BROWSER_CONNECTIONS.append(self)

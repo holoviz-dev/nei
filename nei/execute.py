@@ -44,6 +44,18 @@ class Channel(ThreadedZMQSocketChannel):
         buffers = msg.get('buffers', [])
         metadata = msg.get('metadata', None)
 
+        if msg_type == 'complete_reply':
+            filtered = {}
+            for field in ['matches', 'cursor_start', 'cursor_end']:
+                if field == 'matches':
+                    value = [el for el in content["matches"] if el.endswith("=")]
+                else:
+                    value = content[field]
+                filtered[field] = value
+
+            self.queue.put((filtered, "completion"))
+            return
+
         node = None
         if msg_type == 'execute_input':
             assert 'execution_count' in content

@@ -20,9 +20,6 @@
 (defvar nei--ws-connection nil
   "The websocket client connection.")
 
-(defvar nei--ws-messages nil
-  "Messages received over the websocket connection.")
-
 (defvar nei--unexpected-disconnect nil
   "Flag indicating whether the websocket connection is closed or not")
 
@@ -35,22 +32,33 @@
   "Local variable tracking the original filename for a view on an IPYNB file")
 
 
+(defvar-local nei--completions nil
+  "Local variable (vector) tracking suggested completions at point")
+
+
 (defun nei--open-websocket ()
   (progn
     (setq conn (websocket-open
                 "ws://127.0.0.1:9999"
                 :on-message (lambda (_websocket frame)
-                              (push (websocket-frame-text frame) nei--ws-messages)
-                              (message "ws frame: %S" (websocket-frame-text frame))
-                              (error "Test error (expected)"))
+                              (nei--receive-message (websocket-frame-text frame)))
                 :on-close (lambda (_websocket) (setq nei--unexpected-disconnect t))
                 ;; New connection, reset execution count.
-                :on-open (lambda (_websocket) ))
-          )
+                :on-open (lambda (_websocket) (websocket-send-text
+                                   _websocket "{\"init\": \"editor\"}"))
+		)
+	  )
     (setq nei--ws-connection conn)
     )
   )
 
+(defun nei--receive-message (text)
+  "Currently only used for completions"
+  (let* ((parsed-json (json-read-from-string text))
+         (matches (assoc-value 'matches parsed-json)))
+    (setq nei--completions matches)
+    )
+  )
 (defun nei--open-ws-connection (&optional quiet)
   "Opens a new websocket connection if needed"
   (if (or (null nei--ws-connection) nei--unexpected-disconnect)

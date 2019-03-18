@@ -103,16 +103,35 @@
 )
 
 
-
-
 (defun nei-complete ()
-  "Send an restart-kernel  message"
-  (interactive)
+  "Wait for nei--completions variable to be set after a completion request"
   (nei--server-cmd "complete"
-                   (list (cons "code" "hv.opts.Curve(")
+                   (list (cons "code"
+                               (buffer-substring-no-properties
+                                (line-beginning-position) (point)))
                          (cons "position" nil)))
-  (message "Sent complete request")
+  (let ((result nil))
+    (while (null nei--completions) ;; Limit times!
+      (sleep-for 0 10)
+      )
+    (setq result nei--completions)
+    (setq nei--completions nil)
+    result
+    )
   )
+
+(defun nei-completion-at-point ()
+  (list (point) (point)
+        (completion-table-dynamic
+         (lambda (_)
+           (append (nei-complete) nil))))
+  )
+(defun nei-configure-completion ()
+  (setq completion-at-point-functions
+        '(nei-completion-at-point))
+)
+
+
 (defun nei-reload-page ()
   "Send an restart-kernel  message"
   (interactive)
