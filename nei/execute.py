@@ -90,7 +90,7 @@ class Channel(ThreadedZMQSocketChannel):
                 msg_type=msg_type,
                 content=content))
 
-        if msg_type in {'execute_result', 'display_ata', 'update_display_data'}:
+        if msg_type in {'execute_result', 'display_data', 'update_display_data'}:
             if msg_type == 'update_display_data':
                 logging.info("Unhandled 'update_display_data' message")
             # Should filter text/plain and text/html at this level
