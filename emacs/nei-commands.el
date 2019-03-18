@@ -103,6 +103,16 @@
 )
 
 
+
+
+(defun nei-complete ()
+  "Send an restart-kernel  message"
+  (interactive)
+  (nei--server-cmd "complete"
+                   (list (cons "code" "hv.opts.Curve(")
+                         (cons "position" nil)))
+  (message "Sent complete request")
+  )
 (defun nei-reload-page ()
   "Send an restart-kernel  message"
   (interactive)

@@ -545,10 +545,17 @@ class ExecutableNotebook(Notebook):
             'comm_msg' :        self.comm_msg, # Message send from JS
             'start_kernel':     self.start_kernel,
             'interrupt_kernel': self.interrupt_kernel,
-            'restart_kernel':   self.restart_kernel
+            'restart_kernel':   self.restart_kernel,
+
+
+            'complete':   self.complete
         }
         self.commands.update(self.exec_commands)
 
+    def complete(self, connection, code, position):
+        if position is None:
+            position = len(code)
+        self.executor.complete(code, position)
 
     def dispatch(self, connection, payload):
         kernel_required = [cmd for cmd in self.exec_commands if cmd != 'start_kernel']

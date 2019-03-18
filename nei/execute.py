@@ -143,6 +143,9 @@ class ThreadedExecutor(object):
     def kernel_info(self):
         self.kc.kernel_info()
 
+    def complete(self, code, position):
+        self.kc.complete(code, position)
+
     def __call__(self, code, stop_on_error=True, cell=None, silent=False):
         "If stop_on_error is True, execution may stop on exceptions"
 
