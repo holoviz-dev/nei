@@ -110,9 +110,11 @@
                                (buffer-substring-no-properties
                                 (line-beginning-position) (point)))
                          (cons "position" nil)))
-  (let ((result nil))
-    (while (null nei--completions) ;; Limit times!
+  (let ((result nil)
+        (i 0))
+    (while (and (null nei--completions) nei--active-kernel (< i 150))
       (sleep-for 0 10)
+      (setq i (+ i 1))
       )
     (setq result nei--completions)
     (setq nei--completions nil)
