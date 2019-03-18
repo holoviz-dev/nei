@@ -166,7 +166,7 @@
 
 
 (defun nei-global-config (add-file-menu-entry rgrep-integration connect
-                                              magic-alist view-ipynb)
+                                              magic-alist view-ipynb completions)
   "Function to enable global integrations, to be enabled in .emacs.
 
   add-file-menu-entry: Add 'Visit New Notebook' to the File menu (C-c F).
@@ -202,6 +202,12 @@
   
   (if view-ipynb
       (global-set-key (kbd "C-c I") 'nei-view-ipynb)
+    )
+
+  (if completions
+      (setq completion-at-point-functions
+            '(nei-completion-at-point)
+            )
     )
 )
 

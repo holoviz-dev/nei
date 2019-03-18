@@ -126,11 +126,6 @@
          (lambda (_)
            (append (nei-complete) nil))))
   )
-(defun nei-configure-completion ()
-  (setq completion-at-point-functions
-        '(nei-completion-at-point))
-)
-
 
 (defun nei-reload-page ()
   "Send an restart-kernel  message"
