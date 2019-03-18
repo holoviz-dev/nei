@@ -105,20 +105,25 @@
 
 (defun nei-complete ()
   "Wait for nei--completions variable to be set after a completion request"
-  (nei--server-cmd "complete"
-                   (list (cons "code"
-                               (buffer-substring-no-properties
-                                (line-beginning-position) (point)))
-                         (cons "position" nil)))
-  (let ((result nil)
-        (i 0))
-    (while (and (null nei--completions) nei--active-kernel (< i 150))
-      (sleep-for 0 10)
-      (setq i (+ i 1))
+  (let ((code-context
+         (buffer-substring-no-properties (line-beginning-position) (point))))
+    (if (not (s-equals? code-context ""))
+        (progn 
+          (nei--server-cmd "complete"
+                           (list (cons "code" code-context)
+                                 (cons "position" nil)))
+          (let ((result nil)
+                (i 0))
+            (while (and (null nei--completions) nei--active-kernel (< i 150))
+              (sleep-for 0 10)
+              (setq i (+ i 1))
+              )
+            (setq result nei--completions)
+            (setq nei--completions nil)
+            result
+            )
+        )
       )
-    (setq result nei--completions)
-    (setq nei--completions nil)
-    result
     )
   )
 
