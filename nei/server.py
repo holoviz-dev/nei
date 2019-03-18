@@ -55,7 +55,7 @@ class PeriodicOutputCallback(object):
                       if self.server.BROWSER_CONNECTIONS else None)
 
         if connection and (status == 'comm_open'):
-            print("REQUEST TO OPEN COMM FOR JS: %s" % result) # TODO: buffers
+            logging.info("REQUEST TO OPEN COMM FOR JS: %s" % result)
             self.notebook.message(connection, 'comm_open', result['content'])
             # e.g:
             # {'data': {}, 'comm_id': 'ee0a39d3728945cdb4ad30848b7856fc',

@@ -51,7 +51,7 @@ class Channel(ThreadedZMQSocketChannel):
                 executions = int(content['execution_count'])
                 self.executions = executions
             except:
-                print('ERROR: execution_count is not an integer %r' %
+                logging.info('ERROR: execution_count is not an integer %r' %
                       content['execution_count'])
                 self.executions = None
 
@@ -74,7 +74,7 @@ class Channel(ThreadedZMQSocketChannel):
                              'metadata':metadata}, 'comm_msg'))
             return
         elif msg_type.startswith('comm'):
-            print("Unhandled 'comm' message of type {msg_type} with {content}".format(
+            logging.info("Unhandled 'comm' message of type {msg_type} with {content}".format(
                 msg_type=msg_type,
                 content=content))
 
@@ -82,7 +82,7 @@ class Channel(ThreadedZMQSocketChannel):
         if msg_type in {'execute_result', 'display_data', 'update_display_data'}:
             display_id = msg['content'].get('transient', {}).get('display_id', None)
             if msg_type == 'update_display_data':
-                print("Unhandled 'update_display_data' message")
+                logging.info("Unhandled 'update_display_data' message")
             # Should filter text/plain and text/html at this level
             # print(output_from_msg(msg)['data'])
 
@@ -196,6 +196,6 @@ class Comms(object):
 
     def comm_msg(self, comm_id, target_name, data=None, metadata=None
                  , buffers=None, **keys):
-        print("Sending message to Python comm %s." % comm_id)
+        logging.info("Sending message to Python comm %s." % comm_id)
         self._publish_msg('comm_msg', comm_id, target_name=target_name,
                           data=data, metadata=metadata, buffers=buffers)
