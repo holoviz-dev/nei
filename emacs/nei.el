@@ -52,13 +52,6 @@
     )
   )
 
-(defun nei--receive-message (text)
-  "Currently only used for completions"
-  (let* ((parsed-json (json-read-from-string text))
-         (matches (assoc-value 'matches parsed-json)))
-    (setq nei--completions matches)
-    )
-  )
 (defun nei--open-ws-connection (&optional quiet)
   "Opens a new websocket connection if needed"
   (if (or (null nei--ws-connection) nei--unexpected-disconnect)

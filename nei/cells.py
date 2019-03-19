@@ -534,6 +534,7 @@ class ExecutableNotebook(Notebook):
     def __init__(self, executor_init, name=None, **kwargs):
         self.executor_init = executor_init
         self.executor = None # Initialized by start_kernel
+        self.completion_info = None
         super(ExecutableNotebook, self).__init__(name=name, **kwargs)
         self.exec_commands = {
             'exec_silently':    self.exec_silently,
@@ -552,10 +553,21 @@ class ExecutableNotebook(Notebook):
         }
         self.commands.update(self.exec_commands)
 
-    def complete(self, connection, code, position):
-        if position is None:
-            position = len(code)
-        self.executor.complete(code, position)
+    def complete(self, connection, line_number, line_context, position):
+        cell_index =  self.by_line(line_number)
+        cell_source = self.cells[cell_index].source
+
+        relative_position = 0
+        for line in cell_source.split("\n"):
+            if line.startswith(line_context):
+                relative_position += len(line_context)
+                break
+            relative_position += len(line) +1 # +1 to compensate for newlines
+
+        self.completion_info = {'cell_source':cell_source,
+                                'position': position,
+                                'relative_position':relative_position}
+        self.executor.complete(cell_source, relative_position)
 
     def dispatch(self, connection, payload):
         kernel_required = [cmd for cmd in self.exec_commands if cmd != 'start_kernel']

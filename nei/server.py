@@ -56,7 +56,17 @@ class PeriodicOutputCallback(object):
 
         if status == 'completion':
             editor_connection = self.server.EDITOR_CONNECTIONS[0]
+            position = self.notebook.completion_info['position']
+            relative_position = self.notebook.completion_info['relative_position']
+
+            # Adjusted for emacs point position
+            start_delta = relative_position - result['cursor_start']
+            end_delta = relative_position - result['cursor_end']
+            result['cursor_start'] = position - start_delta
+            result['cursor_end'] = position - end_delta
+
             editor_connection.write_message(json.dumps(result))
+            self.notebook.completion_info = None
             return
 
         if connection and (status == 'comm_open'):

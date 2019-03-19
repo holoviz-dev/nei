@@ -100,18 +100,27 @@
   (setq nei--active-kernel nil)
   (message "Not implemented: shutdown-kernel")
   (nei--update-kernel-menu-entry nil)
-)
+  )
 
+
+(defun nei--receive-message (text)
+  "Callback for websocket messages currently only used for completions"
+  (let ((parsed-json (json-read-from-string text)))
+    (setq nei--completions parsed-json)
+    )
+  )
 
 (defun nei-complete ()
   "Wait for nei--completions variable to be set after a completion request"
-  (let ((code-context
+  (let ((line-context
          (buffer-substring-no-properties (line-beginning-position) (point))))
-    (if (not (s-equals? code-context ""))
+    (if (not (s-equals? line-context ""))
         (progn 
           (nei--server-cmd "complete"
-                           (list (cons "code" code-context)
-                                 (cons "position" nil)))
+                           (list (cons "line_number" (line-number-at-pos))
+                                 (cons "line_context" line-context)
+                                 (cons "position" (point)))
+                           )
           (let ((result nil)
                 (i 0))
             (while (and (null nei--completions) nei--active-kernel (< i 150))
@@ -128,10 +137,12 @@
   )
 
 (defun nei-completion-at-point ()
-  (list (point) (point)
-        (completion-table-dynamic
-         (lambda (_)
-           (append (nei-complete) nil))))
+  (let* ((result (nei-complete))
+         (cursor-start (assoc-value 'cursor_start result))
+         (cursor-end (assoc-value 'cursor_end result))
+         (matches (assoc-value 'matches result)))
+    (list cursor-start cursor-end (append matches nil))
+    )
   )
 
 (defun nei-reload-page ()
