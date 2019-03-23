@@ -13,7 +13,7 @@
 (defun nei--proxy-browser ()
   (progn
     (setq conn (websocket-open
-                "ws://127.0.0.1:8001"
+                "ws://127.0.0.1:10000"
                 :on-message (lambda (_websocket frame)
                               (setq nei--test-response  (websocket-frame-text frame)))
                 :on-close (lambda (_websocket) (message "ON CLOSE"))
