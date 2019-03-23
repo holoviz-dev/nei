@@ -9,6 +9,10 @@ Loads the required external dependencies needed to run the tests
 (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
+
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
 (mapc
  (lambda (package)
    (unless (package-installed-p package)
