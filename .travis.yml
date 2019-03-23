@@ -22,7 +22,7 @@ install:
   - source activate nei-test-env
   
 script:
-  - cd nei/tests
+  - cd tests
   # There is bound to be a better way to do this but this will do for now...
   - $EMACS -Q --batch -l load-dependencies.el -l ../emacs/nei-util.el -l ../emacs/nei-parse.el -l ../emacs/nei-edit.el -l ../emacs/nei-commands.el -l ../emacs/nei-server.el -l ../emacs/nei-bindings.el  -l ../emacs/nei-tools.el -l ../emacs/nei.el --eval "(progn  (load-file \"integration-tests.el\") (ert-run-tests-batch-and-exit))"
 notifications:
