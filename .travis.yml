@@ -20,6 +20,7 @@ install:
   - conda info -a
   - conda create -q -n nei-test-env python=$TRAVIS_PYTHON_VERSION jupyter_client nbformat nbconvert ipykernel
   - source activate nei-test-env
+  - python setup.py develop
   
 script:
   - cd tests
