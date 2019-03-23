@@ -11,6 +11,15 @@ install:
   - tar -xaf emacs-bin-${EMACS_VERSION}.tar.gz -C /
   - export EMACS=/tmp/emacs/bin/emacs
   - $EMACS --version
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda create -q -n nei-test-env python=$TRAVIS_PYTHON_VERSION jupyter_client nbformat nbconvert ipykernel
+  - source activate nei-test-env
+  
 script:
   - git clone git@github.com:pyviz/nei.git
   - cd nei/tests
