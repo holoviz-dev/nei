@@ -6,6 +6,8 @@ Loads the required external dependencies needed to run the tests
 ;;      https://cask.readthedocs.io/en/latest/guide/introduction.html
 
 (require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 (mapc
  (lambda (package)
