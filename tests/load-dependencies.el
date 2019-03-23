@@ -17,4 +17,4 @@ Loads the required external dependencies needed to run the tests
  (lambda (package)
    (unless (package-installed-p package)
      (package-install package)))
- '(s websocket))
+ '(s websocket htmlize))
