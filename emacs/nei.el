@@ -36,10 +36,10 @@
   "Local variable (vector) tracking suggested completions at point")
 
 
-(defun nei--open-websocket ()
+(defun nei--open-websocket (ws-port)
   (progn
     (setq conn (websocket-open
-                "ws://127.0.0.1:9999"
+                (format "ws://127.0.0.1:%s" ws-port)
                 :on-message (lambda (_websocket frame)
                               (nei--receive-message (websocket-frame-text frame)))
                 :on-close (lambda (_websocket) (setq nei--unexpected-disconnect t))
@@ -52,12 +52,12 @@
     )
   )
 
-(defun nei--open-ws-connection (&optional quiet)
+(defun nei--open-ws-connection (ws-port &optional quiet)
   "Opens a new websocket connection if needed"
   (if (or (null nei--ws-connection) nei--unexpected-disconnect)
       (progn
         (setq nei--unexpected-disconnect nil)
-        (nei--open-websocket)
+        (nei--open-websocket ws-port)
         )
     (if (not quiet)
         (message "Websocket connection already open")
@@ -65,14 +65,18 @@
     )
   )
 
-(defun nei-connect ()
+(defun nei-connect (&optional ws-port html-port quiet)
   "Start the NEI server, establish the websocket connection and begin mirroring"
   (interactive)
-  (if (and nei--ws-connection (null nei--unexpected-disconnect))
-      (message "Already connected to NEI server")
-    (progn 
-      (nei--start-server)
-      (nei--open-ws-connection)
+  (let ((verbose (not quiet))
+        (ws-port-or-default   (or ws-port 9999))
+        (html-port-or-default (or html-port 8000)))
+    (if (and nei--ws-connection (null nei--unexpected-disconnect))
+        (if verbose (message "Already connected to NEI server"))
+      (progn
+        (nei--start-server ws-port-or-default html-port-or-default verbose)
+        (nei--open-ws-connection ws-port-or-default)
+        )
       (nei-update-config)
       )
     )

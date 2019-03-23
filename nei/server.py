@@ -184,18 +184,14 @@ class Server(websocket.WebSocketHandler):
 
         self.output_callback.stop()
 
-def serve():
+def serve(ws_port=9999, html_port=8000):
     import tornado.options
     tornado.options.parse_command_line()
-
-
     html_handler = (r'/(.*)', tornado.web.StaticFileHandler,
                     {'path': STATIC_PATH})
-
-
-    tornado.web.Application([html_handler]).listen(8000)
+    tornado.web.Application([html_handler]).listen(html_port)
     ws_server = httpserver.HTTPServer(tornado.web.Application([(r"/", Server)]))
-    ws_server.listen(9999, "127.0.0.1")
+    ws_server.listen(ws_port, "127.0.0.1")
     logging.info("STARTED: Server start listening")
     ioloop.IOLoop.instance().start()
 

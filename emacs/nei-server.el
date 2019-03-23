@@ -95,45 +95,47 @@
   )
 
 
-(defun nei--server-launch-process ()
+(defun nei--server-launch-process (ws-port html-port &optional verbose)
   "Starts the nei server as an emacs process if not already running"
   (interactive)
   (let ((proc (get-process "nei-server")))
     (if (null proc)
         (progn
-          (message "Starting nei server")
-          (let ((new-proc
-                 (start-process "nei-server"
-                                " *nei server log*" ;; Leading space hides the buffer
-                                "python" "-c" "import nei;nei.serve()")))
-
+          (if verbose (message "Starting nei server"))
+          (let* ((port-formatted-cmd
+                  (format "import nei;nei.serve(%s, %s)" ws-port html-port))
+                 (new-proc
+                  (start-process "nei-server"
+                                 " *nei server log*" ;; Leading space hides the buffer
+                                 "python" "-c" port-formatted-cmd))
+                 )
             (set-process-filter new-proc 'nei--server-insertion-filter) 
             (set-process-query-on-exit-flag new-proc nil)
             (set-process-sentinel new-proc 'nei--server-process-sentinel)             
             (sleep-for 2)
-            (message "Started")
+            (if verbose (message "Started NEI server"))
             )
           )
-      (message "Nei server already running")
+      (if verbose (message "Nei server already running"))
       )
     )
   )
 
 
-(defun nei--start-server (&optional port) ;; Make port mandatory here?
+(defun nei--start-server (ws-port html-port verbose)
   "Check if NEI is importable in Python after optionally activating a
    conda environment (if conda-mode available). If the check fails and
    it is not due to a port conflict, open a help window with information
    to help diagnose and fix the problem."
 
-  (let ((status (nei--server-available (or port 9999))))
+  (let ((status (nei--server-available ws-port)))
     (cond ((null status) (nei--server-diagnose))
           ((and (s-equals? status "port unavailable")
-           (y-or-n-p (format "Port %s unavailable. Attempt external server connection?"
-                             (or port 9999)))) (message "Connecting to external server..."))
+                (y-or-n-p
+                (format "Port %s unavailable. Attempt external server connection?" ws-port)))
+           (message "Connecting to external server..."))
           ( t (progn
-                (message "Launching NEI server.")
-                (nei--server-launch-process)
+                (nei--server-launch-process ws-port html-port verbose)
                 )
               )
           )
