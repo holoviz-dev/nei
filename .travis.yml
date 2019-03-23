@@ -1,0 +1,31 @@
+sudo: false
+language: generic
+env:
+  global:
+    - CURL="curl -fsSkL --retry 9 --retry-delay 9"
+    - GHRAW="https://raw.githubusercontent.com"
+  matrix:
+    - EMACS_VERSION=26.1
+install:
+  - $CURL -O https://github.com/npostavs/emacs-travis/releases/download/bins/emacs-bin-${EMACS_VERSION}.tar.gz
+  - tar -xaf emacs-bin-${EMACS_VERSION}.tar.gz -C /
+  - export EMACS=/tmp/emacs/bin/emacs
+  - $EMACS --version
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda create -q -n nei-test-env python=$TRAVIS_PYTHON_VERSION jupyter_client nbformat nbconvert ipykernel
+  - source activate nei-test-env
+  
+script:
+  - git clone git@github.com:pyviz/nei.git
+  - cd nei/tests
+  # There is bound to be a better way to do this but this will do for now...
+  - $EMACS -Q --batch -l load-dependencies.el -l ../emacs/nei-util.el -l ../emacs/nei-parse.el -l ../emacs/nei-edit.el -l ../emacs/nei-commands.el -l ../emacs/nei-server.el -l ../emacs/nei-bindings.el  -l ../emacs/nei-tools.el -l ../emacs/nei.el --eval "(progn  (load-file \"integration-tests.el\") (ert-run-tests-batch-and-exit))"
+notifications:
+  email:
+    on_success: never
+    on_failure: always
