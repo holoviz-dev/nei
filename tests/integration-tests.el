@@ -13,7 +13,7 @@
 (defun nei--proxy-browser ()
   (progn
     (setq conn (websocket-open
-                "ws://127.0.0.1:10000"
+                "ws://127.0.0.1:8001"
                 :on-message (lambda (_websocket frame)
                               (setq nei--test-response  (websocket-frame-text frame)))
                 :on-close (lambda (_websocket) (message "ON CLOSE"))
@@ -52,23 +52,23 @@
 
 
 (ert-deftest test-server-port-available ()
-  (should (equal (nei--server-available 10000) t))
+  (should (equal (nei--server-available 8001) t))
   )
 
 
-(ert-deftest test-update-css ()
-  (nei-connect 10000 8010 t)
-  (should (equal nil (null (get-process "nei-server"))))
-  (sleep-for 0.2)
+;; (ert-deftest test-update-css ()
+;;   (nei-connect 10000 8010 t)
+;;   (should (equal nil (null (get-process "nei-server"))))
+;;   (sleep-for 0.2)
 
-  (with-temp-buffer
-    (setq nei-autoconnect nil)
-    (setq python-indent-guess-indent-offset nil)
-    (nei--proxy-browser)
-    (should (equal (null nei--ws-proxy-browser-connection) nil))
-    (nei-mode)
-    (should (equal nei--currently-mirroring t))
-    (nei-update-css)
-    (assert-response-properties "update_style")
-    )
-  )
+;;   (with-temp-buffer
+;;     (setq nei-autoconnect nil)
+;;     (setq python-indent-guess-indent-offset nil)
+;;     (nei--proxy-browser)
+;;     (should (equal (null nei--ws-proxy-browser-connection) nil))
+;;     (nei-mode)
+;;     (should (equal nei--currently-mirroring t))
+;;     (nei-update-css)
+;;     (assert-response-properties "update_style")
+;;     )
+;;   )
