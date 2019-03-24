@@ -41,14 +41,15 @@
 )
 
 
-
-
 (defun nei--terminate-server ()
   "Used to terminate the server remotely- used for debugging"
   (nei--server-cmd "terminate" (list))
   )
 
-
+(defun nei--server-info ()
+  "Used to pass server info to the browser for testing"
+  (nei--server-cmd "terminate" (list))
+  )
 
 
 ;;======================;;

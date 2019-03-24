@@ -274,6 +274,7 @@ class Notebook(Cells):
         super(Notebook, self).__init__(**kwargs)
         self.name = name
         self.metadata = None
+        self._last_dispatch = None # Used for debugging and testing
         self.mirrorbuffer = MirrorBuffer()
         self.commands = {'view_browser': self.view_browser, # Opens browser connection
                          # Commands that do no need a browser connection
@@ -281,7 +282,9 @@ class Notebook(Cells):
                          'scroll_by' :       self.scroll_by,
                          'scroll_to_line' :  self.scroll_to_line,
 
-                         'terminate' :       self.terminate, # Used for debugging
+                         # Used for debugging
+                         'terminate' :       self.terminate,
+                         'server_info' :     self.server_info,
 
                          'write_notebook':   self.write_notebook,
                          'start_mirror':     self.start_mirror,
@@ -324,6 +327,8 @@ class Notebook(Cells):
 
     def dispatch(self, connection, payload):
         cmd, args = payload['cmd'], payload['args']
+        if cmd != 'server_info':
+            self._last_dispatch = payload # Used for debugging/testing
         self.commands[cmd](connection, **(args if args is not None else {}))
 
     def update_config(self, connection, config):
@@ -331,6 +336,12 @@ class Notebook(Cells):
 
     def terminate(self, connection): # Used for debugging
         logging.info("ERROR: Termination requested")
+
+    def server_info(self, connection):
+        # Used for debugging and testing by outputting info on browser connection
+        self.message(connection, 'server_info',
+                     {'text': self.text,
+                      'last_dispatch': self._last_dispatch})
 
     def scroll_by(self, connection, offset):
         self.message(connection, 'scroll_by', {'offset': offset})
