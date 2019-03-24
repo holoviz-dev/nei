@@ -13,6 +13,7 @@
 (setq nei-verbose nil)
 
 (defmacro with-temp-nei-buffer (&rest body)
+  "Act in a temporary buffer suitable for testing NEI"
   `(with-temp-buffer
      (progn
        (setq default-directory "/tmp") ;; Mystery error if in tests dir
@@ -30,7 +31,7 @@
 (defmacro assert-response-properties (cmd block);; &optional args)
   "Given the response JSON assert the command matches and optionally the args"
   `(progn
-     (check-websocket-connections)
+     (check-websockets-open)
      (setq nei--test-response nil)
 
      (let ((i 0))
@@ -48,12 +49,13 @@
 
 
 (defun nei--proxy-browser ()
+  "Connect an emacs websocket emulating the browser if required "
   (if (null nei--ws-proxy-browser-connection)
       (nei--connect-proxy-browser))
   )
 
-
 (defun nei--connect-proxy-browser ()
+  "Connect an emacs websocket emulating the browser"
   (progn
     (setq conn (websocket-open
                 "ws://127.0.0.1:10000"
@@ -70,7 +72,7 @@
   )
 
 
-(defun check-websocket-connections ()
+(defun check-websockets-open ()
   (should (equal
            (websocket-openp nei--ws-proxy-browser-connection) '(open run)))
   (should (equal
