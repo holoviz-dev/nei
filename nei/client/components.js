@@ -7,7 +7,7 @@ Moon.component('output-separator', {
 
 Moon.component('cell-input', {
   props: ['uuid', 'input_refresh'],
-  template: `<div m-html='input()'></div>`,
+  template: `<div class='nei-input-div' m-html='input()'></div>`,
   methods: {
     input: function() {
       let uuid = this.get('uuid')
@@ -61,7 +61,7 @@ export const app = new Moon({
       }
       else {
         let count = (cell.prompt != null) ? cell.prompt : ' ';
-        return `<br>In[${count}]</div>`
+        return `<div class='nei-input-prompt'><br>In[${count}]</div>`
       }
     }
   }
