@@ -18,7 +18,7 @@ extras_require = {
 
 setup_args = dict(
     name='nei',
-    version='0.0.5',
+    version='0.0.6',
     description='Notebook Emacs Interface',
     platforms=['Mac OS X', 'Linux'],
     license='BSD',
