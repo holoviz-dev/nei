@@ -10,26 +10,20 @@
   "Reponse captured by the proxy web browser proxy")
 
 
-(defun nei--proxy-browser ()
-  (if (null nei--ws-proxy-browser-connection)
-      (nei--connect-proxy-browser))
-  )
 
-
-(defun nei--connect-proxy-browser ()
-  (progn
-    (setq conn (websocket-open
-                "ws://127.0.0.1:10000"
-                :on-message (lambda (_websocket frame)
-                              (setq nei--test-response  (websocket-frame-text frame)))
-                :on-close (lambda (_websocket) (message "ON CLOSE"))
-                :on-open (lambda (_websocket) (websocket-send-text
-                                   _websocket "{\"init\": \"browser\"}"))
-		)
-	  )
-    (setq nei--ws-proxy-browser-connection conn)
-    (sleep-for  0.1)
-    )
+(defmacro with-temp-nei-buffer (&rest body)
+  `(with-temp-buffer
+     (progn
+       (setq default-directory "/tmp") ;; Mystery error if in tests dir
+       (setq nei-autoconnect nil)
+       (setq python-indent-guess-indent-offset nil)
+       (nei--proxy-browser)
+       (should (equal (null nei--ws-proxy-browser-connection) nil))
+       (nei-mode)
+       (should (equal nei--currently-mirroring t))
+       (progn ,@body)
+       )
+     )
   )
 
 (defmacro assert-response-properties (cmd block);; &optional args)
@@ -52,6 +46,29 @@
   )
 
 
+(defun nei--proxy-browser ()
+  (if (null nei--ws-proxy-browser-connection)
+      (nei--connect-proxy-browser))
+  )
+
+
+(defun nei--connect-proxy-browser ()
+  (progn
+    (setq conn (websocket-open
+                "ws://127.0.0.1:10000"
+                :on-message (lambda (_websocket frame)
+                              (setq nei--test-response  (websocket-frame-text frame)))
+                :on-close (lambda (_websocket) (message "ON CLOSE"))
+                :on-open (lambda (_websocket) (websocket-send-text
+                                   _websocket "{\"init\": \"browser\"}"))
+		)
+	  )
+    (setq nei--ws-proxy-browser-connection conn)
+    (sleep-for  0.1)
+    )
+  )
+
+
 (defun check-websocket-connections ()
   (should (equal
            (websocket-openp nei--ws-proxy-browser-connection) '(open run)))
@@ -63,19 +80,13 @@
   (should (equal (nei--server-available 8001) t))
   )
 
+
 (ert-deftest test-update-css ()
   (nei-connect 10000 8010 t)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
-  (with-temp-buffer
-    (setq default-directory "/tmp")
-    (setq nei-autoconnect nil)
-    (setq python-indent-guess-indent-offset nil)
-    (nei--proxy-browser)
-    (should (equal (null nei--ws-proxy-browser-connection) nil))
-    (nei-mode)
-    (should (equal nei--currently-mirroring t))
+  (with-temp-nei-buffer
     (assert-response-properties "update_style" (nei-update-css))
     )
   )
@@ -85,15 +96,7 @@
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
-  (with-temp-buffer
-    (setq default-directory "/tmp") ;; Mystery error if in tests dir
-    (setq nei-autoconnect nil)
-    (setq python-indent-guess-indent-offset nil)
-    (nei--proxy-browser)
-    (should (equal (null nei--ws-proxy-browser-connection) nil))
-    (nei-mode)
-    (should (equal nei--currently-mirroring t))
-
+  (with-temp-nei-buffer
     (assert-response-properties "add_cell"
                                 (progn 
                                   (insert "Text before any cell is not part of the notebook\n")
@@ -108,14 +111,7 @@
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
-  (with-temp-buffer
-    (setq default-directory "/tmp")
-    (setq nei-autoconnect nil)
-    (setq python-indent-guess-indent-offset nil)
-    (nei--proxy-browser)
-    (should (equal (null nei--ws-proxy-browser-connection) nil))
-    (nei-mode)
-    (should (equal nei--currently-mirroring t))
+  (with-temp-nei-buffer
     (assert-response-properties "add_cell"
                                 (progn
                                   (insert "Text before any cell is not part of the notebook\n")
