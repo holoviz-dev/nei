@@ -10,6 +10,7 @@
   "Reponse captured by the proxy web browser proxy")
 
 
+(setq nei-verbose nil)
 
 (defmacro with-temp-nei-buffer (&rest body)
   `(with-temp-buffer
@@ -82,7 +83,7 @@
 
 
 (ert-deftest test-update-css ()
-  (nei-connect 10000 8010 t)
+  (nei-connect 10000 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
@@ -92,7 +93,7 @@
   )
 
 (ert-deftest test-simple-insert-code-cell ()
-  (nei-connect 10000 8010 t)
+  (nei-connect 10000 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
@@ -107,7 +108,7 @@
   )
 
 (ert-deftest test-simple-insert-code-cell-and-execute ()
-  (nei-connect 10000 8010 t)
+  (nei-connect 10000 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 

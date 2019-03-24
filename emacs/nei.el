@@ -13,7 +13,6 @@
 
 (defvar nei-browser "firefox"
   "The browser used by NEI when launch new tabs.")
-
 (defvar nei-autoconnect t
   "Boolean that determines whether to try to autoconnect when a NEI buffer is open")
 
@@ -25,17 +24,19 @@
 
 (defvar nei--last-buffer "Internal variable to keep track of last nei buffer")
 
+(defvar nei-verbose t
+  "Whether to output status messages")
+
 (defvar-local nei--execution-count 0
   "Local variable tracking the number of kernel executions invoked from NEI")
 
 (defvar-local nei--ipynb-buffer-filename nil
   "Local variable tracking the original filename for a view on an IPYNB file")
 
-
 (defvar-local nei--completions nil
   "Local variable (vector) tracking suggested completions at point")
 
-
+ 
 (defun nei--open-websocket (ws-port)
   (progn
     (setq conn (websocket-open
@@ -52,29 +53,26 @@
     )
   )
 
-(defun nei--open-ws-connection (ws-port &optional quiet)
+(defun nei--open-ws-connection (ws-port)
   "Opens a new websocket connection if needed"
   (if (or (null nei--ws-connection) nei--unexpected-disconnect)
       (progn
         (setq nei--unexpected-disconnect nil)
         (nei--open-websocket ws-port)
         )
-    (if (not quiet)
-        (message "Websocket connection already open")
-      )
+    (nei--logging "Websocket connection already open")
     )
   )
 
-(defun nei-connect (&optional ws-port html-port quiet)
+(defun nei-connect (&optional ws-port html-port)
   "Start the NEI server, establish the websocket connection and begin mirroring"
   (interactive)
-  (let ((verbose (not quiet))
-        (ws-port-or-default   (or ws-port 9999))
+  (let ((ws-port-or-default   (or ws-port 9999))
         (html-port-or-default (or html-port 8000)))
     (if (and nei--ws-connection (null nei--unexpected-disconnect))
-        (if verbose (message "Already connected to NEI server"))
+        (nei--logging "Already connected to NEI server")
       (progn
-        (nei--start-server ws-port-or-default html-port-or-default verbose)
+        (nei--start-server ws-port-or-default html-port-or-default)
         (nei--open-ws-connection ws-port-or-default)
         )
       (nei-update-config)
@@ -100,7 +98,7 @@
 (defun nei--disconnection-error ()
   (nei-stop-mirroring)
   (websocket-close nei--ws-connection)
-  (message "Unexpected disconnection")
+  (nei--logging "Unexpected disconnection")
   (setq nei--unexpected-disconnect nil)
   (nei--close-ws-connection)
   )
@@ -114,7 +112,7 @@
   "Runs the callback if there is a connection and handles unexpected disconnects."
   (cond (nei--unexpected-disconnect (nei--disconnection-error))
         ((null nei--ws-connection)
-         (if warn-no-connection (message "Not connected to NEI server")))
+         (if warn-no-connection (nei--logging "Not connected to NEI server")))
         (t (progn
              (websocket-send-text nei--ws-connection text)
              (if nei--unexpected-disconnect (nei--disconnection-error)))

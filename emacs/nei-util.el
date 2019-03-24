@@ -2,6 +2,11 @@
 
 (require 'htmlize)
 
+(defun nei--logging (&rest args)
+  (if nei-verbose (apply 'message  args))
+  )
+
+
 (defun assoc-value (key alist)
   "Helper to make accessing keys from an alist more readable"
   (cdr (assoc key alist))

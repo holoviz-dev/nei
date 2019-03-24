@@ -28,7 +28,7 @@
   "Similar to nei-server-cmd but warns if there is no buffer kernel"
   (if nei--active-kernel
       (nei--server-cmd command args warn-no-connection)
-    (message "Execution skipped. Start a kernel with %s"
+    (nei--logging "Execution skipped. Start a kernel with %s"
              (mapconcat 'key-description (where-is-internal 'nei-start-kernel) " ")
              )
     )
@@ -74,7 +74,7 @@
                    (list (cons "cwd" default-directory)))
   
   (run-with-idle-timer 1 nil 'nei-update-css) ; E.g to update themes via Python
-  (message "Sent start kernel message")
+  (nei--logging "Sent start kernel message")
   (nei--update-kernel-menu-entry t)
 )
 
@@ -83,7 +83,7 @@
   "Send an interrupt-kernel  message"
   (interactive)  
   (nei--server-cmd "interrupt_kernel" (list))
-  (message "Sent interrupt kernel message")
+  (nei--logging "Sent interrupt kernel message")
 )
 
 (defun nei-restart-kernel ()
@@ -91,14 +91,14 @@
   (interactive)
   (setq nei--execution-count 0)
   (nei--server-cmd "restart_kernel" (list))
-  (message "Sent restart kernel message")
+  (nei--logging "Sent restart kernel message")
 )
 
 (defun nei-shutdown-kernel ()
   "Send an shutdown-kernel  message"
   (interactive)
   (setq nei--active-kernel nil)
-  (message "Not implemented: shutdown-kernel")
+  (nei--logging "Not implemented: shutdown-kernel")
   (nei--update-kernel-menu-entry nil)
   )
 
@@ -149,7 +149,7 @@
   "Send an restart-kernel  message"
   (interactive)
   (nei--server-cmd "reload_page" (list))
-  (message "Sent reload page message")
+  (nei--logging "Sent reload page message")
 )
 
 
@@ -158,7 +158,7 @@
   (interactive)
   (nei--server-cmd "clear_all_cell_outputs" (list))
   (nei--clear-execution-prompts)
-  (message "Cleared all cell outputs and prompts")
+  (nei--logging "Cleared all cell outputs and prompts")
 )
 
 
@@ -168,14 +168,14 @@
   (nei--server-cmd "clear_notebook" (list))
   (nei-restart-kernel)
   (erase-buffer)
-  (message "Cleared notebook and restarted kernel")
+  (nei--logging "Cleared notebook and restarted kernel")
 )
 
 (defun nei-view-notebook ()
   "View nbconverted notebook in the browser"
   (interactive)
   (nei--server-cmd "view_notebook" (list))
-  (message "Sent interrupt kernel message")
+  (nei--logging "Sent interrupt kernel message")
   )
 
 

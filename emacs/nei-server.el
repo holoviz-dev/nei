@@ -95,13 +95,13 @@
   )
 
 
-(defun nei--server-launch-process (ws-port html-port &optional verbose)
+(defun nei--server-launch-process (ws-port html-port)
   "Starts the nei server as an emacs process if not already running"
   (interactive)
   (let ((proc (get-process "nei-server")))
     (if (null proc)
         (progn
-          (if verbose (message "Starting nei server"))
+          (nei--logging "Starting nei server")
           (let* ((port-formatted-cmd
                   (format "import nei;nei.serve(%s, %s)" ws-port html-port))
                  (new-proc
@@ -113,16 +113,16 @@
             (set-process-query-on-exit-flag new-proc nil)
             (set-process-sentinel new-proc 'nei--server-process-sentinel)             
             (sleep-for 2)
-            (if verbose (message "Started NEI server"))
+            (nei--logging "Started NEI server")
             )
           )
-      (if verbose (message "Nei server already running"))
+      (nei--logging "Nei server already running")
       )
     )
   )
 
 
-(defun nei--start-server (ws-port html-port verbose)
+(defun nei--start-server (ws-port html-port)
   "Check if NEI is importable in Python after optionally activating a
    conda environment (if conda-mode available). If the check fails and
    it is not due to a port conflict, open a help window with information
@@ -133,9 +133,9 @@
           ((and (s-equals? status "port unavailable")
                 (y-or-n-p
                 (format "Port %s unavailable. Attempt external server connection?" ws-port)))
-           (message "Connecting to external server..."))
+           (nei--logging "Connecting to external server..."))
           ( t (progn
-                (nei--server-launch-process ws-port html-port verbose)
+                (nei--server-launch-process ws-port html-port)
                 )
               )
           )
@@ -178,7 +178,7 @@
             )
           (switch-to-buffer-other-window "NEI server log")
           ) 
-      (message "NEI server not currently running as emacs process")
+      (nei--logging "NEI server not currently running as emacs process")
       )
     )
   )
