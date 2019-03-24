@@ -48,6 +48,12 @@ export class Notebook {
     return pos + skipped
   }
 
+
+  input_display(pos, visible) {
+    let cell =  this.get_cell(pos)
+    cell.input_display(visible)
+  }
+
   uuid_at_pos(pos) {
     // Returns the uuid by the position of visible cells. If pos is null, return last cell.
     let visible = this.visible_uuids();
@@ -178,6 +184,13 @@ export class Cell {
     else if (this.mode == "markdown")  {
       this.input = `<div class="markdown-cell">${marked(source)}</div>`;
     }
+  }
+
+  input_display(visible) {
+    let parent = document.getElementById(`input-start-${this.uuid}`).parentElement
+    parent.style.setProperty("display", visible ? 'inline' : 'none')
+    let prompt = document.getElementById(`nei-input-prompt-${this.uuid}`)
+    prompt.style.setProperty("display", visible ? 'inline' : 'none')
   }
 
   scroll(offset=0, line=null) {

@@ -61,7 +61,7 @@ export const app = new Moon({
       }
       else {
         let count = (cell.prompt != null) ? cell.prompt : ' ';
-        return `<div class='nei-input-prompt'><br>In[${count}]</div>`
+        return `<div id='nei-input-prompt-${uuid}'><br>In[${count}]</div>`
       }
     }
   }
