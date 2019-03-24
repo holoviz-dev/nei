@@ -1,4 +1,5 @@
 ;;;  -*- lexical-binding: t; -*-
+;; Module for utilities
 
 (require 'htmlize)
 
@@ -6,14 +7,10 @@
   (if nei-verbose (apply 'message  args))
   )
 
-
 (defun assoc-value (key alist)
   "Helper to make accessing keys from an alist more readable"
   (cdr (assoc key alist))
 )
-
-
-;; Module for utilities
 
 (defun neiutil--make-buffer-uninteresting ()
   "rename the current buffer to begin with a space"
@@ -50,20 +47,17 @@
   )
 
 
-
-
-
 (defun nei--htmlize-css ()
   "Use htmlize to generate CSS for syntax highlighting"
   (let (( buf (generate-new-buffer "*htmlize-css*")) ( css nil ))
     (with-current-buffer buf
-      (let ((python-faces 
-             (list font-lock-comment-face font-lock-comment-delimiter-face 
+      (let ((python-faces
+             (list font-lock-comment-face font-lock-comment-delimiter-face
                    font-lock-doc-face font-lock-constant-face font-lock-function-name-face
                    font-lock-builtin-face font-lock-type-face font-lock-string-face
                    font-lock-keyword-face font-lock-variable-name-face 'nei-prompt-face)))
-        (htmlize-css-insert-head python-faces 
-                                 (htmlize-make-face-map 
+        (htmlize-css-insert-head python-faces
+                                 (htmlize-make-face-map
                                   (adjoin 'default  python-faces)))
         )
       (setq css (buffer-substring (point-min) (point-max)))
@@ -72,6 +66,7 @@
     (nei--htmlize-css-to-highlight css)
     )
 )
+
 
 (defun nei--prompt-for-filename-until-predicate (prompt error-msg predicate)
   (let ((result nil))

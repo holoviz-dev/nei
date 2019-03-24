@@ -36,7 +36,7 @@
 (defvar-local nei--completions nil
   "Local variable (vector) tracking suggested completions at point")
 
- 
+
 (defun nei--open-websocket (ws-port)
   (progn
     (setq conn (websocket-open
@@ -134,10 +134,10 @@
                     ;; Timer used to ensure stack cleared to prevent recursion issues.
                     (run-with-timer 0 nil 'nei-reload-page)
                     (setq nei--last-buffer (buffer-name))
-                    (push 'nei--scroll-hook window-scroll-functions) 
+                    (push 'nei--scroll-hook window-scroll-functions)
                     )
                 )
-            
+
             )
           )
     )
@@ -145,7 +145,7 @@
 
 
 (define-minor-mode nei-mode
-  "Nei for authoring notebooks in Emacs."  
+  "Nei for authoring notebooks in Emacs."
   :keymap nei-mode-map
   :lighter (:eval (format " NEI:%s %s"
                           (if nei--ws-connection "Connected" "Disconnected")
@@ -154,11 +154,11 @@
                             "[No Kernel]")
                           )
                   )
-  
+
   (nei-fontify)
   ; Need one nice place to set up hooks
-  (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook) 
-  
+  (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook)
+
   (if (symbolp 'eldoc-mode)     ;; Disable eldoc mode! Why is is active?
       (eldoc-mode -1)
     )
@@ -167,7 +167,7 @@
       (nei-start-mirroring))
   (add-hook 'write-contents-functions 'nei--write-file-hook)
   )
-  
+
 
 (defun nei--enable-python-mode-advice (&optional arg)
   "Enable Python major mode when nei enabled if necessary"

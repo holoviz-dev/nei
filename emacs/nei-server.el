@@ -80,7 +80,7 @@
         (save-excursion
           ;; Insert the text, advancing the process marker.
           (goto-char (process-mark proc))
-          (insert string)                    
+          (insert string)
           (set-marker (process-mark proc) (point)))
         (if moving (goto-char (process-mark proc))))
       ;; Only non-standard part of the process filter - show buffer if
@@ -109,9 +109,9 @@
                                  " *nei server log*" ;; Leading space hides the buffer
                                  "python" "-c" port-formatted-cmd))
                  )
-            (set-process-filter new-proc 'nei--server-insertion-filter) 
+            (set-process-filter new-proc 'nei--server-insertion-filter)
             (set-process-query-on-exit-flag new-proc nil)
-            (set-process-sentinel new-proc 'nei--server-process-sentinel)             
+            (set-process-sentinel new-proc 'nei--server-process-sentinel)
             (sleep-for 2)
             (nei--logging "Started NEI server")
             )
@@ -167,9 +167,9 @@
   (interactive)
   (let ((proc (get-process "nei-server")))
     (if (or (not (null proc)) terminated)
-        (progn 
+        (progn
           (if (null (get-buffer "NEI server log"))
-              (progn 
+              (progn
                 (make-indirect-buffer (get-buffer " *nei server log*") "NEI server log")
                 (with-current-buffer (get-buffer "NEI server log")
                   (special-mode)
@@ -177,7 +177,7 @@
                 )
             )
           (switch-to-buffer-other-window "NEI server log")
-          ) 
+          )
       (nei--logging "NEI server not currently running as emacs process")
       )
     )

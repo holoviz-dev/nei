@@ -72,7 +72,7 @@
   (setq nei--active-kernel t)
   (nei--server-cmd "start_kernel"
                    (list (cons "cwd" default-directory)))
-  
+
   (run-with-idle-timer 1 nil 'nei-update-css) ; E.g to update themes via Python
   (nei--logging "Sent start kernel message")
   (nei--update-kernel-menu-entry t)
@@ -81,7 +81,7 @@
 
 (defun nei-interrupt-kernel ()
   "Send an interrupt-kernel  message"
-  (interactive)  
+  (interactive)
   (nei--server-cmd "interrupt_kernel" (list))
   (nei--logging "Sent interrupt kernel message")
 )
@@ -115,7 +115,7 @@
   (let ((line-context
          (buffer-substring-no-properties (line-beginning-position) (point))))
     (if (not (s-equals? line-context ""))
-        (progn 
+        (progn
           (nei--server-cmd "complete"
                            (list (cons "line_number" (line-number-at-pos))
                                  (cons "line_context" line-context)
@@ -185,18 +185,18 @@
   (nei--exec-cmd "exec_silently" (list (cons "code" code)))
   )
 
-  
+
 (defun nei-exec-by-line ()
   "Send an 'exec_cell_by_line' message to server at the current line"
   (interactive)
   (if nei--active-kernel
-      (progn 
+      (progn
         (setq nei--execution-count (1+ nei--execution-count))
         (nei--update-exec-prompt nei--execution-count) ;; TODO: Bump only if in code cell
         )
     )
   (nei--exec-cmd "exec_cell_by_line"
-                 (list 
+                 (list
                   (cons "line_number"
                         (line-number-at-pos))
                   )
@@ -206,11 +206,11 @@
 
 (defun nei--scroll-hook (win start-pos)
   "Hook to update scroll position in client via window-scroll-functions"
-  (let ((buffer-mode (with-current-buffer 
+  (let ((buffer-mode (with-current-buffer
                          (window-buffer (selected-window)) major-mode)))
     (if (eq buffer-mode 'python-mode) ;; TODO: Needs a better check
         (nei--server-cmd "scroll_to_line"
-                         (list 
+                         (list
                           (cons "line"
                                 (line-number-at-pos (window-start))
                                 )
@@ -234,12 +234,12 @@
 (defun nei-clear-cell-by-line ()
   (interactive)
   (nei--server-cmd "clear_cell_output_by_line"
-                   (list 
+                   (list
                     (cons "line_number"
                           (line-number-at-pos))
                     )
                    )
-  
+
   )
 
 
@@ -247,17 +247,17 @@
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
   (nei--server-cmd "update_style"
-                   (list 
+                   (list
                     (cons "css" (nei--htmlize-css))
                     ) t)
   )
-  
+
 
 (defun nei-update-config ()
   "Set the config dictionary on the notebook"
   (interactive)
   (nei--server-cmd "update_config"
-                   (list 
+                   (list
                     (cons "config"
                           (list (cons 'browser nei-browser))
                           )) t)
@@ -304,7 +304,7 @@
 (defun nei--write-notebook (mode filename)
   "Mode can be one of \"python\", \"cleared\" or \"full-notebook\" "
   (nei--server-cmd "write_notebook"
-                   (list 
+                   (list
                     (cons "mode" mode)
                     (cons "filename" filename)
                     )
@@ -314,9 +314,9 @@
 
 (defun nei--load-from-file (cells filename)
   "Send a load_from_file message to server with .ipynb parsed cells and filename"
-  
+
   (nei--server-cmd "load_from_file"
-                   (list 
+                   (list
                     (cons "json_string"
                           (json-encode cells))
                     (cons "filename" (expand-file-name filename))
@@ -326,7 +326,7 @@
 
 
 (defun nei-open-notebook (filename)
-  "Prompt for filename, load it into a new python-mode buffer and start mirroring" 
+  "Prompt for filename, load it into a new python-mode buffer and start mirroring"
   (interactive "FFind notebook: ")
   (find-file filename)
   (nei-view-ipynb)
@@ -335,16 +335,16 @@
 
 (defun nei--insert-notebook-command (filename text line-number)
   (nei--server-cmd "insert_file_at_point"
-                   (list 
+                   (list
                     (cons "filename" (expand-file-name filename))
                     (cons "text" text)
                     (cons "line_number" line-number)
                     )
                    )
   )
-  
+
 (defun nei-insert-notebook (filename)
-  "Prompt for filename and insert it into the buffer" 
+  "Prompt for filename and insert it into the buffer"
   (interactive "FFind notebook: ")
   (message "WARNING: nei-insert-notebook function needs updating")
   (nei--hold-mode "on")
@@ -370,7 +370,7 @@
   (let* ((src (current-buffer)))
     (with-current-buffer src
       (nei--server-cmd "mirror"
-                       (list 
+                       (list
                         (cons "start" start)
                         (cons "end" end)
                         (cons "length" length)
@@ -379,7 +379,7 @@
                         )
                        )
       )
-    )  
+    )
   )
 
 
@@ -388,7 +388,7 @@
   (let ((text (buffer-substring (point-min)  (point-max))))
     (setq nei--currently-mirroring t)
     (nei--server-cmd "start_mirror"
-                     (list 
+                     (list
                       (cons "text"  text)
                       )
                      )
@@ -417,7 +417,7 @@
 (defun nei--hold-mode (mode)
   "Toggle the 'hold' state of the mirror"
   (nei--server-cmd "hold_mode"
-                   (list 
+                   (list
                     (cons "mode"  mode)
                     )
                    )
@@ -430,7 +430,7 @@
 (defun nei-insert-code-cell ()
   "Add a new code cell prompt"
   (interactive)
-  (if (eq (point) (nei--start-of-line (point)))    
+  (if (eq (point) (nei--start-of-line (point)))
       (insert "# In[ ]\n") ;; Already at the start of a line
     (progn
       (goto-char (nei--end-of-line (point)))

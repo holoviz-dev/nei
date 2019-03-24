@@ -7,7 +7,6 @@
   (list (cons 'mode "markdown") (cons 'source source))
   )
 
-
 ;; Can also supply 'input' (i.e HTML) from emacs. No longer used.
 (defun nei--code-cell (source &optional prompt)
   (list (cons 'mode "code")
@@ -30,14 +29,14 @@
   )
 
 (defun nei-parse-json (data)
-  "Extract structure from JSON parsed using json-read-file or json-read-from-string" 
+  "Extract structure from JSON parsed using json-read-file or json-read-from-string"
   (let* ((extracted)
          (cells (assoc-value 'cells data))
          (metadata (assoc-value 'metadata data))
          (nbformat (assoc-value 'nbformat data))
          (nbformat-minor (assoc-value 'nbformat_minor data)))
     (dolist (cell (append cells nil) extracted)
-      
+
       (let* ((mode (assoc-value 'cell_type cell))
              (source  (s-join "" (assoc-value 'source cell)))
              (prompt (assoc-value 'execution_count cell))

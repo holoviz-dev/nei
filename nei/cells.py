@@ -547,9 +547,7 @@ class ExecutableNotebook(Notebook):
             'start_kernel':     self.start_kernel,
             'interrupt_kernel': self.interrupt_kernel,
             'restart_kernel':   self.restart_kernel,
-
-
-            'complete':   self.complete
+            'complete':         self.complete
         }
         self.commands.update(self.exec_commands)
 

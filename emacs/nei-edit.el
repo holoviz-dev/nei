@@ -5,7 +5,6 @@
 (require 'json)
 
 
-
 (defvar nei--prompt-regexp "^# In\\[\\([\\[:alnum:] ]*\\)\]"
   "The regular expression used to match prompts. Not to be changed by users.")
 
@@ -26,7 +25,7 @@
   "The overlay used to highlight current cell in nei")
 
 ;;===================================;;
-;; Mark current cell with an overlay ;; 
+;; Mark current cell with an overlay ;;
 ;;===================================;;
 
 (defun nei--start-of-line (pos)
@@ -39,9 +38,9 @@
 
 
 (defun nei--update-highlight-cell ()
-  "Uses regular expression search forwards/backwards to highlight 
-   the current cell with an overlay" 
-  
+  "Uses regular expression search forwards/backwards to highlight
+   the current cell with an overlay"
+
   (if (null nei--highlight-overlay)
       (setq nei--highlight-overlay
             (let ((ov (make-overlay 1 1 nil t)))
@@ -56,9 +55,9 @@
           (next-code-pos (if (null next-code) (point-max) next-code))
           (prev-md-pos (if (null prev-md) (point-min) prev-md))
           (next-md-pos (if (null next-md) (point-max) next-md)))
-      
+
       (if (> prev-code-pos prev-md-pos)
-          (move-overlay nei--highlight-overlay prev-code-pos 
+          (move-overlay nei--highlight-overlay prev-code-pos
                         (nei--start-of-line next-code-pos))
           (move-overlay nei--highlight-overlay prev-md-pos
                         (nei--start-of-line next-md-pos))
@@ -66,10 +65,10 @@
       )
     )
   )
- 
+
 
 (defun nei--point-move-disable-highlight-hook ()
-  "Post-command hook to disable cell highlight when the 
+  "Post-command hook to disable cell highlight when the
    point moves out the current overlay region"
   (if (and (memq this-command '(next-line previous-line))
            (not (null nei--highlight-overlay))
@@ -114,10 +113,10 @@
 (defun nei-defontify ()
   (let ((modified (buffer-modified-p)))
     (font-lock-remove-keywords nil (nei-fontify-matcher))
-    (remove-text-properties (point-min) (point-max) 
+    (remove-text-properties (point-min) (point-max)
                             (list 'display
                                   nei--prompt-regexp 'face 'nei-prompt-face))
-    
+
     (save-excursion
       (font-lock-fontify-keywords-region (point-min) (point-max))
       )
@@ -140,7 +139,7 @@
         (replace-match (format "# In[%d]" count))
         (set-buffer-modified-p modified)
         )
-      
+
       )
     )
   )
@@ -153,7 +152,7 @@
 
 (defun nei-move-point-to-previous-cell ()
   "Move the point to the previous cell"
-  (interactive)  
+  (interactive)
   (goto-char (nei--point-search-code-position -2))
   )
 
@@ -165,7 +164,7 @@
   (let* ((start (nei--point-search-code-position -1 t))
          (end (nei--point-search-code-position 1 t))
          (line-text (delete-and-extract-region start end)))
-    
+
     (goto-char (nei--point-search-code-position -1 t))
     (nei--hold-mode "off")
     (insert line-text)
@@ -179,13 +178,12 @@
   (let* ((start (nei--point-search-code-position -1 t))
          (end (nei--point-search-code-position 1 t))
          (line-text (delete-and-extract-region start end)))
-    
+
     (goto-char (nei--point-search-code-position 2 t))
     (nei--hold-mode "off")
     (insert line-text)
     )
   )
-
 
 (defun nei--point-search-code-position (count &optional at-prompt)
   "Uses regular expression search by count to report position of cells.
@@ -201,7 +199,7 @@
 
 (defun nei--clear-execution-prompts ()
   (interactive)
-  (save-excursion 
+  (save-excursion
     (perform-replace "# In\\[.*\\]" "# In[ ]" nil t nil nil nil (point-min) (point-max))
     )
   )

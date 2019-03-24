@@ -24,7 +24,7 @@
   ;; Add a toggle for the shift+enter binding
   (define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
   (define-key map [(S-return)] 'nei-exec-by-line-and-move-to-next-cell)
-  
+
   (define-key map (kbd "C-c k") 'nei-start-kernel)
   (define-key map (kbd "C-c i") 'nei-interrupt-kernel)
   (define-key map (kbd "C-c r") 'nei-restart-kernel)
@@ -103,7 +103,7 @@
      )
     ("Browser"
      ["View" nei-view-browser nei--ws-connection]
-     ["HTML Preview" nei-view-notebook nei--ws-connection] 
+     ["HTML Preview" nei-view-notebook nei--ws-connection]
      "---"
      ["Clear cell output"  nei-clear-cell-by-line nei--ws-connection]
      ["Clear all outputs and prompts"  nei-clear-all-cell-outputs nei--ws-connection]
@@ -190,7 +190,7 @@
         (error (message "Could not connect to NEI server"))
         )
     )
-        
+
 
   (if magic-alist
       ;; Suggests the use of nei-view-ipynb if notebook JSON detected
@@ -199,7 +199,7 @@
              (cons (cons nei--detect-ipynb-regexp  'nei--ipynb-suggestion) nil)
              magic-fallback-mode-alist))
     )
-  
+
   (if view-ipynb
       (global-set-key (kbd "C-c I") 'nei-view-ipynb)
     )
