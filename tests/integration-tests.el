@@ -69,6 +69,7 @@
   (sleep-for 0.2)
 
   (with-temp-buffer
+    (setq default-directory "/tmp")
     (setq nei-autoconnect nil)
     (setq python-indent-guess-indent-offset nil)
     (nei--proxy-browser)
@@ -85,6 +86,7 @@
   (sleep-for 0.2)
 
   (with-temp-buffer
+    (setq default-directory "/tmp") ;; Mystery error if in tests dir
     (setq nei-autoconnect nil)
     (setq python-indent-guess-indent-offset nil)
     (nei--proxy-browser)
@@ -107,6 +109,7 @@
   (sleep-for 0.2)
 
   (with-temp-buffer
+    (setq default-directory "/tmp")
     (setq nei-autoconnect nil)
     (setq python-indent-guess-indent-offset nil)
     (nei--proxy-browser)
