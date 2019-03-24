@@ -46,9 +46,9 @@
   (nei--server-cmd "terminate" (list))
   )
 
-(defun nei--server-info ()
+(defun nei--query-server-info ()
   "Used to pass server info to the browser for testing"
-  (nei--server-cmd "terminate" (list))
+  (nei--server-cmd "server_info" (list))
   )
 
 
