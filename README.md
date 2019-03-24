@@ -114,8 +114,7 @@ variables](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-V
 
 This is a handy way to customize NEI's behavior for an entire directory
 of files without having to record this metadata in the files
-themselves. You can also specify [file variables]
-(https://www.gnu.org/software/emacs/manual/html_node/emacs/Specifying-File-Variables.html#Specifying-File-Variables)
+themselves. You can also specify [file variables](https://www.gnu.org/software/emacs/manual/html_node/emacs/Specifying-File-Variables.html#Specifying-File-Variables)
 if you don't mind emacs related code appearing in your notebook source.
 
 ## Emacs configuration
