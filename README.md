@@ -1,3 +1,5 @@
+[![BuildStatus](https://travis-ci.org/pyviz/nei.svg?branch=master)](https://travis-ci.org/pyviz/nei)
+
 # NEI
 
 **Notebook Emacs Interface.**
