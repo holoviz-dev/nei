@@ -1,4 +1,5 @@
 [![BuildStatus](https://travis-ci.org/pyviz/nei.svg?branch=master)](https://travis-ci.org/pyviz/nei)
+[![PyPI](https://img.shields.io/pypi/v/nei.svg)](https://pypi.python.org/pypi/nei)
 
 # NEI
 
