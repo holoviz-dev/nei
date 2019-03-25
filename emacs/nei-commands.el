@@ -244,15 +244,22 @@
   )
 
 
-(defun nei-input-display (visible)
+(defun nei-toggle-display-code ()
   (interactive)
-  (nei--server-cmd "input_display"
+  (nei--server-cmd "display_code"
                    (list
                     (cons "line_number" (line-number-at-pos))
-                    (cons "visible" visible)
+                    (cons "visible" "toggle")
                     ) t)
   )
 
+(defun nei-toggle-display-all-code ()
+  (interactive)
+  (nei--server-cmd "display_all_code"
+                   (list
+                    (cons "visible" "toggle")
+                    ) t)
+  )
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
   (nei--server-cmd "update_style"

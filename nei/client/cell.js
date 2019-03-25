@@ -49,9 +49,10 @@ export class Notebook {
   }
 
 
-  input_display(pos, visible) {
+  display_code(pos, visible=null) {
+    // If visible is null, toggle state.
     let cell =  this.get_cell(pos)
-    cell.input_display(visible)
+    cell.display_code(visible)
   }
 
   uuid_at_pos(pos) {
@@ -173,6 +174,7 @@ export class Cell {
     this.evaltypes = ["application/javascript"];
 
     this.batched = [[],{}];
+    this.code_visible = true
   }
 
   update_input(source, input) {
@@ -186,11 +188,20 @@ export class Cell {
     }
   }
 
-  input_display(visible) {
-    let parent = document.getElementById(`input-start-${this.uuid}`).parentElement
-    parent.style.setProperty("display", visible ? 'inline' : 'none')
-    let prompt = document.getElementById(`nei-input-prompt-${this.uuid}`)
-    prompt.style.setProperty("display", visible ? 'inline' : 'none')
+  display_code(visible) {
+    if (this.mode != "code") {
+      return
+    }
+    let visibility = visible
+    if (visible == "toggle") {
+      this.code_visible = !this.code_visible
+      visibility = this.code_visible
+    }
+    let value = visibility ? 'inline' : 'none'
+    const parent = document.getElementById(`input-start-${this.uuid}`).parentElement
+    parent.style.setProperty("display", value)
+    const prompt = document.getElementById(`nei-input-prompt-${this.uuid}`)
+    prompt.style.setProperty("display", value)
   }
 
   scroll(offset=0, line=null) {

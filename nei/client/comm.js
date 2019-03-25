@@ -178,7 +178,7 @@ export class CommLink {
     let commands = ['add_cell', 'remove_cell', 'remove_cells',
                     'update_cell', 'update_cell_outputs', 'update_cell_input',
                     'clear_notebook', 'reorder_cells', 'clear_cell_output',
-                    'update_style', 'input_display',
+                    'update_style', 'display_code',
                     // Window management
                     'scroll_by',
                     'scroll_to',
@@ -263,9 +263,9 @@ export class CommLink {
       let {css} = json.args;
       update_style(css);
     }
-    else if (json.cmd == 'input_display') {
+    else if (json.cmd == 'display_code') {
       let {pos, visible} = json.args;
-      this.notebook.input_display(pos, visible);
+      this.notebook.display_code(pos, visible);
     }
   }
 }

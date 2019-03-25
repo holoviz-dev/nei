@@ -37,6 +37,9 @@
 
   (define-key map (kbd "C-c ,") 'nei-scroll-up)
   (define-key map (kbd "C-c .") 'nei-scroll-down)
+
+  (define-key map (kbd "C-c h") 'nei-toggle-display-code)
+  (define-key map (kbd "C-c H") 'nei-toggle-display-all-code)  
   map
   )
 
@@ -107,10 +110,14 @@
      "---"
      ["Clear cell output"  nei-clear-cell-by-line nei--ws-connection]
      ["Clear all outputs and prompts"  nei-clear-all-cell-outputs nei--ws-connection]
-     ["Update CSS" nei-update-css nei--ws-connection]
+     "---"
+     ["Toggle code display"  nei-toggle-display-code nei--ws-connection]
+     ["Toggle all code display"  nei-toggle-display-all-code nei--ws-connection]
      "---"
      ["Scroll up" nei-scroll-up nei--ws-connection]
      ["Scroll down" nei-scroll-down nei--ws-connection]
+     "---"
+     ["Update CSS Theme" nei-update-css nei--ws-connection]
      )
     ("Buffer"
      ["Insert Notebook at Point" nei-insert-notebook]

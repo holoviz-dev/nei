@@ -307,12 +307,14 @@ class Notebook(Cells):
                          'download_full_notebook':    self.download_full_notebook,
                          'view_notebook':             self.view_notebook,
                          'update_style':              self.update_style,
-                         'input_display':              self.input_display,
+                         'display_code':              self.display_code,
+                         'display_all_code':          self.display_all_code,
                          # Derived 'by_line' methods
                          'clear_cell_output_by_line': self.clear_cell_output_by_line,
                          }
         self.css = "" # Last CSS sent to browser
         self.config = {'browser':'firefox'}
+        self.code_visible = True
 
 
     def message(self, connection, command, args, buffers=[]):
@@ -536,9 +538,27 @@ class Notebook(Cells):
 
         self.message(connection, 'update_style', {'css':"\n".join(lines[1:-1])})
 
-    def input_display(self, connection, line_number, visible): # Swap and make position optional
-        self.message(connection, 'input_display', {'pos': self.by_line(line_number),
-                                                   'visible': visible})
+    def display_code(self, connection, visible, line_number):
+        # Argument visible can be True, False or "toggle"
+        pos = self.by_line(line_number)
+        if self.cells[pos].mode == 'code':
+            self.message(connection, 'display_code',
+                         {'pos': pos, 'visible': visible})
+
+    def display_all_code(self, connection, visible):
+        if visible == "toggle":
+            self.code_visible = not self.code_visible
+            visible = self.code_visible
+
+        positions = []
+        for cell in self.cells:
+            if cell.mode == 'code':
+                positions.append(self.cell_position(cell))
+
+        for pos in positions:
+            self.message(connection, 'display_code',
+                         {'pos': pos, 'visible': visible})
+
 
 
 class ExecutableNotebook(Notebook):
