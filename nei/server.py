@@ -158,7 +158,7 @@ class Server(websocket.WebSocketHandler):
                 logging.info("Restart with previously opened notebook")
                 Server.NOTEBOOK.reload(self)
                 # If you hit reload in the browser, the CSS needs to be re-sent
-                Server.NOTEBOOK.update_style(self, css=None)
+                Server.NOTEBOOK.update_theme(self, css=None)
             return
 
         # SOME COMMANDS (e.g mirroring) should happen even without a browser tab open!

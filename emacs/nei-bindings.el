@@ -11,7 +11,7 @@
   (define-key map (kbd "C-c F") 'nei-open-notebook)
   (define-key map (kbd "C-c E") 'nei-exec-by-line)
   (define-key map (kbd "C-c L") 'nei-clear-all-cell-outputs)
-  (define-key map (kbd "C-c C") 'nei-update-css)
+  (define-key map (kbd "C-c C") 'nei-update-theme)
   (define-key map (kbd "C-c M") 'nei-server-log)
 
   (define-key map (kbd "C-c w") 'nei-move-cell-up)
@@ -117,7 +117,7 @@
      ["Scroll up" nei-scroll-up nei--ws-connection]
      ["Scroll down" nei-scroll-down nei--ws-connection]
      "---"
-     ["Update CSS Theme" nei-update-css nei--ws-connection]
+     ["Update CSS Theme" nei-update-theme nei--ws-connection]
      )
     ("Buffer"
      ["Insert Notebook at Point" nei-insert-notebook]

@@ -1,7 +1,7 @@
 'use strict';
 
 
-import {download_file, update_style} from './util.js'
+import {download_file, update_theme} from './util.js'
 import {UUID} from './util.js';
 import {serialize, deserialize} from './buffer.js';
 
@@ -178,7 +178,7 @@ export class CommLink {
     let commands = ['add_cell', 'remove_cell', 'remove_cells',
                     'update_cell', 'update_cell_outputs', 'update_cell_input',
                     'clear_notebook', 'reorder_cells', 'clear_cell_output',
-                    'update_style', 'display_code',
+                    'update_theme', 'display_code',
                     // Window management
                     'scroll_by',
                     'scroll_to',
@@ -259,9 +259,9 @@ export class CommLink {
       let {filename, data} = json.args;
       download_file(filename, data);
     }
-    else if (json.cmd == 'update_style') {
+    else if (json.cmd == 'update_theme') {
       let {css} = json.args;
-      update_style(css);
+      update_theme(css);
     }
     else if (json.cmd == 'display_code') {
       let {pos, visible} = json.args;

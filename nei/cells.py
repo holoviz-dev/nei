@@ -306,7 +306,7 @@ class Notebook(Cells):
                          'download_cleared_notebook': self.download_cleared_notebook,
                          'download_full_notebook':    self.download_full_notebook,
                          'view_notebook':             self.view_notebook,
-                         'update_style':              self.update_style,
+                         'update_theme':              self.update_theme,
                          'display_code':              self.display_code,
                          'display_all_code':          self.display_all_code,
                          # Derived 'by_line' methods
@@ -529,14 +529,14 @@ class Notebook(Cells):
                       'data':nbformat.writes(nb)})
 
 
-    def update_style(self, connection, css):
+    def update_theme(self, connection, css):
         if css is None: # Use stored CSS if the tab is reloaded
             css = self.css
         else:
             self.css = css
         lines = css.splitlines()
 
-        self.message(connection, 'update_style', {'css':"\n".join(lines[1:-1])})
+        self.message(connection, 'update_theme', {'css':"\n".join(lines[1:-1])})
 
     def display_code(self, connection, visible, line_number):
         # Argument visible can be True, False or "toggle"
@@ -664,11 +664,11 @@ class ExecutableNotebook(Notebook):
         self.executor.restart_kernel()
 
 
-    def update_style(self, connection, css):
+    def update_theme(self, connection, css):
         if self.executor and css:
             lines = css.splitlines()
             process_css(self, connection, "\n".join(lines[1:-1]))
-        super(ExecutableNotebook, self).update_style(connection, css)
+        super(ExecutableNotebook, self).update_theme(connection, css)
 
 
 

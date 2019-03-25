@@ -74,7 +74,7 @@
   (nei--server-cmd "start_kernel"
                    (list (cons "cwd" default-directory)))
 
-  (run-with-idle-timer 1 nil 'nei-update-css) ; E.g to update themes via Python
+  (run-with-idle-timer 1 nil 'nei-update-theme) ; E.g to update themes via Python
   (nei--logging "Sent start kernel message")
   (nei--update-kernel-menu-entry t)
 )
@@ -260,9 +260,11 @@
                     (cons "visible" "toggle")
                     ) t)
   )
+  
+(defun nei-update-theme ()
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
-  (nei--server-cmd "update_style"
+  (nei--server-cmd "update_theme"
                    (list
                     (cons "css" (nei--htmlize-css))
                     ) t)
@@ -285,7 +287,7 @@
   (interactive)
    (progn
      (nei--server-cmd "view_browser" (list) t)
-     (run-with-idle-timer 1 nil 'nei-update-css))
+     (run-with-idle-timer 1 nil 'nei-update-theme))
    )
 
 ;;==============;;

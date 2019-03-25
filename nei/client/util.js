@@ -87,7 +87,7 @@ export function syntax_highlight(source) {
   return "<pre class='nei-code'>" + s + "</pre>"
 }
 
-export function update_style(css) {
+export function update_theme(css) {
   let style_tag = document.getElementById("syntax-highlighting-style");
   style_tag.innerHTML = css;
 }
