@@ -111,13 +111,13 @@
   )
 
 
-(ert-deftest test-update-css ()
+(ert-deftest test-update-theme ()
   (nei-connect 10000 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
   (with-temp-nei-buffer
-    (assert-response-properties "update_style" (nei-update-css))
+    (assert-response-properties "update_theme" (nei-update-theme))
     )
   )
 
