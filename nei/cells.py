@@ -307,6 +307,7 @@ class Notebook(Cells):
                          'download_full_notebook':    self.download_full_notebook,
                          'view_notebook':             self.view_notebook,
                          'update_style':              self.update_style,
+                         'input_display':              self.input_display,
                          # Derived 'by_line' methods
                          'clear_cell_output_by_line': self.clear_cell_output_by_line,
                          }
@@ -535,6 +536,9 @@ class Notebook(Cells):
 
         self.message(connection, 'update_style', {'css':"\n".join(lines[1:-1])})
 
+    def input_display(self, connection, line_number, visible): # Swap and make position optional
+        self.message(connection, 'input_display', {'pos': self.by_line(line_number),
+                                                   'visible': visible})
 
 
 class ExecutableNotebook(Notebook):
