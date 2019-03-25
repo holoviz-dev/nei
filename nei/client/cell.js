@@ -58,7 +58,7 @@ export class Notebook {
   uuid_at_pos(pos) {
     // Returns the uuid by the position of visible cells. If pos is null, return last cell.
     let visible = this.visible_uuids();
-    return visible[pos == null ? (filtered.length - 1) : pos]
+    return visible[pos == null ? (visible.length - 1) : pos]
   }
 
   get_cell(pos) { return this.cell[this.uuid_at_pos(pos)] }
