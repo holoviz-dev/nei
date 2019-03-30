@@ -67,12 +67,19 @@
   )
 
 
-(defun nei-start-kernel ()
+(defun nei-start-kernel-with (executable)
+  (interactive "FPython executable: ")
+  (nei-start-kernel executable)
+  )
+
+(defun nei-start-kernel (&optional executable)
   "Send an interrupt-kernel  message"
   (interactive)
   (setq nei--active-kernel t)
   (nei--server-cmd "start_kernel"
-                   (list (cons "cwd" default-directory)))
+                   (list (cons "cwd" default-directory)
+                         (cons "executable" executable))
+                   )
 
   (run-with-idle-timer 1 nil 'nei-update-theme) ; E.g to update themes via Python
   (nei--logging "Sent start kernel message")

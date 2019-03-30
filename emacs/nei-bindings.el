@@ -88,6 +88,7 @@
        )
       "---"
       ["Start" nei-start-kernel (not nei--active-kernel)]
+      ["Start with..." nei-start-kernel-with (not nei--active-kernel)]
       ["Interrupt" nei-interrupt-kernel nei--active-kernel]
       ["Restart" nei-restart-kernel nei--active-kernel]
       ["Shutdown" nei-shutdown-kernel nei--active-kernel]

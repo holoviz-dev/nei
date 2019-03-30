@@ -122,12 +122,16 @@ class ThreadedExecutor(object):
         self.kc = None
 
         self.execution_count = 0
+        self.executable = None
 
         Channel.queue = queue
 
-    def start(self, cwd=None):
+    def start(self, cwd=None, executable=None):
         self.km = KernelManager(kernel_name='python',
                                 client_class='nei.execute.Client')
+        self.executable = executable
+        if executable is not None:
+            self.km.kernel_spec.argv[0] = executable
         self.km.start_kernel(**({} if cwd is None else {'cwd':cwd}))
         self.kc = self.km.client()
         self.kc.start_channels()
