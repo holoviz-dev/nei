@@ -48,7 +48,9 @@ class Channel(ThreadedZMQSocketChannel):
             filtered = {}
             for field in ['matches', 'cursor_start', 'cursor_end']:
                 if field == 'matches':
-                    value = [el for el in content["matches"] if el.endswith("=")]
+                    value = [el for el in content["matches"]
+                             if not (el.startswith("%")      # Remove magics
+                                     or el.startswith("_"))] # And underscore methods
                 else:
                     value = content[field]
                 filtered[field] = value
