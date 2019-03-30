@@ -1,5 +1,5 @@
-import sys
-from .server import serve
+import os, sys
+from .server import serve, WS
 
 __version__ = 'v0.0.5'
 

@@ -20,11 +20,8 @@
   (define-key map (kbd "C-c <up>") 'nei-move-point-to-previous-cell)
   (define-key map (kbd "C-c c") 'nei-insert-code-cell)
   (define-key map (kbd "C-c m") 'nei-insert-markdown-cell)
-
-  ;; Add a toggle for the shift+enter binding
   (define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
-  (define-key map [(S-return)] 'nei-exec-by-line-and-move-to-next-cell)
-
+ 
   (define-key map (kbd "C-c k") 'nei-start-kernel)
   (define-key map (kbd "C-c i") 'nei-interrupt-kernel)
   (define-key map (kbd "C-c r") 'nei-restart-kernel)
@@ -39,7 +36,19 @@
   (define-key map (kbd "C-c .") 'nei-scroll-down)
 
   (define-key map (kbd "C-c h") 'nei-toggle-display-code)
-  (define-key map (kbd "C-c H") 'nei-toggle-display-all-code)  
+  (define-key map (kbd "C-c H") 'nei-toggle-display-all-code)
+
+;; More unusual bindings
+  (define-key map [(S-return)] 'nei-exec-by-line-and-move-to-next-cell)
+  (define-key map (kbd "C-<wheel-up>") 'nei-scroll-up)
+  (define-key map (kbd "C-<double-wheel-up>") 'nei-scroll-up)
+  (define-key map (kbd "C-<triple-wheel-up>") 'nei-scroll-up)
+
+  ;; In Firefox, useful to set mousewheel.with_meta.action = 1 in about:config
+  (define-key map (kbd "C-<wheel-down>") 'nei-scroll-down)
+  (define-key map (kbd "C-<double-wheel-down>") 'nei-scroll-down)
+  (define-key map (kbd "C-<triple-wheel-down>") 'nei-scroll-down)
+ 
   map
   )
 
@@ -173,7 +182,7 @@
 
 
 (defun nei-global-config (add-file-menu-entry rgrep-integration connect
-                                              magic-alist view-ipynb completions)
+                          magic-alist view-ipynb completions magit-diff)
   "Function to enable global integrations, to be enabled in .emacs.
 
   add-file-menu-entry: Add 'Visit New Notebook' to the File menu (C-c F).
@@ -215,6 +224,13 @@
       (setq completion-at-point-functions
             '(nei-completion-at-point)
             )
+    )
+
+  (if magit-diff 
+      (progn 
+        (global-set-key (kbd "C-c d") 'nei-magit-view-diff)
+        (add-hook 'ediff-quit-hook 'nei--cleanup-ediff-buffers)
+        )
     )
 )
 
