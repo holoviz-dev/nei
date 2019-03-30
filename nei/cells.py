@@ -17,15 +17,8 @@ from .styles import process_css
 BROWSER = 'firefox' # E.g 'chrome' or 'firefox'
 
 # TODO
-# [ ] Move scratch/learning content to a branch
 # [ ] Could add a kill buffer hook to shutdown server when all nei buffers closed.
-
-
 # [ ] Add Yank hook.
-# [ ] Hide/Show cells inputs/outputs etc
-# [ ] Scroll to point in client. Maybe use an idle timer?
-# [ ] Comment prompts in client
-
 
 def serialize_binary_message(msg):
     """serialize a message as a binary blob
@@ -188,7 +181,8 @@ class Cells(object):
             cleared = (mode == 'cleared')
             nb = nbformat.v4.new_notebook()
             nb['cells'] = [cell.node(cleared=cleared) for cell in self.cells]
-            nb['metadata'] = self.metadata
+            if self.metadata is not None:
+                nb['metadata'] = self.metadata
 
         if mode == 'html':
             if nbconvert is None:
@@ -350,7 +344,9 @@ class Notebook(Cells):
         self.message(connection, 'scroll_by', {'offset': offset})
 
     def scroll_to_line(self, connection, line):
-        position, offset = self.by_line(line, offset=True)
+        info = self.by_line(line, offset=True)
+        if info is None: return
+        position, offset = info
         self.message(connection, 'scroll_to', {'position':position, 'line':offset})
 
     def clear_cell_output(self, connection, position):
