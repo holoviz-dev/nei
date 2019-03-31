@@ -3,7 +3,7 @@
 
 # NEI
 
-**Notebook Emacs Interface.**
+**Notebook Editor Interface.**
 
 
 <img src="https://s3-eu-west-1.amazonaws.com/misc-static-assets/nei-readme-5mb.gif" width="90%"><img>
@@ -20,6 +20,9 @@ Python syntax - the yellow code prompts are simply pretty printed for
 clarity. For instance, the yellow ``In[1]`` is simply the visual
 representation of the comment ``# In[1]``.
 
+Vim support currently exists only as a proof of concept as the core code
+stabilizes. Once NEI is released for emacs, a robust Vim interface is
+planned with the help of contributors.
 
 ## Motivation
 
@@ -48,7 +51,7 @@ The core features are NEI are:
    without leaving your editor.
 2. Freeform text editing without hard cell boundaries. Notebooks can now
    be edited and worked with as regular, plaintext Python files.
-3. Editor agnostic by design, with robust Emacs support.
+3. Editor agnostic by design, with robust Emacs support and planned Vim support.
 
 
 To view notebook output you will need to have both your editor and
@@ -64,11 +67,13 @@ portions of the overall notebook as you work.
 NEI is composed of three components, (1) a Python server using
 [tornado](http://www.tornadoweb.org/en/stable/) which receives commands
 from the editor via websockets, (2) HTML and Javascript that runs in the
-browser, and (3) the code used to integrate with the editor. Currently
-this last component is written in elisp as the first editor to be
-supported is [emacs](http://emacs.org). As the server and web component
-are editor agnostic, there is no reason NEI cannot be extended to
-support any text editor that has support for websockets.
+browser, and (3) the code used to integrate with the editor. As
+[emacs](http://emacs.org) is the first editor to be supported, this last
+component largely consists of elisp. Rudimentary Vim support has been
+prototyped and it is hoped that robust Vim support will be possible in
+future. As the server and web component are editor agnostic, there is no
+reason NEI cannot be extended to support any text editor that has
+support for websockets.
 
 **NEI is currently an experimental prototype and should not be
 considered stable.**
