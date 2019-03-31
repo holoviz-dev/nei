@@ -13,7 +13,7 @@
 "
 " python -c "import nei;nei.serve(ws_port=9995)"
 "
-" In Vim:
+" In Vim e.g launching `vim demo.py`:
 "
 "   :source nei.vim
 "   :NEI
