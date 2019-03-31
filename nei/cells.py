@@ -200,9 +200,15 @@ class Cells(object):
         self.write_notebook(connection, 'html', filename)
         webbrowser.get(self.config['browser']).open("http://localhost:8000/view.html")
 
-    def view_browser(self, connection):
+    def view_browser(self, connection, ws_port=9999):
+
+        if ws_port == 9999:
+            url = "http://localhost:8000/index.html"
+        else:
+            url = "http://localhost:8000/index.html?ws-port={port}".format(port=ws_port)
+
         if connection is None:
-            webbrowser.get(self.config['browser']).open("http://localhost:8000/index.html")
+            webbrowser.get(self.config['browser']).open(url)
 
 
 class OutputMessage(object):

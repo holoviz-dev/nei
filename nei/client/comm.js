@@ -101,8 +101,9 @@ function notebook_name_from_URL() {
 
 export class CommLink {
   constructor(app, server, port=9999) {
+    let ws_port = port == null ? 9999 : port
     this.app = app;
-    this.socket = new WebSocket("ws://localhost:9999");
+    this.socket = new WebSocket(`ws://localhost:${ws_port}`);
     // this.socket = new WebSocket("ws://"+server+":"+port+"/ws");
     this.setup(this.socket)
 
