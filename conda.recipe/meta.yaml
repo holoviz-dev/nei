@@ -1,0 +1,42 @@
+{% set sdata = load_setup_py_data() %}
+
+package:
+  name: nei
+  version: {{ sdata['version'] }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+  noarch: python
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+  entry_points:
+    {% for group,epoints in sdata.get("entry_points",{}).items() %}
+    {% for entry_point in epoints %}
+    - {{ entry_point }}
+    {% endfor %}
+    {% endfor %}  
+
+requirements:
+  host:
+    - ipykernel
+    - jupyter_client ==5.2.4
+    - nbconvert
+    - nbformat
+    - pip
+    - python
+    - tornado
+  run:
+    - python >=3.6
+    {% for dep in sdata.get('install_requires',{}) %}
+    - "{{ dep }}"
+    {% endfor %}
+
+test:
+  imports:
+    - nei
+
+about:
+  summary: {{ sdata['description'] }}
+  license: {{ sdata['license'] }}
