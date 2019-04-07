@@ -1,5 +1,5 @@
 import os, sys
-from .server import serve, WS
+from .server import serve, WS, session
 
 __version__ = 'v0.0.5'
 
