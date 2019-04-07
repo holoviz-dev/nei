@@ -181,6 +181,7 @@ class WS(websocket.WebSocketHandler):
             return
 
         if payload.get('init', False) == 'editor':
+            logging.info('Added editor client connection')
             session.editor = self
             return
 
@@ -217,16 +218,13 @@ class WS(websocket.WebSocketHandler):
 
         self.output_callback.stop()
 
-def serve(ws_port=9999, html_port=8000):
-    import tornado.options
-    tornado.options.parse_command_line()
+def serve(ws_port=9999, html_port=8000, host='127.0.0.1'):
+    import logging
+    logging.basicConfig(level=logging.INFO)
     html_handler = (r'/(.*)', tornado.web.StaticFileHandler,
                     {'path': STATIC_PATH})
     tornado.web.Application([html_handler]).listen(html_port)
     ws_server = httpserver.HTTPServer(tornado.web.Application([(r"/", WS)]))
-    ws_server.listen(ws_port, "127.0.0.1")
+    ws_server.listen(ws_port, host)
     logging.info("STARTED: Server started and listening")
     ioloop.IOLoop.instance().start()
-
-if __name__ == "__main__":
-    serve()

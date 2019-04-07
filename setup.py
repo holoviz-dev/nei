@@ -28,6 +28,10 @@ setup_args = dict(
     python_requires=">=3.5",
     install_requires=install_requires,
     extras_require=extras_require,
+    entry_points={
+        'console_scripts': [
+            'nei = nei.cmd:main'
+        ]},
     classifiers=[
         "License :: OSI Approved :: BSD License",
         "Development Status :: 3 - Alpha",
