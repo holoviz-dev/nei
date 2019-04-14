@@ -18,7 +18,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n nei-test-env python=$TRAVIS_PYTHON_VERSION jupyter_client nbformat nbconvert ipykernel
+  - conda create -q -n nei-test-env python=$TRAVIS_PYTHON_VERSION jupyter_client nbformat nbconvert ipykernel nose
   - source activate nei-test-env
   - python setup.py develop
   
@@ -26,6 +26,8 @@ script:
   - cd tests
   # There is bound to be a better way to do this but this will do for now...
   - $EMACS -Q --batch -l load-dependencies.el -l ../emacs/nei-util.el -l ../emacs/nei-parse.el -l ../emacs/nei-edit.el -l ../emacs/nei-commands.el -l ../emacs/nei-server.el -l ../emacs/nei-bindings.el  -l ../emacs/nei-tools.el -l ../emacs/nei.el --eval "(progn  (load-file \"integration-tests.el\") (ert-run-tests-batch-and-exit))"
+  - nosetests server.py
+
 notifications:
   email:
     on_success: never
