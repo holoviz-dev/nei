@@ -432,7 +432,7 @@ class Notebook(Cells):
                                                                     'outputs':filtered})
 
 
-    def mirror(self, connection, start, end, length, added, size):
+    def mirror(self, connection, start, end, length, added, size, md5=None):
         self.mirrorbuffer(start, end, length, added, size)
         if not self.mirrorbuffer.hold:
             cells = ParseNotebook.extract_cells(str(self.mirrorbuffer))
