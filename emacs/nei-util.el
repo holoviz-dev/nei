@@ -10,7 +10,13 @@
 (defun assoc-value (key alist)
   "Helper to make accessing keys from an alist more readable"
   (cdr (assoc key alist))
-)
+  )
+
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
 
 (defun neiutil--make-buffer-uninteresting ()
   "rename the current buffer to begin with a space"
