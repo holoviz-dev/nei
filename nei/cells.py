@@ -4,6 +4,7 @@ import json
 import sys
 import re
 import webbrowser
+import hashlib
 
 try:
     import nbconvert
@@ -433,7 +434,7 @@ class Notebook(Cells):
 
 
     def mirror(self, connection, start, end, length, added, size, md5=None):
-        self.mirrorbuffer(start, end, length, added, size)
+        self.mirrorbuffer(start, end, length, added, size, md5)
         if not self.mirrorbuffer.hold:
             cells = ParseNotebook.extract_cells(str(self.mirrorbuffer))
             src = Notebook(cells=list())
@@ -677,6 +678,8 @@ class ExecutableNotebook(Notebook):
 
 class MirrorBuffer(object):
 
+    raise_on_mismatch = True # Useful for debugging
+
     def __init__(self, hold_mode='off'):
         self.buff = ''
         self._hold = False
@@ -704,15 +707,21 @@ class MirrorBuffer(object):
             deletion = self.buff[start-1:start+length-1]
             self._hold = deletion.strip().startswith(Cell.code_startswith)
 
-    def __call__(self, start, end, length, added, size):
+    def __call__(self, start, end, length, added, size, md5=None):
         self._check_hold(start, length, added)
         if length-1 >= 0:
             self.buff = self.buff[:start-1] + self.buff[start+length-1:]
         self.buff = self.buff[:start-1] + added + self.buff[start-1:]
 
-        if len(self.buff) != size:
-            logging.warning("Mirror buffer size is mismatched by %d chars" %
-                            abs(len(self.buff) - size))
+        if md5 is not None:
+            buffer_hash = hashlib.md5(self.buff.encode('utf-8')).hexdigest()
+            if (md5 != buffer_hash):
+                msg = "MD5 mismatch between buffer (len %d) and mirrored contents (len %d)."
+                formatted = msg % (size, len(self.buff))
+                if raise_on_mismatch:
+                    raise AssertionError(msg)
+                else:
+                    logging.warning(msg)
     def __str__(self):
         return self.buff
 
