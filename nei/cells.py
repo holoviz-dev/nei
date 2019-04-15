@@ -5,6 +5,7 @@ import sys
 import re
 import webbrowser
 import hashlib
+import difflib
 
 try:
     import nbconvert
@@ -290,6 +291,7 @@ class Notebook(Cells):
                          'write_notebook':   self.write_notebook,
                          'start_mirror':     self.start_mirror,
                          'mirror':           self.mirror,
+                         'mirroring_error':  self.mirroring_error,
                          'hold_mode':        self.hold_mode,
                          # Cell commands
                          'add_cell':            self.add_cell,
@@ -330,10 +332,15 @@ class Notebook(Cells):
             logging.info("WARNING: Command %s sent to non-connection" % command)
 
     def dispatch(self, connection, payload):
+        """
+        Dispatches to commands. If commands return a JSON serializable
+        value, it is passed to the editor if possible (most commands
+        return None)
+        """
         cmd, args = payload['cmd'], payload['args']
         if cmd != 'server_info':
             self._last_dispatch = payload # Used for debugging/testing
-        self.commands[cmd](connection, **(args if args is not None else {}))
+        return self.commands[cmd](connection, **(args if args is not None else {}))
 
     def update_config(self, connection, config):
         self.config = config
@@ -434,13 +441,19 @@ class Notebook(Cells):
 
 
     def mirror(self, connection, start, end, length, added, size, md5=None):
-        self.mirrorbuffer(start, end, length, added, size, md5)
+        mirroring_error = self.mirrorbuffer(start, end, length, added, size, md5)
         if not self.mirrorbuffer.hold:
             cells = ParseNotebook.extract_cells(str(self.mirrorbuffer))
             src = Notebook(cells=list())
             src.load(cells)
             SyncNotebooks.sync(connection, src, self)
+            if mirroring_error:
+                return {'cmd':'mirroring_error', 'data':mirroring_error}
 
+    def mirroring_error(self, connection, editor_text, mirror_text):
+        d = difflib.Differ()
+        diff = d.compare(editor_text.splitlines(), mirror_text.splitlines())
+        raise AssertionError('Mirroring error with diff:\n\n%s' % '\n'.join(diff))
 
     def start_mirror(self, connection, text):
         self.mirrorbuffer.clear()
@@ -610,7 +623,7 @@ class ExecutableNotebook(Notebook):
         if self.executor is None and (payload['cmd'] in kernel_required):
             logging.info("WARNING: Kernel needs to be started before execution can occur")
             return
-        super(ExecutableNotebook, self).dispatch(connection, payload)
+        return super(ExecutableNotebook, self).dispatch(connection, payload)
 
     def exec_silently(self, connection, code):
         self.executor(code, stop_on_error=False, cell=None, silent=True)
@@ -713,15 +726,22 @@ class MirrorBuffer(object):
             self.buff = self.buff[:start-1] + self.buff[start+length-1:]
         self.buff = self.buff[:start-1] + added + self.buff[start-1:]
 
+        # Use to simulate random corruption of mirror buffer
+        # import random
+        # if random.random() < 0.01:
+        #     index = random.randint(0, len(self.buff)-1)
+        #     self.buff = self.buff[:index] + 'X' + self.buff[index:]
+
         if md5 is not None:
             buffer_hash = hashlib.md5(self.buff.encode('utf-8')).hexdigest()
             if (md5 != buffer_hash):
                 msg = "MD5 mismatch between buffer (len %d) and mirrored contents (len %d)."
                 formatted = msg % (size, len(self.buff))
-                if raise_on_mismatch:
-                    raise AssertionError(msg)
-                else:
-                    logging.warning(msg)
+                logging.warning(msg)
+                # Return the buffer to send a message back to the editor for debug
+                return self.buff
+
+
     def __str__(self):
         return self.buff
 

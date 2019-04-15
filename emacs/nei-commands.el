@@ -113,8 +113,17 @@
 
 (defun nei--receive-message (text)
   "Callback for websocket messages currently only used for completions"
-  (let ((parsed-json (json-read-from-string text)))
-    (setq nei--completions parsed-json)
+  (let* ((parsed-json (json-read-from-string text))
+         (cmd (assoc-value 'cmd parsed-json))
+         (data (assoc-value 'data parsed-json)))
+
+    (if (s-equals? cmd "completion")
+        (setq nei--completions data))
+    (if (s-equals? cmd "mirroring_error")
+        (nei--server-cmd "mirroring_error"
+                         (list (cons "editor_text" (buffer-string))
+                               (cons "mirror_text" data)))
+      )
     )
   )
 

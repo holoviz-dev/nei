@@ -100,7 +100,8 @@ class PeriodicOutputCallback(object):
             result['cursor_start'] = position - start_delta
             result['cursor_end'] = position - end_delta
 
-            session.editor.write_message(json.dumps(result))
+            session.editor.write_message(json.dumps({'cmd':'completion',
+                                                     'data': result}))
             self.notebook.completion_info = None
             return
 
@@ -204,7 +205,9 @@ class WS(websocket.WebSocketHandler):
                 session.notebook.reload(session.browser)
             return
 
-        session.notebook.dispatch(session.browser, payload)
+        editor_msg = session.notebook.dispatch(session.browser, payload)
+        if (editor_msg is not None) and (session.editor is not None):
+            session.editor.write_message(json.dumps(editor_msg))
 
 
     def check_origin(self, origin):
