@@ -130,17 +130,19 @@
 ;; Navigation and prompt management ;;
 ;;==================================;;
 
-
 (defun nei--update-exec-prompt (count)
-  (save-excursion  ;; TODO: Insert prompt if missing
-    (save-match-data
-      (let ((modified (buffer-modified-p)))
-        (re-search-forward nei--prompt-regexp nil t -1) ;; Needs to do nothing if no match
-        (replace-match (format "# In[%d]" count))
-        (set-buffer-modified-p modified)
+  (let ((undo-list buffer-undo-list))
+    (buffer-disable-undo)
+    (save-excursion  ;; TODO: Insert prompt if missing
+      (save-match-data
+        (let ((modified (buffer-modified-p)))
+          (re-search-forward nei--prompt-regexp nil t -1) ;; Needs to do nothing if no match
+          (replace-match (format "# In[%d]" count))
+          (set-buffer-modified-p modified)
+          )    
         )
-
       )
+    (setq buffer-undo-list undo-list)
     )
   )
 
