@@ -132,19 +132,22 @@
 
 (defun nei--update-exec-prompt (count)
   (let* ((undo-list buffer-undo-list)
-         (prev-point-pos (point)))
+         (replacement (format "# In[%d]" count))
+         (prev-point-pos (point))
+         (offset 0)) ;; Offset due to point number shifting from 9-10, 99-100 etc
     (buffer-disable-undo)
     (save-excursion  ;; TODO: Insert prompt if missing
       (save-match-data
         (let ((modified (buffer-modified-p)))
           (re-search-forward nei--prompt-regexp nil t -1) ;; Needs to do nothing if no match
-          (replace-match (format "# In[%d]" count))
+          (setq offset (- (length replacement) (length (match-string 0))))
+          (replace-match replacement)
           (set-buffer-modified-p modified)
           )    
         )
       )
     (setq buffer-undo-list undo-list)
-    (add-to-list 'buffer-undo-list prev-point-pos)
+    (add-to-list 'buffer-undo-list (+ prev-point-pos offset))
     )
   )
 
