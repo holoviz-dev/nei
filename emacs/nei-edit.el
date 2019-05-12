@@ -131,7 +131,8 @@
 ;;==================================;;
 
 (defun nei--update-exec-prompt (count)
-  (let ((undo-list buffer-undo-list))
+  (let* ((undo-list buffer-undo-list)
+         (prev-point-pos (point)))
     (buffer-disable-undo)
     (save-excursion  ;; TODO: Insert prompt if missing
       (save-match-data
@@ -143,6 +144,7 @@
         )
       )
     (setq buffer-undo-list undo-list)
+    (add-to-list 'buffer-undo-list prev-point-pos)
     )
   )
 
