@@ -81,7 +81,7 @@
                          (cons "executable" executable))
                    )
 
-  (run-with-idle-timer 1 nil 'nei-update-theme) ; E.g to update themes via Python
+  (run-with-idle-timer 0.3 nil 'nei-update-theme) ; E.g to update themes via Python
   (nei--logging "Sent start kernel message")
   (nei--update-kernel-menu-entry t)
 )
