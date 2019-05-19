@@ -45,7 +45,7 @@
   "Map the CSS from htmlize to the keywords used by highlight.js"
   (setq css (replace-regexp-in-string ".keyword" ".hljs-keyword" css))
   (setq css (replace-regexp-in-string ".comment" ".hljs-comment" css))
-  (setq css (replace-regexp-in-string ".doc" ".hljs-string" css))
+  (setq css (replace-regexp-in-string ".string" ".hljs-string" css))
   (setq css (replace-regexp-in-string ".function-name" ".hljs-title" css))
   (setq css (replace-regexp-in-string ".type" ".hljs-type" css))
   (setq css (replace-regexp-in-string ".variable-name" ".hljs-attribute" css))
@@ -89,5 +89,16 @@
     result
     )
   )
+
+(defun nei--average-colors (color &rest colors)
+  "Takes an average of the color list supplied"
+  (let* ((colors (cons color colors))
+         (colors (mapcar 'color-name-to-rgb colors))
+         (len    (length colors))
+         (sums   (apply 'cl-mapcar '+ colors))
+         (avg    (mapcar (lambda (v) (/ v len)) sums)))
+    (apply 'color-rgb-to-hex avg)))
+
+
 
 (provide 'nei-util)

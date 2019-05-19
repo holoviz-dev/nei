@@ -11,6 +11,16 @@
 (defface nei-prompt-face
   '((t :foreground "#ffcc66"))
   "Face used for the code prompts"
+  )
+
+(defface nei-md-face
+  `((t :foreground
+       ,(nei--average-colors
+         (face-attribute 'font-lock-string-face :foreground)
+         (face-attribute 'default :background)
+         (face-attribute 'default :background))
+       ))
+  "Face for markdown separators. Default is 33% between font-lock-string-face and background"
 )
 
 (defface nei-cell-highlight-face
@@ -99,9 +109,23 @@
 )
 
 
-(defun nei-fontify ()
+(defun nei-fontify-markdown-matcher ()
+  '(("^\"\"\""
+     (0 (let ((match (match-string 1)))
+          (progn
+            (set-text-properties 0 (length match) nil match)
+            (add-text-properties (match-beginning 0) (match-end 0)
+                                 (list 'face 'nei-md-face))
+            nil))))
+    )
+  )
+
+
+
   (let ((modified (buffer-modified-p)))
     (font-lock-add-keywords nil (nei-fontify-matcher))
+    (font-lock-add-keywords nil (nei-fontify-markdown-matcher) t)
+
     (save-excursion
       (font-lock-fontify-keywords-region (point-min) (point-max))
       )
@@ -113,10 +137,14 @@
 (defun nei-defontify ()
   (let ((modified (buffer-modified-p)))
     (font-lock-remove-keywords nil (nei-fontify-matcher))
+    (font-lock-remove-keywords nil (nei-fontify-markdown-matcher))
+    
     (remove-text-properties (point-min) (point-max)
                             (list 'display
                                   nei--prompt-regexp 'face 'nei-prompt-face))
-
+    (remove-text-properties (point-min) (point-max)
+                            (list 'display
+                                  "^\"\"\"" 'face 'nei-md-face))
     (save-excursion
       (font-lock-fontify-keywords-region (point-min) (point-max))
       )
