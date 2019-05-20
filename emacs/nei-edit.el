@@ -177,7 +177,8 @@
         )
       )
     (setq buffer-undo-list undo-list)
-    (add-to-list 'buffer-undo-list (+ prev-point-pos offset))
+    (if (null (eq buffer-undo-list t))
+        (add-to-list 'buffer-undo-list (+ prev-point-pos offset))) 
     )
   )
 
