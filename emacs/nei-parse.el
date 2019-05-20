@@ -61,13 +61,13 @@
         (prompt-line (if (null prompt)
                          "# In[ ]\n"
                        (s-concat "# In[" (format "%s" prompt) "]\n"))))
-    (s-concat prompt-line  source "\n")
+    (s-concat prompt-line  source)
     )
 )
 
 (defun nei--markdown-cell-to-text (cell)
   "Given a markdown cell return the textual equivalent"
-  (s-concat "\"\"\"\n" (assoc-value 'source cell) "\n\"\"\"\n")
+  (s-concat "\"\"\"\n" (assoc-value 'source cell) "\n\"\"\"")
 )
 
 
