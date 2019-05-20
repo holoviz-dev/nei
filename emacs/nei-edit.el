@@ -124,6 +124,7 @@
 
 
 
+(defun nei-fontify ()
   (let ((modified (buffer-modified-p)))
     (font-lock-add-keywords nil (nei-fontify-matcher))
     (font-lock-add-keywords nil (nei-fontify-markdown-matcher) t)
