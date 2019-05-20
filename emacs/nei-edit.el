@@ -15,10 +15,12 @@
 
 (defface nei-md-face
   `((t :foreground
-       ,(nei--average-colors
-         (face-attribute 'font-lock-string-face :foreground)
-         (face-attribute 'default :background)
-         (face-attribute 'default :background))
+       ,(let ((fg (face-attribute 'font-lock-string-face :foreground))
+              (bg (face-attribute 'default :background)))
+          (if (or (eq 'unspecified fg) (eq 'unspecified bg))
+              "white" (nei--average-colors fg bg bg))
+          )
+
        ))
   "Face for markdown separators. Default is 33% between font-lock-string-face and background"
 )
