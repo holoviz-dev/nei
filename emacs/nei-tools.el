@@ -233,6 +233,10 @@
           (setq nei--ediff-revision-buffer-name (s-prepend "NEI>" (buffer-name)))
           (nei-view-ipynb)
           (ediff-buffers nei--ediff-unstaged-buffer-name nei--ediff-revision-buffer-name)
+          (with-current-buffer nei--ediff-unstaged-buffer-name
+            (setq buffer-read-only t))
+          (with-current-buffer nei--ediff-revision-buffer-name
+            (setq buffer-read-only t))
           )
       )
     )
