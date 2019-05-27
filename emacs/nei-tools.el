@@ -70,6 +70,8 @@
          (if nei-write-notebook-output "full-notebook" "cleared")
          nei--ipynb-buffer-filename)
         (set-buffer-modified-p nil)
+        ;; Disable revert checks until file confirmed as written with write_complete message.
+        (set-visited-file-modtime 0)
         t
         )
     nil
@@ -184,14 +186,14 @@
           )
 
         (nei--load-from-file nei-cells nei--ipynb-buffer-filename)
-          
-        
+        (set-buffer-modified-p nil)
+        ;; Set modtime for revert system. TODO: Lock buffer?
+        (set-visited-file-modtime (nth 5 (file-attributes nei--ipynb-buffer-filename)))
         )
     
       (if (not keep-original)
           (kill-buffer (current-buffer)))
       )
-  (set-buffer-modified-p nil)
   )
 
 

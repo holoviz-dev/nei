@@ -243,5 +243,25 @@
     )
   )
 
+;;====================================;;
+;; Functions for handling file revert ;;
+;;====================================;;
+
+
+(defun nei--verify-visited-file-modtime ()
+  "Checks for equality of file modtime with modtime stored by visited-file-modtime"
+  (eq 0 (visited-file-modtime)) ;; Not set or temporarily disabled
+  (equal
+   (nth 5 (file-attributes nei--ipynb-buffer-filename))
+   (visited-file-modtime)
+   )
+  )
+ 
+(defun nei--buffer-stale-function (&optional noconfirm)
+  "Custom buffer-stale-function used to know when to revert from file on disk"
+  (and nei--ipynb-buffer-filename
+       (file-readable-p nei--ipynb-buffer-filename)
+       (not (buffer-modified-p (current-buffer)))
+       (not (nei--verify-visited-file-modtime ))))
 
 (provide 'nei-edit)

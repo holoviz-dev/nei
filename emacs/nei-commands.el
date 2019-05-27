@@ -119,6 +119,13 @@
 
     (if (s-equals? cmd "completion")
         (setq nei--completions data))
+
+    (if (s-equals? cmd "write_complete")
+        (progn
+          ;; Set modtime for revert system now file is confirmed as being written
+          (set-visited-file-modtime (nth 5 (file-attributes nei--ipynb-buffer-filename)))
+          )
+      )
     (if (s-equals? cmd "mirroring_error")
         (nei--server-cmd "mirroring_error"
                          (list (cons "editor_text" (buffer-string))
