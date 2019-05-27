@@ -112,7 +112,7 @@
 
 
 (defun nei--receive-message (text)
-  "Callback for websocket messages currently only used for completions"
+  "Callback for websocket messages"
   (let* ((parsed-json (json-read-from-string text))
          (cmd (assoc-value 'cmd parsed-json))
          (data (assoc-value 'data parsed-json)))
@@ -138,8 +138,7 @@
                                  (cons "line_context" line-context)
                                  (cons "position" (point)))
                            )
-          (let ((result nil)
-                (i 0))
+          (let ((result nil) (i 0))
             (while (and (null nei--completions) nei--active-kernel (< i 150))
               (sleep-for 0 10)
               (setq i (+ i 1))

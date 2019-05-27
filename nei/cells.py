@@ -374,7 +374,11 @@ class Notebook(Cells):
 
 
     def remove_cell(self, connection, position):
-        del self.cells[position]
+        try:
+            del self.cells[position]
+        except:
+            logging.info("WARNING: Could not remove cell %d when cells list is %d long"
+                         % (position, len(self.cells)))
         self.message(connection, 'remove_cell', {'position':position})
 
     def add_cell(self, connection, source, input=None,
