@@ -280,6 +280,7 @@
             (if (eq answer ?r)
                 (progn
                   (message "Reloading notebook")
+                  ;; TODO: This will reset kernel state which is unnecessary
                   (let ((ipynb-source-filename nei--ipynb-buffer-filename))
                     (select-window (get-buffer-window (buffer-name)))
                     (kill-buffer (buffer-name))
