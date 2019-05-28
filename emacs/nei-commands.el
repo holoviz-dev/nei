@@ -122,8 +122,9 @@
 
     (if (s-equals? cmd "write_complete")
         (progn
-          ;; Set modtime for revert system now file is confirmed as being written
-          (set-visited-file-modtime (nth 5 (file-attributes nei--ipynb-buffer-filename)))
+          (with-current-buffer data
+            (set-visited-file-modtime (nth 5 (file-attributes nei--ipynb-buffer-filename)))
+            )
           )
       )
     (if (s-equals? cmd "mirroring_error")

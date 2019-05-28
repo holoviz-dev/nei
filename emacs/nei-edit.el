@@ -36,6 +36,9 @@
 (defvar nei--highlight-overlay nil
   "The overlay used to highlight current cell in nei")
 
+(defvar nei--revert-in-progress nil
+  "Boolean that indicates if a file revert operation is in progress")
+
 ;;===================================;;
 ;; Mark current cell with an overlay ;;
 ;;===================================;;
@@ -263,5 +266,28 @@
        (file-readable-p nei--ipynb-buffer-filename)
        (not (buffer-modified-p (current-buffer)))
        (not (nei--verify-visited-file-modtime ))))
+
+
+(defun nei--reverter-function (&optional _arg _noconfirm)
+  (setq auto-revert-verbose nil)
+  (if (not nei--revert-in-progress)
+      (progn
+        (setq nei--revert-in-progress t)
+        (let ((answer (read-char-choice
+                       "File changed on disk. Overwrite (o), Reload (r) or Diff (d)?: "
+                       '(?o ?r ?d))))
+          (if (eq answer ?r)
+              (progn (message "Reload not implemented!")))
+          (if (eq answer ?o)
+              (progn
+                (message "Overwriting file..." (buffer-name))
+                (nei--write-ipynb-hook)
+                )
+            )
+          )
+        (setq nei--revert-in-progress nil)
+        )
+    )
+  )
 
 (provide 'nei-edit)

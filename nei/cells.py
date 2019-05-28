@@ -196,7 +196,7 @@ class Cells(object):
                 nbformat.write(nb, f)
             else:
                 f.write(data)
-        return {'cmd':'write_complete', 'data':True}
+        return {'cmd':'write_complete', 'data':self.name}
 
     def view_notebook(self, connection):
         filename = os.path.join(self.STATIC_PATH, 'view.html')
