@@ -277,7 +277,13 @@
                        "File changed on disk. Overwrite (o), Reload (r) or Diff (d)?: "
                        '(?o ?r ?d))))
           (if (eq answer ?r)
-              (progn (message "Reload not implemented!")))
+              (progn
+                (message "Reloading notebook")
+                (let ((ipynb-source-filename nei--ipynb-buffer-filename))
+                  (select-window (get-buffer-window (buffer-name)))
+                  (kill-buffer (buffer-name))
+                  (nei-open-notebook ipynb-source-filename)))
+            )
           (if (eq answer ?o)
               (progn
                 (message "Overwriting file..." (buffer-name))
