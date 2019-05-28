@@ -269,33 +269,36 @@
 
 
 (defun nei--reverter-function (&optional _arg _noconfirm)
-  (setq auto-revert-verbose nil)
-  (if (not nei--revert-in-progress)
-      (progn
-        (setq nei--revert-in-progress t)
-        (let ((answer (read-char-choice
-                       "File changed on disk. Overwrite (o), Reload (r) or Diff (d)?: "
-                       '(?o ?r ?d))))
-          (if (eq answer ?r)
-              (progn
-                (message "Reloading notebook")
-                (let ((ipynb-source-filename nei--ipynb-buffer-filename))
-                  (select-window (get-buffer-window (buffer-name)))
-                  (kill-buffer (buffer-name))
-                  (nei-open-notebook ipynb-source-filename)))
+  (let ((auto-revert-verbose-state auto-revert-verbose))
+    (setq auto-revert-verbose nil)
+    (if (not nei--revert-in-progress)
+        (progn
+          (setq nei--revert-in-progress t)
+          (let ((answer (read-char-choice
+                         "File changed on disk. Overwrite (o), Reload (r) or Diff (d)?: "
+                         '(?o ?r ?d))))
+            (if (eq answer ?r)
+                (progn
+                  (message "Reloading notebook")
+                  (let ((ipynb-source-filename nei--ipynb-buffer-filename))
+                    (select-window (get-buffer-window (buffer-name)))
+                    (kill-buffer (buffer-name))
+                    (nei-open-notebook ipynb-source-filename)))
+              )
+            (if (eq answer ?o)
+                (progn
+                  (message "Overwriting file..." (buffer-name))
+                  (nei--write-ipynb-hook)
+                  )
             )
-          (if (eq answer ?o)
-              (progn
-                (message "Overwriting file..." (buffer-name))
-                (nei--write-ipynb-hook)
-                )
+            (if (eq answer ?d)  
+                (message "Ediff resolve not yet implemented...")
+              )
             )
-          (if (eq answer ?d)  
-              (message "Ediff resolve not yet implemented...")
-            )
-          )
-        (setq nei--revert-in-progress nil)
+          (setq nei--revert-in-progress nil)
         )
+      )
+    (setq auto-revert-verbose auto-revert-verbose-state) 
     )
   )
 
