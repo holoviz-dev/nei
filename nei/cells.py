@@ -93,6 +93,10 @@ class Cell(object):
     def hash(self):
         return hash((self.prompt, self.mode,self.source.strip()))
 
+    def unquote_markdown(self, source):
+        "Replace quoted triple quotes i.e \"\"\" with unquoted versions"
+        return source.replace("\\\"\\\"\\\"", "\"\"\"")
+
     def node(self, cleared=False):
         "Return cell as a notebook node"
         out_nodes = []
@@ -103,7 +107,7 @@ class Cell(object):
         if self.mode == 'code':
             return nbformat.v4.new_code_cell(self.source, outputs=out_nodes)
         elif self.mode == 'markdown':
-            return nbformat.v4.new_markdown_cell(self.source)
+            return nbformat.v4.new_markdown_cell(self.unquote_markdown(self.source))
 
     def clear_output(self):
         self.outputs = []
