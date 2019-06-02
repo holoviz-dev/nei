@@ -1,5 +1,11 @@
 "use strict"
 
+export function render_markdown(source) {
+  // Not entirely sure why this is necessary - markdown normally supports quoted quotes
+  source = source.replace("\\\"\\\"\\\"", "\"\"\"");
+  return marked(source)
+}
+
 
 export function getURLParameter(name, url) {
         if (!url) {

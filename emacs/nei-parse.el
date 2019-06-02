@@ -65,9 +65,13 @@
     )
 )
 
+(defun nei--quote-markdown-source (source)
+  "Quote triple quotes in markdown source to preserve valid Python syntax" 
+  (s-replace-all '(("\"\"\"" . "\\\"\\\"\\\"")) source)
+  )
 (defun nei--markdown-cell-to-text (cell)
   "Given a markdown cell return the textual equivalent"
-  (s-concat "\"\"\"\n" (assoc-value 'source cell) "\n\"\"\"")
+  (s-concat "\"\"\"\n" (nei--quote-markdown-source (assoc-value 'source cell)) "\n\"\"\"")
 )
 
 

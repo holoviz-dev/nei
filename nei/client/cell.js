@@ -4,6 +4,7 @@ import {escapeHtml, syntax_highlight, UUID, range, zip, reorder} from './util.js
 import {ansi_solarized_xterm} from './util.js';
 import {batched_js} from './util.js';
 import {scroll_position} from './util.js';
+import {render_markdown} from './util.js';
 import {Ansi} from './ansi_to_html.js'
 
 export class Notebook {
@@ -184,7 +185,7 @@ export class Cell {
       this.input = input ? input : syntax_highlight(source.trim());
     }
     else if (this.mode == "markdown")  {
-      this.input = `<div class="markdown-cell">${marked(source)}</div>`;
+      this.input = `<div class="markdown-cell">${render_markdown(source)}</div>`;
     }
   }
 
