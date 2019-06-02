@@ -2,7 +2,7 @@
 
 export function render_markdown(source) {
   // Not entirely sure why this is necessary - markdown normally supports quoted quotes
-  source = source.replace("\\\"\\\"\\\"", "\"\"\"");
+  source = source.replace(/\\\"/g, "\"");
   return marked(source)
 }
 
