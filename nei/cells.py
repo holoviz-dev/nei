@@ -95,7 +95,7 @@ class Cell(object):
 
     def unquote_markdown(self, source):
         "Replace quoted triple quotes i.e \"\"\" with unquoted versions"
-        return source.replace("\\\"\\\"\\\"", "\"\"\"")
+        return source.replace('＂＂＂', '"""')
 
     def node(self, cleared=False):
         "Return cell as a notebook node"

@@ -1,8 +1,7 @@
 "use strict"
 
 export function render_markdown(source) {
-  // Not entirely sure why this is necessary - markdown normally supports quoted quotes
-  source = source.replace(/\\\"/g, "\"");
+  source = source.replace(/＂/g, "\"") // Replace full width quote with normal quote
   return marked(source)
 }
 
