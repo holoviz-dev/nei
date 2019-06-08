@@ -43,6 +43,12 @@
 ;; Mark current cell with an overlay ;;
 ;;===================================;;
 
+(defun nei-insert-escaped-triple-quotes ()
+  "Inserts escaped triple quote (zero width space separated"
+  (interactive)
+  (insert "\"​\"​\"")
+  )
+
 (defun nei--start-of-line (pos)
   (save-excursion (goto-char pos) (beginning-of-line) (point))
 )
