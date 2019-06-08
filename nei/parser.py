@@ -117,9 +117,10 @@ class ParseNotebook(ValidatingParser):
             (match, start) = start_info
             raw_prompt = match.groups()[0]
             try:
-                prompt = int(raw_count) if raw_prompt not in [None, ' '] else None
+                prompt = int(raw_prompt) if raw_prompt not in [None, ' '] else None
             except Exception as e:
                 logging.info('WARNING: Parse failure for prompt count %r' % str(e))
+                prompt = None
 
             code_range = (start, start)
             for test_index in range(start, end+1):
