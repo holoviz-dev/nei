@@ -65,14 +65,19 @@
     )
 )
 
+
 (defun nei--quote-markdown-source (source)
-  "Replace triple quotes in markdown source with full width
-   triple quote to preserve valid Python syntax"
-  (s-replace-all '(("\"\"\"" . "＂＂＂" )) source)
+  "Replace triple quotes in markdown source with zero width space (\\u{200B})
+   separated triple quote to preserve valid Python syntax"
+  (s-replace-all '(("\"\"\"" . "\"​\"​\"" )) source)
   )
+  )
+
 (defun nei--markdown-cell-to-text (cell)
   "Given a markdown cell return the textual equivalent"
-  (s-concat "\"\"\"\n" (nei--quote-markdown-source (assoc-value 'source cell)) "\n\"\"\"")
+  (s-concat "\"\"\"\n"
+            (nei--quote-markdown-source (assoc-value 'source cell))
+            "\n\"\"\" #:md:")
 )
 
 

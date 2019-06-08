@@ -96,8 +96,11 @@ class Cell(object):
         return hash((self.prompt, self.mode,self.source.strip()))
 
     def unquote_markdown(self, source):
-        "Replace quoted triple quotes i.e \"\"\" with unquoted versions"
-        return source.replace('＂＂＂', '"""')
+        """
+        Replace quoted triple quotes i.e zero width space separated
+        double quotes ("​"​") with unquoted versions
+        """
+        return source.replace('"​"​"', '"""')
 
     def node(self, cleared=False):
         "Return cell as a notebook node"

@@ -1,7 +1,8 @@
 "use strict"
 
 export function render_markdown(source) {
-  source = source.replace(/＂/g, "\"") // Replace full width quote with normal quote
+  // Replace zero width space separated triple quotes with regular triple quotes.
+  source = source.replace(/"​"​"/g, "\"\"\"")
   return marked(source)
 }
 
