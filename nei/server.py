@@ -174,7 +174,7 @@ class WS(websocket.WebSocketHandler):
             if payload['cmd'] in ['start_mirror']: # Verbose commands
                 logging.info(u"Received %s command" % payload['cmd'])
             else:
-                logging.info(u"Received message: {0}".format(message))
+                logging.info(u"Received message: {0:<.100}".format(message))
 
         if payload.get('cmd') == 'reset_server':
             self.output_callback.stop()
