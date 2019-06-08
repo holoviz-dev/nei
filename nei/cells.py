@@ -18,8 +18,6 @@ import nbformat
 
 from .styles import process_css
 
-BROWSER = 'firefox' # E.g 'chrome' or 'firefox'
-
 # TODO
 # [ ] Could add a kill buffer hook to shutdown server when all nei buffers closed.
 # [ ] Add Yank hook.
@@ -207,10 +205,22 @@ class Cells(object):
                 f.write(data)
         return {'cmd':'write_complete', 'data':self.name}
 
+    def _open_browser(self, url):
+        chosen_browser = self.config['browser']
+        fail_msg = {'cmd':'user_message',
+                    'data':'Could not open requested browser %r' % chosen_browser}
+        try:
+            browser_obj = webbrowser.get(chosen_browser)
+        except:
+            return fail_msg
+
+        success = browser_obj.open(url)
+        if not success: return fail_msg
+
     def view_notebook(self, connection):
         filename = os.path.join(self.STATIC_PATH, 'view.html')
         self.write_notebook(connection, 'html', filename)
-        webbrowser.get(self.config['browser']).open("http://localhost:8000/view.html")
+        return self._open_browser("http://localhost:8000/view.html")
 
     def view_browser(self, connection, ws_port=9999):
 
@@ -220,7 +230,7 @@ class Cells(object):
             url = "http://localhost:8000/index.html?ws-port={port}".format(port=ws_port)
 
         if connection is None:
-            webbrowser.get(self.config['browser']).open(url)
+            return self._open_browser(url)
 
 
 class OutputMessage(object):
@@ -886,5 +896,3 @@ class SyncNotebooks(object):
         for deletion in deletions:
             ind = dst_hashes.index(deletion)
             dst.remove_cell(connection, ind)
-
-

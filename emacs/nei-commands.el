@@ -128,7 +128,11 @@
             )
           )
       )
-   
+
+    (if (s-equals? cmd "user_message")
+        (message data)
+        )
+    
     (if (s-equals? cmd "load_validated")
         (if (eq (assoc-value 'valid data) ':json-false)
           (progn 
