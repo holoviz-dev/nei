@@ -353,14 +353,14 @@
   )
 
 
-(defun nei--load-from-file (cells filename)
+(defun nei--load-from-file (cells filename buffer-text)
   "Send a load_from_file message to server with .ipynb parsed cells and filename"
-
   (nei--server-cmd "load_from_file"
                    (list
                     (cons "json_string"
                           (json-encode cells))
                     (cons "filename" (expand-file-name filename))
+                    (cons "buffer_text" buffer-text)
                     )
                    )
   )

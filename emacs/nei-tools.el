@@ -166,7 +166,8 @@
          (nei-buffer-name (s-prepend "NEI>" (buffer-name)))
          (new-bufferp (not (get-buffer nei-buffer-name)))
          (nei-buffer (get-buffer-create nei-buffer-name))
-         )
+         (nei-buffer-text nil))
+         
       
       (with-current-buffer nei-buffer
         (let* ((point-and-clean-text (nei--locate-ipynb-point text))
@@ -177,6 +178,7 @@
               (progn (insert clean-text) (nei-mode)))
 
           (setq nei--ipynb-buffer-filename ipynb-source-filename)
+          (setq nei-buffer-text clean-text)
           (if (not background)
               (progn 
                 (switch-to-buffer nei-buffer)
@@ -186,7 +188,7 @@
             )
           )
 
-        (nei--load-from-file nei-cells nei--ipynb-buffer-filename)
+        (nei--load-from-file nei-cells nei--ipynb-buffer-filename nei-buffer-text)
         (set-buffer-modified-p nil)
         ;; Set modtime for revert system. TODO: Lock buffer?
         (set-visited-file-modtime (nth 5 (file-attributes nei--ipynb-buffer-filename)))
