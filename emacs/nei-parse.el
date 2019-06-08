@@ -71,7 +71,6 @@
    separated triple quote to preserve valid Python syntax"
   (s-replace-all '(("\"\"\"" . "\"​\"​\"" )) source)
   )
-  )
 
 (defun nei--markdown-cell-to-text (cell)
   "Given a markdown cell return the textual equivalent"
