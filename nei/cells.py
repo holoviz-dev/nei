@@ -496,7 +496,7 @@ class Notebook(Cells):
 
         SyncNotebooks.sync(connection, src, self)
 
-    def load_from_file(self, connection, json_string, filename):
+    def load_from_file(self, connection, json_string, filename, buffer_text=None):
         "Clears any existing cells and replaces them with ones loaded from file"
         self.clear_notebook(connection)
 
@@ -505,8 +505,10 @@ class Notebook(Cells):
 
         self.metadata = nb.metadata
         dict_cells = json.loads(json_string)
-        if len(nb.cells) != len(dict_cells):
-            raise Exception('Notebook length does not match provided JSON spec')
+
+        if buffer_text:
+            error = ParseNotebook.validate_notebook(nb, dict_cells, buffer_text, Cell)
+            if error: return error
 
         for (pos, (dict_cell, nb_cell)) in enumerate(zip(dict_cells, nb.cells)):
             if nb_cell.cell_type == 'code':
