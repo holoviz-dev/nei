@@ -170,6 +170,7 @@
   (setq-local buffer-stale-function #'nei--buffer-stale-function)
   (setq-local revert-buffer-function #'nei--reverter-function)
   (auto-revert-mode t)
+  (setq mode-require-final-newline nil) ;; Otherwise Python mode inserts newlines upon save
   )
 
 
