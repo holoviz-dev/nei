@@ -106,6 +106,8 @@ class ParseNotebook(ValidatingParser):
         code_starts = [(re.match(code_prompt_regexp, line), line_no)
                        for (line_no, line) in lines
                        if re.match(code_prompt_regexp, line)]
+        if len(code_starts) == 0:
+            return []
          # Add maximum available line number
         code_starts = code_starts + [(None, lines[-1][0])]
         available_lines = set([line_no for (line_no,_) in lines])
