@@ -507,8 +507,10 @@ class Notebook(Cells):
         dict_cells = json.loads(json_string)
 
         if buffer_text:
-            error = ParseNotebook.validate_notebook(nb, dict_cells, buffer_text, Cell)
-            if error: return error
+            valid = ParseNotebook.validate_notebook(nb, dict_cells, buffer_text, Cell)
+            if not valid:
+                return {'cmd':'load_validated',
+                        'data':{'filename':filename, 'valid':False}}
 
         for (pos, (dict_cell, nb_cell)) in enumerate(zip(dict_cells, nb.cells)):
             if nb_cell.cell_type == 'code':
@@ -516,6 +518,9 @@ class Notebook(Cells):
 
             dict_cell['position'] = pos
             self.add_cell(connection, **dict_cell)
+
+        return {'cmd':'load_validated',
+                'data':{'filename':filename, 'valid':True}}
 
     def reorder_cells(self, connection, positions):
         assert len(positions) == len(self.cells)

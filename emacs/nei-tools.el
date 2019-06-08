@@ -14,6 +14,8 @@
 (defvar nei--ediff-revision-buffer-name nil "Tracks buffer name for revision")
 
 
+(defvar-local nei-ipynb-save-enabled t "Disable saving of ipynb files. Automatically set if NEI detects an inconsistent state on load.")
+
 (defun nei--write-file-hook ()
   (or (nei--write-ipynb-hook) (nei--write-python-hook) (nei--write-buffer-to-file-hook))
   )
@@ -66,14 +68,17 @@
            (and (null (buffer-file-name))
                 nei--ipynb-buffer-filename))
       (progn
-        (nei--write-notebook
-         (if nei-write-notebook-output "full-notebook" "cleared")
-         nei--ipynb-buffer-filename)
-        (set-buffer-modified-p nil)
-        ;; Disable revert checks until file confirmed as written with write_complete message.
-        (set-visited-file-modtime 0)
-        t
-        )
+        (if nei-ipynb-save-enabled
+            (progn
+              (nei--write-notebook
+               (if nei-write-notebook-output "full-notebook" "cleared")
+               nei--ipynb-buffer-filename)
+              (set-buffer-modified-p nil)
+              ;; Disable revert checks until file confirmed as written with write_complete message.
+              (set-visited-file-modtime 0)
+              )
+          (message "Notebook saving currently disabled."))
+        t )
     nil
     )
   )

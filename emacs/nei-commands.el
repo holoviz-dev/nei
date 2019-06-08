@@ -128,6 +128,16 @@
             )
           )
       )
+   
+    (if (s-equals? cmd "load_validated")
+        (if (eq (assoc-value 'valid data) ':json-false)
+          (progn 
+            (message "Notebook saving disabled: failed to validate %s. Please report this notebook as a GitHub issue."  (assoc-value 'filename data))
+            (setq nei-ipynb-save-enabled nil) 
+            )
+          )
+        )
+    
     (if (s-equals? cmd "mirroring_error")
         (nei--server-cmd "mirroring_error"
                          (list (cons "editor_text" (buffer-string))

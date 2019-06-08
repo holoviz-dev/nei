@@ -34,7 +34,7 @@ class ValidatingParser(object):
             logging.info('!!WARNING!!\nMismatch between JSON and parsed cell types:\n'
                          + ('\tIPYNB: %s\n' % ipynb_modes)
                          + ('\tPARSED: %s' % parsed_modes))
-            return {} # Need new message
+            return False
 
 
         for ipy_source, parse_source in zip(ipynb_sources, parsed_sources):
@@ -45,7 +45,8 @@ class ValidatingParser(object):
                 logging.info(lenmsg
                          + ('\tIPYNB: %r\n' % cls.truncate(ipy_source)
                          + ('\tPARSED: %r' %  cls.truncate(parse_source))))
-
+                return False
+        return True
 
 
 class ParseNotebook(ValidatingParser):
