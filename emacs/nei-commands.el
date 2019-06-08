@@ -124,6 +124,7 @@
         (progn
           (with-current-buffer data
             (set-visited-file-modtime (nth 5 (file-attributes nei--ipynb-buffer-filename)))
+            (message "Wrote %s" nei--ipynb-buffer-filename)
             )
           )
       )
