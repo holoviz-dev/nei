@@ -14,7 +14,7 @@
 ;; 
 
 (define-package "nei"
-  "0.0.6"
+  "0.0.7"
   "Notebook Editor Interface"
   '((emacs "25")
     (websocket "1.7")
