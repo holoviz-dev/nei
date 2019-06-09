@@ -143,7 +143,7 @@
     )
   )
 
-
+;;;###autoload
 (define-minor-mode nei-mode
   "Nei for authoring notebooks in Emacs."
   :keymap nei-mode-map
