@@ -125,17 +125,19 @@
 (defun nei--start-server (ws-port html-port)
   "Check if NEI is importable in Python after optionally activating a
    conda environment (if conda-mode available). If the check fails and
-   it is not due to a port conflict, open a help window with information
-   to help diagnose and fix the problem."
-
+   it is not due to a port conflict, echo a message to prompt the user
+   to consult the server information to help diagnose and fix the
+   problem. Returns t if server started, nil otherwise." 
   (let ((status (nei--server-available ws-port)))
-    (cond ((null status) (nei--server-diagnose))
+    (cond ((null status) (nei--server-diagnose t))
           ((and (s-equals? status "port unavailable")
                 (y-or-n-p
                 (format "Port %s unavailable. Attempt external server connection?" ws-port)))
-           (nei--logging "Connecting to external server..."))
+           (nei--logging "Connecting to external server...")
+           t)
           ( t (progn
                 (nei--server-launch-process ws-port html-port)
+                t
                 )
               )
           )
@@ -228,16 +230,20 @@ you can now run the nei-server-pip-install command.
 ")
 
 
-(defun nei--server-diagnose ()
-  "Present a buffer with help information if the server does not start"
-  (with-output-to-temp-buffer "NEI server configuration"
+(defun nei--server-diagnose (&optional minibuffer-message)
+  "Present a buffer with help information if the server does not start
+   or direct to it via a minibuffer message if minibuffer-message is t"
     (let ((executable
            (if (null (nei--get-exit-code "python"))
                "Python executable not found"
              (nei--server-python-path))))
-      (princ (format  nei--server-diagnose-msg executable))
+      (if minibuffer-message
+          (message "Could not launch NEI server from %s. Run nei-server-info for more information [NEI -> Server -> Information]" executable)
+          (with-output-to-temp-buffer "NEI server configuration"
+            (princ (format nei--server-diagnose-msg executable)))
       )
     )
+  nil
   )
 
 (defun nei-server-info ()

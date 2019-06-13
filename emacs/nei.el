@@ -70,13 +70,18 @@
   (let ((ws-port-or-default   (or ws-port 9999))
         (html-port-or-default (or html-port 8000)))
     (if (and nei--ws-connection (null nei--unexpected-disconnect))
-        (nei--logging "Already connected to NEI server")
+        (progn 
+          (nei--logging "Already connected to NEI server")
+          (nei-update-config)
+          )
       (progn
-        (nei--start-server ws-port-or-default html-port-or-default)
-        (nei--open-ws-connection ws-port-or-default)
+        (if (nei--start-server ws-port-or-default html-port-or-default)
+            (progn 
+              (nei--open-ws-connection ws-port-or-default)
+              (nei-update-config))
         )
-      (nei-update-config)
       )
+    )
     )
   )
 

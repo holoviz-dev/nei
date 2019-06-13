@@ -188,7 +188,6 @@
   "Send an restart-kernel  message"
   (interactive)
   (nei--server-cmd "reload_page" (list))
-  (nei--logging "Sent reload page message")
 )
 
 
