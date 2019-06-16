@@ -24,9 +24,9 @@ install:
   
 script:
   - cd tests
+  - nosetests server.py
   # There is bound to be a better way to do this but this will do for now...
   - $EMACS -Q --batch -l load-dependencies.el -l ../emacs/nei-util.el -l ../emacs/nei-parse.el  -l ../emacs/nei-at-point.el -l ../emacs/nei-edit.el -l ../emacs/nei-commands.el -l ../emacs/nei-server.el -l ../emacs/nei-bindings.el  -l ../emacs/nei-tools.el -l ../emacs/nei.el --eval "(progn  (load-file \"integration-tests.el\") (ert-run-tests-batch-and-exit))"
-  - nosetests server.py
 
 notifications:
   email:
