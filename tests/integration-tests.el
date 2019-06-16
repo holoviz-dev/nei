@@ -10,6 +10,8 @@
   "Reponse captured by the proxy web browser proxy")
 
 
+(defvar nei--ws-port 10000)
+
 (setq nei-verbose nil)
 
 (defmacro with-temp-nei-buffer (&rest body)
@@ -80,7 +82,7 @@
   "Connect an emacs websocket emulating the browser"
   (progn
     (setq conn (websocket-open
-                "ws://127.0.0.1:10000"
+                (format "ws://127.0.0.1:%d" nei--ws-port)
                 :on-message (lambda (_websocket frame)
                               (setq nei--test-response  (websocket-frame-text frame)))
                 :on-close (lambda (_websocket) (message "ON CLOSE"))
@@ -112,7 +114,7 @@
 
 
 (ert-deftest test-update-theme ()
-  (nei-connect 10000 8010)
+  (nei-connect nei--ws-port 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
@@ -122,7 +124,7 @@
   )
 
 (ert-deftest test-simple-insert-code-cell ()
-  (nei-connect 10000 8010)
+  (nei-connect nei--ws-port 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
@@ -139,7 +141,7 @@
 
 
 (ert-deftest test-simple-insert-code-cell-and-execute ()
-  (nei-connect 10000 8010)
+  (nei-connect nei--ws-port 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
@@ -162,7 +164,7 @@
 
 
 (ert-deftest test-simple-insert-mirroring ()
-  (nei-connect 10000 8010)
+  (nei-connect nei--ws-port 8010)
   (should (equal nil (null (get-process "nei-server"))))
   (sleep-for 0.2)
 
