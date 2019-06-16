@@ -159,7 +159,7 @@
                             "[No Kernel]")
                           )
                   )
-
+  (nei--register-things-at-point)
   (nei-fontify)
   ; Need one nice place to set up hooks
   (add-hook 'buffer-list-update-hook 'nei--buffer-switch-hook)
