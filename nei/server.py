@@ -221,7 +221,7 @@ class WS(websocket.WebSocketHandler):
 
         self.output_callback.stop()
 
-def serve(ws_port=9999, html_port=8000, host='127.0.0.1'):
+def serve(ws_port=9999, html_port=8000, host='0.0.0.0'):
     import logging
     logging.basicConfig(level=logging.INFO)
     html_handler = (r'/(.*)', tornado.web.StaticFileHandler,
