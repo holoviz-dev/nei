@@ -14,6 +14,13 @@
 
 (setq nei-verbose nil)
 
+
+(defun disable-y-or-n-p (orig-fun &rest args)
+  (cl-letf (((symbol-function 'y-or-n-p) (lambda (prompt) t)))
+    (apply orig-fun args)))
+
+(advice-add 'nei-connect :around #'disable-y-or-n-p)
+
 (defmacro with-temp-nei-buffer (&rest body)
   "Act in a temporary buffer suitable for testing NEI"
   `(with-temp-buffer
