@@ -2,6 +2,7 @@
 
 (require 'nei-util)
 (require 'nei-parse)
+(require 'nei-at-point)
 (require 'json)
 
 
