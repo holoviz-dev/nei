@@ -98,6 +98,12 @@
     "---"
     ["Next Cell" nei-move-point-to-next-cell t]
     ["Previous Cell" nei-move-point-to-previous-cell t]
+    ("Navigate"
+     ["Next Code Cell" nei-move-point-to-next-code-cell t]
+     ["Previous Code Cell" nei-move-point-to-previous-code-cell t]
+     ["Next Markdown Cell" nei-move-point-to-next-markdown-cell t]
+     ["Previous Markdown  Cell" nei-move-point-to-previous-markdown-cell t]
+     )
      "---"
     ["Insert Code" nei-insert-code-cell t]
     ["Insert Markdown" nei-insert-markdown-cell t]

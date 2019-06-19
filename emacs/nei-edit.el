@@ -205,6 +205,30 @@
   (forward-thing 'nei-cell -1)
   )
 
+(defun nei-move-point-to-next-code-cell ()
+  "Move the point to the next cell"
+  (interactive)
+  (forward-thing 'nei-code-cell)
+)
+
+(defun nei-move-point-to-previous-code-cell ()
+  "Move the point to the previous cell"
+  (interactive)
+  (forward-thing 'nei-code-cell -1)
+  )
+
+(defun nei-move-point-to-next-markdown-cell ()
+  "Move the point to the next cell"
+  (interactive)
+  (forward-thing 'nei-markdown-cell)
+)
+
+(defun nei-move-point-to-previous-markdown-cell ()
+  "Move the point to the previous cell"
+  (interactive)
+  (forward-thing 'nei-markdown-cell -1)
+  )
+
 
 ;; TODO: Make these more robust e.g when at the top/bottom of the buffer
 (defun nei-move-cell-up ()
