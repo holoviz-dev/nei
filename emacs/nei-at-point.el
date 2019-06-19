@@ -13,7 +13,7 @@
 (defvar nei--prompt-regexp "^# In\\[\\([\\[:alnum:] ]*\\)\]"
   "The regular expression used to match prompts. Not to be changed by users.")
 
-(defvar nei--md-close-regexp "^\"\"\" # :md:$")
+(defvar nei--md-close-regexp "^\"\"\" #:md:$")
 
 
 ;;
@@ -154,34 +154,50 @@
 (defun nei--forward-code-cell (&optional arg)
   "Move point forward ARG code cells (backwards is ARG is negative).
    Returns t if the point is moved else nil."
-    (let ((match-pos (save-excursion
-                  (re-search-forward-thing nei--prompt-regexp
-                                           'nei-markdown-cell nil t 1 t))))
-      (if match-pos
-          (progn  (goto-char (+ match-pos 1)) t)
-        )
+  (let* ((within-code-cell (not (null (nei--bounds-of-code-cell-at-point))))
+         (skips (if (and (< arg 0) within-code-cell) (- arg 1) arg))
+         (match-pos (save-excursion
+                      (re-search-forward-thing nei--prompt-regexp
+                                               'nei-markdown-cell
+                                               nil t
+                                               skips t))))
+    (if match-pos
+        (if (< arg 0)
+            (progn
+              (goto-char (+
+                          (save-excursion
+                            (goto-char match-pos)
+                            (end-of-visual-line)
+                            (point)) 1))
+              t)
+          (progn (goto-char (+ 1 match-pos)) t)
+          
+          )
       )
     )
-
+  )
 
 (defun nei--forward-cell (&optional arg)
   "Move point forward ARG cells (backwards is ARG is negative).
    Returns t if the point is moved else nil."  
-  (let ((target-pos nil)
+  (let* ((target-pos nil)
         (arg (or arg 1))
         (next-md nil)
-        (next-code nil))
+        (next-code nil)
+        (delta (if (< arg 0) -1 1))
+        )
 
     (save-excursion
-      (dotimes (x arg)
-        (setq next-md (save-excursion (if (nei--forward-markdown-cell) (point))))
-        (setq next-code (save-excursion (if (nei--forward-code-cell) (point))))
-
+      (dotimes (x (abs arg))
+        (setq next-md (save-excursion (if (nei--forward-markdown-cell delta) (point))))
+        (setq next-code (save-excursion (if (nei--forward-code-cell delta) (point))))
 
         (cond ((and (null next-md) (null next-code))
                (setq target-pos nil))
               ((and next-md next-code)
-               (setq target-pos (min next-md next-code)))
+               (setq target-pos
+                     (if (eq delta -1) (max next-md next-code) (min next-md next-code))
+                     ))
               (next-md (setq target-pos next-md))
               (next-code (setq target-pos next-code)))
 

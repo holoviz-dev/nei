@@ -196,13 +196,13 @@
 (defun nei-move-point-to-next-cell ()
   "Move the point to the next cell"
   (interactive)
-  (goto-char (nei--point-search-code-position 1))
+  (forward-thing 'nei-cell)
 )
 
 (defun nei-move-point-to-previous-cell ()
   "Move the point to the previous cell"
   (interactive)
-  (goto-char (nei--point-search-code-position -2))
+  (forward-thing 'nei-cell -1)
   )
 
 
