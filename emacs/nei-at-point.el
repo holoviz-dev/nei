@@ -54,17 +54,17 @@
                               (forward-thing 'nei-markdown-cell -1)
                               (bounds-of-thing-at-point 'nei-markdown-cell)))
             (md-min-limit (or (cdr prev-md-bounds) 0))
-            (md-max-limit (or (car next-md-bounds) (point-max)))
+            (md-max-limit (or (- (car next-md-bounds) 1) (point-max)))
             (start-code (progn (save-excursion
                                  (end-of-visual-line)
                                  (re-search-backward nei--prompt-regexp nil t 1))))
             (next-code (progn (save-excursion
                                 (end-of-visual-line)
-                                (re-search-forward nei--prompt-regexp nil t 1)
-                                (beginning-of-visual-line)
-                                (- (point) 1))))
+                                (if (re-search-forward nei--prompt-regexp nil t 1)
+                                    (progn
+                                      (beginning-of-visual-line)
+                                      (- (point) 1))))))
             (end (min (or next-code (point-max)) (or md-max-limit (point-max)))))
-
         (if (and (not (null start-code)) (< md-min-limit start-code))
             (progn
               (cons start-code end)

@@ -501,7 +501,7 @@
                   "\n\"\"\"\n" "\n\n\"\"\"\n")))
     (insert head)
     (let ((pos (point)))
-      (insert "\n\"\"\"\n")
+      (insert "\n\"\"\" #:md:\n")
       (goto-char pos)
       )
     )
