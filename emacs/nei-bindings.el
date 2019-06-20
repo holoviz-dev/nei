@@ -38,7 +38,12 @@
   (define-key map (kbd "C-c h") 'nei-toggle-display-code)
   (define-key map (kbd "C-c H") 'nei-toggle-display-all-code)
 
-;; More unusual bindings
+  (define-key map (kbd "C-c '") 'nei-move-point-to-next-code-cell)
+  (define-key map (kbd "C-c ;") 'nei-move-point-to-previous-code-cell)
+  (define-key map (kbd "C-c @") 'nei-move-point-to-next-markdown-cell)
+  (define-key map (kbd "C-c :") 'nei-move-point-to-previous-markdown-cell)
+  
+  ;; More unusual bindings
   (define-key map [(S-return)] 'nei-exec-by-line-and-move-to-next-cell)
   (define-key map (kbd "C-<wheel-up>") 'nei-scroll-up)
   (define-key map (kbd "C-<double-wheel-up>") 'nei-scroll-up)
