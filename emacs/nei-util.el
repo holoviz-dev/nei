@@ -100,5 +100,14 @@
     (apply 'color-rgb-to-hex avg)))
 
 
+(defun nei--average-with-background-color (color factor)
+  (let ((bg (face-attribute 'default :background)))
+    (if (or (eq 'unspecified color) (eq 'unspecified bg))
+        "white"
+      (apply 'nei--average-colors (cons color (make-list factor bg)))
+      )
+    )
+  )
+
 
 (provide 'nei-util)

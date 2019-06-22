@@ -16,26 +16,33 @@
 
 (defface nei-md-face
   `((t :foreground
-       ,(let ((fg (face-attribute 'font-lock-string-face :foreground))
-              (bg (face-attribute 'default :background)))
-          (if (or (eq 'unspecified fg) (eq 'unspecified bg))
-              "white" (nei--average-colors fg bg bg))
-          )
-
-       ))
+       ,(nei--average-with-background-color
+         (face-attribute 'font-lock-string-face :foreground) 5
+         )))
   "Face for markdown separators. Default is 33% between font-lock-string-face and background"
 )
 
-(defface nei-cell-highlight-face
-  '((((class color) (background light)) :background "grey95")
-    (((class color) (background  dark)) :background "grey20"))
-  "Face for highlighting the current cell.")
+(defface nei-cell-highlight-code-face
+  '((((class color) (background light)) :background
+     (nei--average-with-background-color "white" 16))
+    (((class color) (background  dark)) :background
+     "grey20"))
+  "Face for highlighting the code current cell.")
+
+ 
+(defface nei-cell-highlight-markdown-face
+  `((((class color) (background light)) :background
+     ,(nei--average-with-background-color "black" 16))
+    (((class color) (background  dark)) :background
+     ,(nei--average-with-background-color "black" 16)))
+  "Face for highlighting the code current cell.")
+
+(defvar nei--highlight-overlay nil
+  "The overlay used to highlight current cell in nei")
 
 (defvar-local nei--fontified nil
   "Whether or not the nei buffer is currently fontified")
 
-(defvar nei--highlight-overlay nil
-  "The overlay used to highlight current cell in nei")
 
 (defvar nei--revert-in-progress nil
   "Boolean that indicates if a file revert operation is in progress")
