@@ -59,6 +59,21 @@
 )
 
 
+(defun nei--update-highlight-thing (thing)
+  (let* ((cell-bounds (bounds-of-thing-at-point thing))
+         (beginning (car cell-bounds))
+         (end (cdr cell-bounds)))
+    (if (and beginning end)
+        (progn
+          (move-overlay nei--highlight-overlay beginning end)
+          (if (eq thing 'nei-code-cell)
+              (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-code-face)
+            (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-markdown-face))
+          )
+        )
+    )
+  )
+
 (defun nei--update-highlight-cell ()
   "Uses regular expression search forwards/backwards to highlight
    the current cell with an overlay"
@@ -66,26 +81,10 @@
   (if (null nei--highlight-overlay)
       (setq nei--highlight-overlay
             (let ((ov (make-overlay 1 1 nil t)))
-              (overlay-put ov 'face 'nei-cell-highlight-face)
-              ov))
+              (overlay-put ov 'face 'nei-cell-highlight-code-face) ov))
     )
-  (let ((prev-code (save-excursion (re-search-forward "^# In\\[" nil t -1)))
-        (next-code (save-excursion (re-search-forward "^# In\\[" nil t 1)))
-        (prev-md (save-excursion (re-search-forward "^\"\"\"" nil t -1)))
-        (next-md (save-excursion (re-search-forward "^\"\"\"" nil t 1))))
-    (let ((prev-code-pos (if (null prev-code) (point-min) prev-code))
-          (next-code-pos (if (null next-code) (point-max) next-code))
-          (prev-md-pos (if (null prev-md) (point-min) prev-md))
-          (next-md-pos (if (null next-md) (point-max) next-md)))
-
-      (if (> prev-code-pos prev-md-pos)
-          (move-overlay nei--highlight-overlay prev-code-pos
-                        (nei--start-of-line next-code-pos))
-          (move-overlay nei--highlight-overlay prev-md-pos
-                        (nei--start-of-line next-md-pos))
-        )
-      )
-    )
+  (nei--update-highlight-thing 'nei-code-cell)
+  (nei--update-highlight-thing 'nei-markdown-cell)
   )
 
 
@@ -151,7 +150,7 @@
   (let ((modified (buffer-modified-p)))
     (font-lock-remove-keywords nil (nei-fontify-matcher))
     (font-lock-remove-keywords nil (nei-fontify-markdown-matcher))
-    
+
     (remove-text-properties (point-min) (point-max)
                             (list 'display
                                   nei--prompt-regexp 'face 'nei-prompt-face))
@@ -184,12 +183,12 @@
           (setq offset (- (length replacement) (length (match-string 0))))
           (replace-match replacement)
           (set-buffer-modified-p modified)
-          )    
+          )
         )
       )
     (setq buffer-undo-list undo-list)
     (if (null (eq buffer-undo-list t))
-        (add-to-list 'buffer-undo-list (+ prev-point-pos offset))) 
+        (add-to-list 'buffer-undo-list (+ prev-point-pos offset)))
     )
   )
 
@@ -286,14 +285,14 @@
                   (nei--write-ipynb-hook)
                   )
             )
-            (if (eq answer ?d)  
+            (if (eq answer ?d)
                 (message "Ediff resolve not yet implemented...")
               )
             )
           (setq nei--revert-in-progress nil)
         )
       )
-    (setq auto-revert-verbose auto-revert-verbose-state) 
+    (setq auto-revert-verbose auto-revert-verbose-state)
     )
   )
 
