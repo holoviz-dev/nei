@@ -54,7 +54,8 @@
                               (forward-thing 'nei-markdown-cell -1)
                               (bounds-of-thing-at-point 'nei-markdown-cell)))
             (md-min-limit (or (cdr prev-md-bounds) 0))
-            (md-max-limit (or (- (car next-md-bounds) 1) (point-max)))
+            (md-max-limit (if (not (null next-md-bounds))
+                              (- (car next-md-bounds) 1) (point-max)))
             (start-code (progn (save-excursion
                                  (end-of-visual-line)
                                  (re-search-backward nei--prompt-regexp nil t 1))))
