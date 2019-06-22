@@ -431,7 +431,13 @@
                         (cons "length" length)
                         (cons "added" (buffer-substring start end))
                         (cons "size" (buffer-size src))
-                        (cons "md5"  (secure-hash 'md5 (buffer-string)))
+                        (cons "md5"  (secure-hash 'md5
+                                                      (save-restriction
+                                                        (widen)
+                                                        (buffer-substring-no-properties
+                                                         (point-min) (point-max)))
+                                                      
+                                                      ))
                         )
                        )
       )
