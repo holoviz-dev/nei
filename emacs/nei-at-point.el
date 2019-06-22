@@ -8,12 +8,37 @@
 ;; This approach is designed to help NEI be agnostic towards the exact
 ;; text format. The thing-at-point API is then used by the rest of NEI
 ;; mode.
+;;
+;; Defines aliases for things like (forward-thing 'nei-code-cell) with
+;; functions such as nei-move-point-to-next-code-cell. Also includes
+;; hook to display code and markdown overlays highlighting the cell
+;; bounds.
 
+
+(require 'nei-util)
 
 (defvar nei--prompt-regexp "^# In\\[\\([\\[:alnum:] ]*\\)\]"
   "The regular expression used to match prompts. Not to be changed by users.")
 
 (defvar nei--md-close-regexp "^\"\"\" #:md:$")
+
+(defface nei-cell-highlight-code-face
+  `((((class color) (background light)) :background
+     ,(nei--average-with-background-color "white" 16))
+    (((class color) (background  dark)) :background
+     ,(nei--average-with-background-color "white" 16)))
+  "Face for highlighting the code current cell.")
+
+ 
+(defface nei-cell-highlight-markdown-face
+  `((((class color) (background light)) :background
+     ,(nei--average-with-background-color "black" 16))
+    (((class color) (background  dark)) :background
+     ,(nei--average-with-background-color "black" 16)))
+  "Face for highlighting the code current cell.")
+
+(defvar nei--highlight-overlay nil
+  "The overlay used to highlight current cell in nei")
 
 
 ;;
@@ -266,6 +291,50 @@
   "Move the point to the previous cell"
   (interactive)
   (forward-thing 'nei-markdown-cell -1)
+  )
+
+;; Highlighting of bounds with overlay
+
+(defun nei--update-highlight-thing (thing)
+  (let* ((cell-bounds (bounds-of-thing-at-point thing))
+         (beginning (car cell-bounds))
+         (end (cdr cell-bounds)))
+    (if (and beginning end)
+        (progn
+          (move-overlay nei--highlight-overlay beginning end)
+          (if (eq thing 'nei-code-cell)
+              (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-code-face)
+            (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-markdown-face))
+          )
+        )
+    )
+  )
+
+(defun nei--update-highlight-cell ()
+  "Uses regular expression search forwards/backwards to highlight
+   the current cell with an overlay"
+
+  (if (null nei--highlight-overlay)
+      (setq nei--highlight-overlay
+            (let ((ov (make-overlay 1 1 nil t)))
+              (overlay-put ov 'face 'nei-cell-highlight-code-face) ov))
+    )
+  (nei--update-highlight-thing 'nei-code-cell)
+  (nei--update-highlight-thing 'nei-markdown-cell)
+  )
+
+
+(defun nei--point-move-disable-highlight-hook ()
+  "Post-command hook to disable cell highlight when the
+   point moves out the current overlay region"
+  (if (and (memq this-command '(next-line previous-line))
+           (not (null nei--highlight-overlay))
+           (eq (current-buffer) (overlay-buffer nei--highlight-overlay)))
+      (if (or (< (point) (overlay-start nei--highlight-overlay))
+              (> (point) (overlay-end nei--highlight-overlay)))
+          (move-overlay nei--highlight-overlay 0 0)
+        )
+    )
   )
 
 

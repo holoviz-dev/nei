@@ -1,5 +1,4 @@
 ;;;  -*- lexical-binding: t; -*-
-
 (require 'nei-util)
 (require 'nei-parse)
 (require 'nei-at-point)
@@ -22,24 +21,6 @@
   "Face for markdown separators. Default is 33% between font-lock-string-face and background"
 )
 
-(defface nei-cell-highlight-code-face
-  '((((class color) (background light)) :background
-     (nei--average-with-background-color "white" 16))
-    (((class color) (background  dark)) :background
-     "grey20"))
-  "Face for highlighting the code current cell.")
-
- 
-(defface nei-cell-highlight-markdown-face
-  `((((class color) (background light)) :background
-     ,(nei--average-with-background-color "black" 16))
-    (((class color) (background  dark)) :background
-     ,(nei--average-with-background-color "black" 16)))
-  "Face for highlighting the code current cell.")
-
-(defvar nei--highlight-overlay nil
-  "The overlay used to highlight current cell in nei")
-
 (defvar-local nei--fontified nil
   "Whether or not the nei buffer is currently fontified")
 
@@ -56,58 +37,6 @@
   (interactive)
   (insert "\"​\"​\"")
   )
-
-(defun nei--start-of-line (pos)
-  (save-excursion (goto-char pos) (beginning-of-line) (point))
-)
-
-(defun nei--end-of-line (pos)
-  (save-excursion (goto-char pos) (end-of-line) (point))
-)
-
-
-(defun nei--update-highlight-thing (thing)
-  (let* ((cell-bounds (bounds-of-thing-at-point thing))
-         (beginning (car cell-bounds))
-         (end (cdr cell-bounds)))
-    (if (and beginning end)
-        (progn
-          (move-overlay nei--highlight-overlay beginning end)
-          (if (eq thing 'nei-code-cell)
-              (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-code-face)
-            (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-markdown-face))
-          )
-        )
-    )
-  )
-
-(defun nei--update-highlight-cell ()
-  "Uses regular expression search forwards/backwards to highlight
-   the current cell with an overlay"
-
-  (if (null nei--highlight-overlay)
-      (setq nei--highlight-overlay
-            (let ((ov (make-overlay 1 1 nil t)))
-              (overlay-put ov 'face 'nei-cell-highlight-code-face) ov))
-    )
-  (nei--update-highlight-thing 'nei-code-cell)
-  (nei--update-highlight-thing 'nei-markdown-cell)
-  )
-
-
-(defun nei--point-move-disable-highlight-hook ()
-  "Post-command hook to disable cell highlight when the
-   point moves out the current overlay region"
-  (if (and (memq this-command '(next-line previous-line))
-           (not (null nei--highlight-overlay))
-           (eq (current-buffer) (overlay-buffer nei--highlight-overlay)))
-      (if (or (< (point) (overlay-start nei--highlight-overlay))
-              (> (point) (overlay-end nei--highlight-overlay)))
-          (move-overlay nei--highlight-overlay 0 0)
-        )
-    )
-  )
-
 
 ;;=========================;;
 ;; Fontification interface ;;
