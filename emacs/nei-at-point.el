@@ -337,6 +337,17 @@
   )
 
 
+(defun nei--expand-markdown-bounds (bounds)
+  "Markdown bounds expanded by the following newline if present"
+  (save-excursion
+    (goto-char (car bounds))
+    (if (and (bounds-of-thing-at-point 'nei-markdown-cell) (< (cdr bounds) (point-max)))
+        (cons (car bounds) (+ 1 (cdr bounds)))
+      bounds
+      )
+    )
+  )
+
 (defun nei--swap-cells-by-bounds (fst-bounds snd-bounds)
   "Given the bounds of two adjacent cells as given by
    bounds-of-thing-at-point, swap them within the original line span
@@ -345,7 +356,9 @@
    If the point is within or between these bounds, it's relative
    position is preserved after the swap "
 
-  (let* ((fst-string (buffer-substring (car fst-bounds) (cdr fst-bounds)))
+  (let* ((fst-bounds (nei--expand-markdown-bounds fst-bounds))
+         (snd-bounds (nei--expand-markdown-bounds snd-bounds))
+         (fst-string (buffer-substring (car fst-bounds) (cdr fst-bounds)))
          (snd-string (buffer-substring (car snd-bounds) (cdr snd-bounds)))
          (separation (buffer-substring (cdr fst-bounds) (car snd-bounds)))
          (replacement (s-concat snd-string separation fst-string))
@@ -358,8 +371,6 @@
          (new-snd-bounds (cons (cdr new-sep-bounds) (+ (cdr new-sep-bounds) fst-delta)))
          (target-pos nil)
          )
-    (message ">%s<" separation)
-
     (cond ((nei--point-within-bounds fst-bounds)
            (setq target-pos (+ (car new-snd-bounds)
                                (- (point) (car fst-bounds)))))
