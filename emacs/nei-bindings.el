@@ -20,6 +20,7 @@
   (define-key map (kbd "C-c <up>") 'nei-move-point-to-previous-cell)
   (define-key map (kbd "C-c c") 'nei-insert-code-cell)
   (define-key map (kbd "C-c m") 'nei-insert-markdown-cell)
+  (define-key map (kbd "C-c <DEL>") 'nei-delete-cell)
   (define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
  
   (define-key map (kbd "C-c k") 'nei-start-kernel)
@@ -112,6 +113,8 @@
      "---"
     ["Insert Code" nei-insert-code-cell t]
     ["Insert Markdown" nei-insert-markdown-cell t]
+    "---"
+    ["Delete Cell" nei-delete-cell t]
     "---"
     ["Move Cell Up" nei-move-cell-up t]
     ["Move Cell Down" nei-move-cell-down t]

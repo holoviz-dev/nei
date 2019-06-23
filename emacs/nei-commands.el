@@ -489,6 +489,14 @@
 ;; Emacs editing commands ;;
 ;;========================;;
 
+(defun nei--start-of-line (pos)
+  (save-excursion (goto-char pos) (beginning-of-line) (point))
+)
+
+(defun nei--end-of-line (pos)
+  (save-excursion (goto-char pos) (end-of-line) (point))
+)
+
 (defun nei-insert-code-cell ()
   "Add a new code cell prompt"
   (interactive)
@@ -516,6 +524,12 @@
       (goto-char pos)
       )
     )
+  )
+
+(defun nei-delete-cell ()
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'nei-cell)))
+    (delete-region (car bounds) (cdr bounds)))
   )
 
 (provide 'nei-commands)
