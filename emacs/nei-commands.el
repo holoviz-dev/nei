@@ -516,6 +516,7 @@
 (defun nei-insert-markdown-cell ()
   "Add a new markdown cell prompt"
   (interactive)
+  (nei--hold-mode "on")
   (let ((head (if (eq (point) (nei--start-of-line (point)))
                   "\n\"\"\"\n" "\n\n\"\"\"\n")))
     (insert head)
@@ -524,6 +525,7 @@
       (goto-char pos)
       )
     )
+  (nei--hold-mode "off")
   )
 
 (defun nei-delete-cell ()
