@@ -262,12 +262,17 @@
 (defun nei-exec-by-line-and-move-to-next-cell ()
   "Executes cell at current line and moves point to next cell"
   (interactive)
-  (nei-exec-by-line)
-  (if nei--active-kernel
-      (nei-move-point-to-next-cell) ;; TODO - move into markdown cells too
+  (if (null (bounds-of-thing-at-point 'nei-code-cell))
+      (progn 
+        (nei-move-point-to-next-code-cell)
+        (if nei--active-kernel (nei-exec-by-line))
+        )
+    (progn
+      (if nei--active-kernel (nei-exec-by-line))
+      (nei-move-point-to-next-code-cell)
+      )
     )
-)
-
+  )
 
 (defun nei-clear-cell-by-line ()
   (interactive)
@@ -488,14 +493,6 @@
 ;;========================;;
 ;; Emacs editing commands ;;
 ;;========================;;
-
-(defun nei--start-of-line (pos)
-  (save-excursion (goto-char pos) (beginning-of-line) (point))
-)
-
-(defun nei--end-of-line (pos)
-  (save-excursion (goto-char pos) (end-of-line) (point))
-)
 
 (defun nei-insert-code-cell ()
   "Add a new code cell prompt"
