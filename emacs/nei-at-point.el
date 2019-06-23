@@ -313,12 +313,6 @@
 (defun nei--update-highlight-cell ()
   "Uses regular expression search forwards/backwards to highlight
    the current cell with an overlay"
-
-  (if (null nei--highlight-overlay)
-      (setq nei--highlight-overlay
-            (let ((ov (make-overlay 1 1 nil t)))
-              (overlay-put ov 'face 'nei-cell-highlight-code-face) ov))
-    )
   (nei--update-highlight-thing 'nei-code-cell)
   (nei--update-highlight-thing 'nei-markdown-cell)
   )
