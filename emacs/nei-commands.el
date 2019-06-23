@@ -500,31 +500,34 @@
 (defun nei-insert-code-cell ()
   "Add a new code cell prompt"
   (interactive)
-  (if (eq (point) (nei--start-of-line (point)))
-      (progn
-        (insert "# In[ ]\n\n") ;; Already at the start of a line
-        (left-char)
-        )
-    (progn
-      (goto-char (nei--end-of-line (point)))
-      (insert "\n\n# In[ ]\n\n")
-      (left-char)
+  (let ((point-pos nil))
+    (save-excursion
+      (forward-thing 'nei-cell)
+      (goto-char (car (bounds-of-thing-at-point 'nei-cell)))
+      (insert "# In[ ]\n\n\n")
+      (setq point-pos (point))
       )
+    (goto-char (- point-pos 2))
     )
-)
+  )
 
 (defun nei-insert-markdown-cell ()
   "Add a new markdown cell prompt"
   (interactive)
   (nei--hold-mode "on")
-  (let ((head (if (eq (point) (nei--start-of-line (point)))
-                  "\n\"\"\"\n" "\n\n\"\"\"\n")))
-    (insert head)
-    (let ((pos (point)))
-      (insert "\n\"\"\" #:md:\n")
-      (goto-char pos)
-      )
-    )
+  (let* ((point-pos nil)
+         (start-pos (save-excursion
+                      (forward-thing 'nei-cell)
+                      (car (bounds-of-thing-at-point 'nei-cell))))
+         )
+    (goto-char start-pos)
+    (save-excursion
+      (insert "\"\"\"\n")
+      (setq point-pos (point))
+      (insert "\n\"\"\" #:md:\n\n")
+       )
+     (goto-char point-pos)
+  )
   (nei--hold-mode "off")
   )
 
