@@ -260,17 +260,15 @@
 
 
 (defun nei-exec-by-line-and-move-to-next-cell ()
-  "Executes cell at current line and moves point to next cell"
+  "Executes cell at current line and moves point to next cell. 
+  Return true if there is a following code cell that can be executed."
   (interactive)
   (if (null (bounds-of-thing-at-point 'nei-code-cell))
-      (progn 
-        (nei-move-point-to-next-code-cell)
-        (if nei--active-kernel (nei-exec-by-line))
-        )
-    (progn
-      (if nei--active-kernel (nei-exec-by-line))
-      (nei-move-point-to-next-code-cell)
-      )
+      (if (and nei--active-kernel (forward-thing 'nei-code-cell))
+          (progn (nei-exec-by-line) t))
+    (if nei--active-kernel
+          (progn (nei-exec-by-line)
+                 (forward-thing 'nei-code-cell)))
     )
   )
 
@@ -532,6 +530,30 @@
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'nei-cell)))
     (delete-region (car bounds) (cdr bounds)))
+  )
+
+
+(defun nei-run-all-from-top ()
+  "Run all code cells from the top of the notebook onwards."
+  (interactive)
+  (goto-char (point-min))
+  (nei-run-all-from-point)
+  )
+  
+(defun nei-run-all-from-point ()
+  "Run all code cells from the point onwards"
+  (interactive)
+  (if nei--active-kernel
+      (let ((continue t))
+        (while continue
+          (setq continue (nei-exec-by-line-and-move-to-next-cell))
+          (sleep-for 0.1)
+          )
+        )
+    (nei--logging "Execution skipped. Start a kernel with %s"
+                  (mapconcat 'key-description (where-is-internal 'nei-start-kernel) " ")
+                  )
+      )
   )
 
 (provide 'nei-commands)

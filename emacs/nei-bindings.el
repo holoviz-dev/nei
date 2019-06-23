@@ -99,12 +99,14 @@
       ["Restart" nei-restart-kernel nei--active-kernel]
       ["Shutdown" nei-shutdown-kernel nei--active-kernel]
       )
+    ["Run All from Top" nei-run-all-from-top nei--active-kernel]
+    ["Run All from Point" nei-run-all-from-point nei--active-kernel]
     ["Execute In Place" nei-exec-by-line nei--active-kernel]
     ["Execute and Move" nei-exec-by-line-and-move-to-next-cell nei--active-kernel]
     "---"
     ["Next Cell" nei-move-point-to-next-cell t]
     ["Previous Cell" nei-move-point-to-previous-cell t]
-    ("Navigate"
+    ("Navigate by Cell Type"
      ["Next Code Cell" nei-move-point-to-next-code-cell t]
      ["Previous Code Cell" nei-move-point-to-previous-code-cell t]
      ["Next Markdown Cell" nei-move-point-to-next-markdown-cell t]
