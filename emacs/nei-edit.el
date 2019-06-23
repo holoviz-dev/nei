@@ -56,8 +56,19 @@
 )
 
 
-(defun nei-fontify-markdown-matcher ()
+(defun nei-fontify-markdown-matcher-open ()
   '(("^\"\"\""
+     (0 (let ((match (match-string 1)))
+          (progn
+            (set-text-properties 0 (length match) nil match)
+            (add-text-properties (match-beginning 0) (match-end 0)
+                                 (list 'face 'nei-md-face))
+            nil))))
+    )
+  )
+
+(defun nei-fontify-markdown-matcher-close ()
+  '(("^\"\"\" #:md:"
      (0 (let ((match (match-string 1)))
           (progn
             (set-text-properties 0 (length match) nil match)
@@ -72,7 +83,9 @@
 (defun nei-fontify ()
   (let ((modified (buffer-modified-p)))
     (font-lock-add-keywords nil (nei-fontify-matcher))
-    (font-lock-add-keywords nil (nei-fontify-markdown-matcher) t)
+    (font-lock-add-keywords nil (nei-fontify-markdown-matcher-open) t)
+    (font-lock-add-keywords nil (nei-fontify-markdown-matcher-close) t)
+    
 
     (save-excursion
       (font-lock-fontify-keywords-region (point-min) (point-max))
@@ -85,7 +98,8 @@
 (defun nei-defontify ()
   (let ((modified (buffer-modified-p)))
     (font-lock-remove-keywords nil (nei-fontify-matcher))
-    (font-lock-remove-keywords nil (nei-fontify-markdown-matcher))
+    (font-lock-remove-keywords nil (nei-fontify-markdown-matcher-open))
+    (font-lock-remove-keywords nil (nei-fontify-markdown-matcher-close))
 
     (remove-text-properties (point-min) (point-max)
                             (list 'display
@@ -93,6 +107,10 @@
     (remove-text-properties (point-min) (point-max)
                             (list 'display
                                   "^\"\"\"" 'face 'nei-md-face))
+
+    (remove-text-properties (point-min) (point-max)
+                            (list 'display
+                                  "^\"\"\" #:md:" 'face 'nei-md-face))
     (save-excursion
       (font-lock-fontify-keywords-region (point-min) (point-max))
       )

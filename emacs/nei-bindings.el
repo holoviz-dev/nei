@@ -147,8 +147,8 @@
     ("Buffer"
      ["Insert Notebook at Point" nei-insert-notebook]
      ["Clear Notebook and Restart Kernel" nei-clear-notebook-and-restart nei--active-kernel]
-     ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
      ["Insert escaped triple quotes (\"\"\")" nei-insert-escaped-triple-quotes]
+     ["Fontify" nei-toggle-fontify :style radio :selected nei--fontified]
      )
     ("Server"
      ("Status"
