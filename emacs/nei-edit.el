@@ -146,46 +146,6 @@
     )
   )
 
-;; TODO: Make these more robust e.g when at the top/bottom of the buffer
-(defun nei-move-cell-up ()
-  (interactive)
-  (nei--hold-mode "on")
-  (let* ((start (nei--point-search-code-position -1 t))
-         (end (nei--point-search-code-position 1 t))
-         (line-text (delete-and-extract-region start end)))
-
-    (goto-char (nei--point-search-code-position -1 t))
-    (nei--hold-mode "off")
-    (insert line-text)
-    )
-  )
-
-(defun nei-move-cell-down ()
-  (interactive)
-  (nei--hold-mode "on")
-
-  (let* ((start (nei--point-search-code-position -1 t))
-         (end (nei--point-search-code-position 1 t))
-         (line-text (delete-and-extract-region start end)))
-
-    (goto-char (nei--point-search-code-position 2 t))
-    (nei--hold-mode "off")
-    (insert line-text)
-    )
-  )
-
-(defun nei--point-search-code-position (count &optional at-prompt)
-  "Uses regular expression search by count to report position of cells.
-   If at-prompt is truthy, the position is at the start of the prompt."
-  (save-excursion ;; Currently only handles code cells
-    (re-search-forward nei--prompt-regexp nil t count)
-    (if at-prompt
-        (nei--start-of-line (point))
-      (1+ (nei--end-of-line (point)))
-      )
-    )
-  )
-
 (defun nei--clear-execution-prompts ()
   (interactive)
   (save-excursion
