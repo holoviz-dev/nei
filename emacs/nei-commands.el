@@ -493,10 +493,15 @@
   "Add a new code cell prompt"
   (interactive)
   (if (eq (point) (nei--start-of-line (point)))
-      (insert "# In[ ]\n") ;; Already at the start of a line
+      (progn
+        (insert "# In[ ]\n\n") ;; Already at the start of a line
+        (left-char)
+        )
     (progn
       (goto-char (nei--end-of-line (point)))
-      (insert "\n\n# In[ ]\n"))
+      (insert "\n\n# In[ ]\n\n")
+      (left-char)
+      )
     )
 )
 
