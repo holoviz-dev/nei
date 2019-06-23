@@ -253,45 +253,7 @@
   (put 'nei-cell 'forward-op
        'nei--forward-cell)
   )
-
-
-;; Movement aliases
-
-(defun nei-move-point-to-next-cell ()
-  "Move the point to the next cell"
-  (interactive)
-  (forward-thing 'nei-cell)
-)
-
-(defun nei-move-point-to-previous-cell ()
-  "Move the point to the previous cell"
-  (interactive)
-  (forward-thing 'nei-cell -1)
-  )
-
-(defun nei-move-point-to-next-code-cell ()
-  "Move the point to the next cell"
-  (interactive)
-  (forward-thing 'nei-code-cell)
-)
-
-(defun nei-move-point-to-previous-code-cell ()
-  "Move the point to the previous cell"
-  (interactive)
-  (forward-thing 'nei-code-cell -1)
-  )
-
-(defun nei-move-point-to-next-markdown-cell ()
-  "Move the point to the next cell"
-  (interactive)
-  (forward-thing 'nei-markdown-cell)
-)
-
-(defun nei-move-point-to-previous-markdown-cell ()
-  "Move the point to the previous cell"
-  (interactive)
-  (forward-thing 'nei-markdown-cell -1)
-  )
+  
 
 ;; Highlighting of bounds with overlay
 
@@ -332,88 +294,42 @@
   )
 
 
-(defun nei--point-within-bounds (bounds)
-  (and (>= (point) (car bounds)) (<= (point) (cdr bounds)))
-  )
+;; Movement aliases
 
-
-(defun nei--expand-markdown-bounds (bounds)
-  "Markdown bounds expanded by the following newline if present"
-  (save-excursion
-    (goto-char (car bounds))
-    (if (and (bounds-of-thing-at-point 'nei-markdown-cell) (< (cdr bounds) (point-max)))
-        (cons (car bounds) (+ 1 (cdr bounds)))
-      bounds
-      )
-    )
-  )
-
-(defun nei--swap-cells-by-bounds (fst-bounds snd-bounds)
-  "Given the bounds of two adjacent cells as given by
-   bounds-of-thing-at-point, swap them within the original line span
-   while preserving any content between the cells.
-
-   If the point is within or between these bounds, it's relative
-   position is preserved after the swap "
-
-  (let* ((fst-bounds (nei--expand-markdown-bounds fst-bounds))
-         (snd-bounds (nei--expand-markdown-bounds snd-bounds))
-         (fst-string (buffer-substring (car fst-bounds) (cdr fst-bounds)))
-         (snd-string (buffer-substring (car snd-bounds) (cdr snd-bounds)))
-         (separation (buffer-substring (cdr fst-bounds) (car snd-bounds)))
-         (replacement (s-concat snd-string separation fst-string))
-         (sep-bounds (cons (cdr fst-bounds) (car snd-bounds)))
-         (fst-delta (- (cdr fst-bounds) (car fst-bounds)))
-         (snd-delta (- (cdr snd-bounds) (car snd-bounds)))
-         (sep-delta (- (car snd-bounds) (cdr fst-bounds)))
-         (new-fst-bounds (cons (car fst-bounds) (+ (car fst-bounds) snd-delta)))
-         (new-sep-bounds (cons (cdr new-fst-bounds) (+ (cdr new-fst-bounds) sep-delta)))
-         (new-snd-bounds (cons (cdr new-sep-bounds) (+ (cdr new-sep-bounds) fst-delta)))
-         (target-pos nil)
-         )
-    (cond ((nei--point-within-bounds fst-bounds)
-           (setq target-pos (+ (car new-snd-bounds)
-                               (- (point) (car fst-bounds)))))
-          ((nei--point-within-bounds sep-bounds)
-           
-           (setq target-pos (+ (car new-sep-bounds)
-                               (- (point) (car sep-bounds)))))
-          ((nei--point-within-bounds snd-bounds)
-           (setq target-pos (+ (car new-fst-bounds)
-                               (- (point) (car snd-bounds)))))
-          )
-
-    (save-excursion 
-      (goto-char (car fst-bounds))
-      (delete-region (car fst-bounds) (cdr snd-bounds))
-      (insert replacement)
-      )
-    (goto-char target-pos)
-    )
-  )
-
-(defun nei-move-cell-down ()
+(defun nei-move-point-to-next-cell ()
+  "Move the point to the next cell"
   (interactive)
-  (let ((cell-bounds (bounds-of-thing-at-point 'nei-cell))
-        (next-cell-bounds (save-excursion
-                            (if (forward-thing 'nei-cell)
-                                (bounds-of-thing-at-point 'nei-cell)))))
-    (if (and cell-bounds next-cell-bounds)
-        (nei--swap-cells-by-bounds cell-bounds next-cell-bounds)  
-      )
-    )
+  (forward-thing 'nei-cell)
+)
+
+(defun nei-move-point-to-previous-cell ()
+  "Move the point to the previous cell"
+  (interactive)
+  (forward-thing 'nei-cell -1)
   )
 
-(defun nei-move-cell-up ()
+(defun nei-move-point-to-next-code-cell ()
+  "Move the point to the next cell"
   (interactive)
-  (let ((cell-bounds (bounds-of-thing-at-point 'nei-cell))
-        (prev-cell-bounds (save-excursion
-                            (if (forward-thing 'nei-cell -1)
-                                (bounds-of-thing-at-point 'nei-cell)))))
-    (if (and cell-bounds prev-cell-bounds)
-        (nei--swap-cells-by-bounds prev-cell-bounds cell-bounds)  
-      )
-    )
+  (forward-thing 'nei-code-cell)
+)
+
+(defun nei-move-point-to-previous-code-cell ()
+  "Move the point to the previous cell"
+  (interactive)
+  (forward-thing 'nei-code-cell -1)
   )
-  
+
+(defun nei-move-point-to-next-markdown-cell ()
+  "Move the point to the next cell"
+  (interactive)
+  (forward-thing 'nei-markdown-cell)
+)
+
+(defun nei-move-point-to-previous-markdown-cell ()
+  "Move the point to the previous cell"
+  (interactive)
+  (forward-thing 'nei-markdown-cell -1)
+)
+
 (provide 'nei-at-point)
