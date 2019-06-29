@@ -89,7 +89,7 @@
         (setq lines (push (nei--markdown-cell-to-text cell) lines))
         )
       )
-    (s-concat (s-join "\n\n" (reverse lines)) "\n")
+    (s-join "\n\n" (reverse lines))
     )
   )
 
