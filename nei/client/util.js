@@ -7,6 +7,14 @@ export function render_markdown(source) {
 }
 
 
+export function update_css_class_property(classname, propertyname, value) {
+  let matches = document.getElementsByClassName(classname);
+  for (let i = 0; i < matches.length; i++) {
+    matches[i].style[propertyname] = value
+  }
+}
+
+
 export function getURLParameter(name, url) {
         if (!url) {
             url = window.location.href;

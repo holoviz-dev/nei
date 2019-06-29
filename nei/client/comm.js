@@ -1,7 +1,7 @@
 'use strict';
 
 
-import {download_file, update_theme} from './util.js'
+import {download_file, update_theme, update_css_class_property} from './util.js'
 import {UUID} from './util.js';
 import {serialize, deserialize} from './buffer.js';
 
@@ -179,7 +179,7 @@ export class CommLink {
     let commands = ['add_cell', 'remove_cell', 'remove_cells',
                     'update_cell', 'update_cell_outputs', 'update_cell_input',
                     'clear_notebook', 'reorder_cells', 'clear_cell_output',
-                    'update_theme', 'display_code',
+                    'update_theme', 'update_css_class_property', 'display_code',
                     // Window management
                     'scroll_by',
                     'scroll_to',
@@ -264,6 +264,10 @@ export class CommLink {
       let {css} = json.args;
       update_theme(css);
     }
+   else if (json.cmd == 'update_css_class_property') {
+     let {classname, propertyname, value} = json.args;
+     update_css_class_property(classname, propertyname, value);
+   }
     else if (json.cmd == 'display_code') {
       let {pos, visible} = json.args;
       this.notebook.display_code(pos, visible);

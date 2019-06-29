@@ -310,6 +310,16 @@
                     ) t)
   )
 
+(defun nei-update-css-class-property (classname propertyname value)
+    (interactive)
+  (nei--server-cmd "update_css_class_property"
+                   (list
+                    (cons "classname" classname)
+                    (cons "propertyname" propertyname)
+                    (cons "value" value)
+                    ) t)
+  )
+
 
 (defun nei-update-config ()
   "Set the config dictionary on the notebook"

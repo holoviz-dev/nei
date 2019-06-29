@@ -7,11 +7,17 @@ a {
 pre {
     margin:0px;
     opacity: 1;
+    font-size: 0.75em;
 }
 
 .markdown-cell {
     margin-left: 40px;
-    font-family:    Arial, Helvetica, sans-serif
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.75em;
+}
+
+.nei-code {
+    font-size: 0.75em;
 }
 
 .nei-output-div {
