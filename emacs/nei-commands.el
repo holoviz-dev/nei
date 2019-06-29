@@ -23,14 +23,18 @@
    warn-no-connection)
   )
 
+(defun nei--kernel-inactive-message ()
+  (nei--logging "Execution skipped. Start a kernel with %s"
+                (mapconcat 'key-description (where-is-internal 'nei-start-kernel) " ")
+                )
+  )
+
 
 (defun nei--exec-cmd (command args &optional warn-no-connection)
   "Similar to nei-server-cmd but warns if there is no buffer kernel"
   (if nei--active-kernel
       (nei--server-cmd command args warn-no-connection)
-    (nei--logging "Execution skipped. Start a kernel with %s"
-             (mapconcat 'key-description (where-is-internal 'nei-start-kernel) " ")
-             )
+    (nei--kernel-inactive-message)
     )
   )
 
@@ -267,8 +271,9 @@
       (if (and nei--active-kernel (forward-thing 'nei-code-cell))
           (progn (nei-exec-by-line) t))
     (if nei--active-kernel
-          (progn (nei-exec-by-line)
-                 (forward-thing 'nei-code-cell)))
+        (progn (nei-exec-by-line)
+               (forward-thing 'nei-code-cell))
+      (nei--kernel-inactive-message))
     )
   )
 
@@ -576,10 +581,8 @@
           (sleep-for 0.1)
           )
         )
-    (nei--logging "Execution skipped. Start a kernel with %s"
-                  (mapconcat 'key-description (where-is-internal 'nei-start-kernel) " ")
-                  )
-      )
+    (nei--kernel-inactive-message)
+    )
   )
 
 (provide 'nei-commands)
