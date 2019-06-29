@@ -300,7 +300,7 @@
                     (cons "visible" "toggle")
                     ) t)
   )
-  
+
 (defun nei-update-theme ()
   "Using htmlize update CSS used for syntax highlighting by highlight.js"
   (interactive)
@@ -309,6 +309,20 @@
                     (cons "css" (nei--htmlize-css))
                     ) t)
   )
+
+(defun nei--update-text-scale (text-scale-mode-amount text-scale-mode-step)
+  (let* ((font-size-val (* 0.75 (expt text-scale-mode-step text-scale-mode-amount)))
+         (font-size (format "%sem" font-size-val)))
+    (nei-update-css-class-property "markdown-cell" "font-size" font-size)
+    (nei-update-css-class-property "nei-code" "font-size" font-size)
+    )
+  )
+
+(defun text-scale-mode-watcher  (symbol newval operation where)
+  "Hook watching for changes of the text-scale-mode variable"
+  (nei--update-text-scale newval text-scale-mode-step)
+  )
+
 
 (defun nei-update-css-class-property (classname propertyname value)
     (interactive)
@@ -470,6 +484,7 @@
     )
   (add-hook 'after-change-functions #'nei--mirror nil t)
   (add-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
+  (add-variable-watcher 'text-scale-mode-amount 'text-scale-mode-watcher)
   (run-with-idle-timer 0.2 t 'nei--update-highlight-cell)
 )
 
@@ -479,6 +494,7 @@
   (setq nei--currently-mirroring nil)
   (remove-hook 'after-change-functions #'nei--mirror t)
   (remove-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
+  (remove-variable-watcher 'text-scale-mode-amount 'text-scale-mode-watcher)
   (cancel-function-timers 'nei--update-highlight-cell)
   (nei-defontify)
   )
