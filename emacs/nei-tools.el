@@ -194,6 +194,7 @@
 
         (nei--load-from-file nei-cells nei--ipynb-buffer-filename nei-buffer-text)
         (set-buffer-modified-p nil)
+        (setq buffer-undo-list nil)
         ;; Set modtime for revert system. TODO: Lock buffer?
         (set-visited-file-modtime (nth 5 (file-attributes nei--ipynb-buffer-filename)))
         )
