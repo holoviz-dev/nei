@@ -189,6 +189,7 @@ class Cells(object):
         else:
             cleared = (mode == 'cleared')
             nb = nbformat.v4.new_notebook()
+            nb.nbformat_minor = self.nbformat_minor
             nb['cells'] = [cell.node(cleared=cleared) for cell in self.cells]
             if self.metadata is not None:
                 nb['metadata'] = self.metadata
@@ -200,7 +201,7 @@ class Cells(object):
             (data, resources) = nbconvert.exporters.export(nbconvert.HTMLExporter, nb)
         with open(filename, 'w') as f:
             if mode in ['cleared', 'full-notebook']:
-                nbformat.write(nb, f)
+                nbformat.write(nb, f, version=4)
             else:
                 f.write(data)
         return {'cmd':'write_complete', 'data':self.name}
@@ -296,6 +297,7 @@ class Notebook(Cells):
         super(Notebook, self).__init__(**kwargs)
         self.name = name
         self.metadata = None
+        self.nbformat_minor = None
         self._last_dispatch = None # Used for debugging and testing
         self.mirrorbuffer = MirrorBuffer()
         self.commands = {'view_browser': self.view_browser, # Opens browser connection
@@ -330,6 +332,7 @@ class Notebook(Cells):
                          'download_full_notebook':    self.download_full_notebook,
                          'view_notebook':             self.view_notebook,
                          'update_theme':              self.update_theme,
+                         'update_css_class_property': self.update_css_class_property,
                          'display_code':              self.display_code,
                          'display_all_code':          self.display_all_code,
                          # Derived 'by_line' methods
@@ -513,6 +516,7 @@ class Notebook(Cells):
         with open(filename, 'r') as f:
             nb = nbformat.v4.reads(f.read())
 
+        self.nbformat_minor = nb.nbformat_minor
         self.metadata = nb.metadata
         dict_cells = json.loads(json_string)
 
@@ -584,6 +588,12 @@ class Notebook(Cells):
         lines = css.splitlines()
 
         self.message(connection, 'update_theme', {'css':"\n".join(lines[1:-1])})
+
+    def update_css_class_property(self, connection, classname, propertyname, value):
+        self.message(connection, 'update_css_class_property',
+                     {'classname' : classname,
+                      'propertyname' : propertyname,
+                      'value' : value})
 
     def display_code(self, connection, visible, line_number):
         # Argument visible can be True, False or "toggle"
