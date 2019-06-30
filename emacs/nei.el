@@ -140,7 +140,6 @@
                     ;; Timer used to ensure stack cleared to prevent recursion issues.
                     (run-with-timer 0 nil 'nei-reload-page)
                     (setq nei--last-buffer (buffer-name))
-                    (push 'nei--scroll-hook window-scroll-functions)
                     )
                 )
 
@@ -172,6 +171,7 @@
   (if (not nei--currently-mirroring)
       (nei-start-mirroring))
   (add-hook 'write-contents-functions 'nei--write-file-hook)
+  (add-to-list 'window-scroll-functions 'nei--scroll-hook)
         
   (setq-local buffer-stale-function #'nei--buffer-stale-function)
   (setq-local revert-buffer-function #'nei--reverter-function)
