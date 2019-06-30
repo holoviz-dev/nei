@@ -82,7 +82,7 @@ export function range(n) {
 export function reorder(arr, positions) {
   let result = [];
   let pairs = zip([positions, range(arr.length)]);
-  pairs.sort();
+  pairs.sort((a,b) => a[0] - b[0]);
   for (let i=0; i < arr.length; i++) {
     let target = pairs[i][1]
      result.push(arr[target]);
