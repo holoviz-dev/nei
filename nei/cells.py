@@ -190,7 +190,8 @@ class Cells(object):
         else:
             cleared = (mode == 'cleared')
             nb = nbformat.v4.new_notebook()
-            nb.nbformat_minor = self.nbformat_minor
+            if self.nbformat_minor is not None:
+                nb.nbformat_minor = self.nbformat_minor
             nb['cells'] = [cell.node(cleared=cleared) for cell in self.cells]
             if self.metadata is not None:
                 nb['metadata'] = self.metadata
