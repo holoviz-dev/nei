@@ -138,7 +138,8 @@
               (if (eq (buffer-name) (buffer-name (elt (buffer-list) 0)))
                   (progn
                     ;; Timer used to ensure stack cleared to prevent recursion issues.
-                    (run-with-timer 0 nil 'nei-reload-page)
+                    (run-with-timer 0 nil (lambda () (nei-reload-page
+                                                      (line-number-at-pos (window-start)))))
                     (setq nei--last-buffer (buffer-name))
                     )
                 )

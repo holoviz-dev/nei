@@ -188,11 +188,13 @@
     )
   )
 
-(defun nei-reload-page ()
+(defun nei-reload-page (&optional scroll-to-line)
   "Send an restart-kernel  message"
   (interactive)
-  (nei--server-cmd "reload_page" (list))
+  (nei--server-cmd "reload_page"
+                   (list (cons "scroll_to_line" scroll-to-line)))
 )
+
 
 
 (defun nei-clear-all-cell-outputs ()

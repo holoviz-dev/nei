@@ -451,7 +451,7 @@ class Notebook(Cells):
     # Commands that operate on multiple cells at once #
     #=================================================#
 
-    def reload(self, connection):
+    def reload(self, connection, scroll_to_line=None):
         """
         Called when the browser tab is initially opened or reloaded and
         the notebook has cell state.
@@ -467,7 +467,7 @@ class Notebook(Cells):
                     filtered = OutputMessage.process(output)
                     self.message(connection,'update_cell_outputs', {'position':pos,
                                                                     'outputs':filtered})
-
+        if scroll_to_line: self.scroll_to_line(connection, scroll_to_line)
 
     def mirror(self, connection, start, end, length, added, size, md5=None):
         mirroring_error = self.mirrorbuffer(start, end, length, added, size, md5)
