@@ -208,7 +208,9 @@
 
     (save-excursion 
       (goto-char (car fst-bounds))
+      (nei--hold-mode "on") 
       (delete-region (car fst-bounds) (cdr snd-bounds))
+      (nei--hold-mode "off") 
       (insert replacement)
       )
     (goto-char target-pos)
