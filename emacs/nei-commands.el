@@ -246,18 +246,21 @@
   )
 
 
+(defun nei-scroll-to-line (line)
+  "Send a 'scroll_to_line' message"
+  (interactive)
+  (nei--server-cmd "scroll_to_line"
+                   (list
+                    (cons "line" line)))
+  )
+
+
 (defun nei--scroll-hook (win start-pos)
   "Hook to update scroll position in client via window-scroll-functions"
   (let ((buffer-mode (with-current-buffer
                          (window-buffer (selected-window)) major-mode)))
     (if (eq buffer-mode 'python-mode) ;; TODO: Needs a better check
-        (nei--server-cmd "scroll_to_line"
-                         (list
-                          (cons "line"
-                                (line-number-at-pos (window-start))
-                                )
-                          )
-                         )
+        (nei-scroll-to-line (line-number-at-pos (window-start)))
       )
     )
   )
