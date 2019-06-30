@@ -30,7 +30,8 @@ export class Notebook {
   }
 
   scroll_to(position, line, offset=0) {
-    this.cell[this.uuid_at_pos(position)].scroll(offset, line)
+    let handle = window.requestIdleCallback(() => {
+      this.cell[this.uuid_at_pos(position)].scroll(offset, line)})
   }
 
   visible_uuids() {
