@@ -67,7 +67,8 @@ class Cell(object):
     # To extract the prompt number (if any)
     code_prompt_regexp = re.compile("^# In\[(\d*| )\]")
 
-    def __init__(self, mode, source, input=None, prompt=None, outputs=[]):
+    def __init__(self, mode, source, input=None, prompt=None, outputs=None):
+        if outputs is None: outputs = []
         self.mode = mode
         self.source = source
         self.prompt = prompt
