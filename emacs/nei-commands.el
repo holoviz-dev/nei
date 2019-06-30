@@ -267,12 +267,13 @@
 
 
 (defun nei-exec-by-line-and-move-to-next-cell ()
-  "Executes cell at current line and moves point to next cell. 
-  Return true if there is a following code cell that can be executed."
+  "Executes cell at current line (if in a code cell) and moves point to next cell.
+   If not in a code cell, move to it but do not execute it. 
+   Return true if there is a following code cell that can be executed."
   (interactive)
   (if (null (bounds-of-thing-at-point 'nei-code-cell))
       (if (and nei--active-kernel (forward-thing 'nei-code-cell))
-          (progn (nei-exec-by-line) t))
+          t)
     (if nei--active-kernel
         (progn (nei-exec-by-line)
                (forward-thing 'nei-code-cell))
