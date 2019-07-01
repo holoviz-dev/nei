@@ -520,6 +520,11 @@ class Notebook(Cells):
 
         self.nbformat_minor = nb.nbformat_minor
         self.metadata = nb.metadata
+
+        if json_string == "null" and len(nb.cells) == 0:
+            return {'cmd':'load_validated',
+                    'data':{'filename':filename, 'valid':True}}
+
         dict_cells = json.loads(json_string)
 
         if buffer_text:
