@@ -564,9 +564,23 @@
   )
 
 (defun nei-delete-cell ()
+  "Delete cell and move forward if possible"
   (interactive)
-  (let ((bounds (bounds-of-thing-at-point 'nei-cell)))
-    (delete-region (car bounds) (cdr bounds)))
+  (let* ((bounds (bounds-of-thing-at-point 'nei-cell))
+         (next-start (save-excursion
+                       (end-of-line)
+                       (if (forward-thing 'nei-cell)
+                           (car (bounds-of-thing-at-point 'nei-cell)))))
+
+         (diff (if  (null next-start) 0
+                 (- next-start (cdr bounds)))))
+    (if (null bounds) (message "Not inside a cell: nothing to delete")
+      (progn
+        (delete-region (car bounds) (cdr bounds))
+        (delete-char diff)
+        )
+    )
+    )
   )
 
 
