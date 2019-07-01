@@ -548,12 +548,19 @@
   (interactive)
   (let ((point-pos nil))
     (save-excursion
-      (forward-thing 'nei-cell)
-      (goto-char (car (bounds-of-thing-at-point 'nei-cell)))
-      (insert "# In[ ]\n\n\n")
-      (setq point-pos (point))
-      )
-    (goto-char (- point-pos 2))
+      
+      (if (forward-thing 'nei-cell)
+          (progn
+            (goto-char (car (bounds-of-thing-at-point 'nei-cell)))
+            (insert "# In[ ]\n\n\n")
+            (setq point-pos (- (point) 2))
+            )
+        (progn (goto-char (point-max))
+               (insert "\n# In[ ]\n\n")
+               (setq point-pos (- (point) 1))
+              
+      )))
+    (goto-char point-pos)
     )
   )
 
@@ -563,14 +570,15 @@
   (nei--hold-mode "on")
   (let* ((point-pos nil)
          (start-pos (save-excursion
-                      (forward-thing 'nei-cell)
-                      (car (bounds-of-thing-at-point 'nei-cell))))
+                      (if (forward-thing 'nei-cell)
+                          (car (bounds-of-thing-at-point 'nei-cell)))))
          )
-    (goto-char start-pos)
+    (if start-pos (goto-char start-pos) (goto-char (point-max)))
     (save-excursion
-      (insert "\"\"\"\n")
+      ;; FIXME: Need extra leading newline if not one already
+      (if start-pos (insert "\"\"\"\n") (insert "\n\"\"\"\n"))
       (setq point-pos (point))
-      (insert "\n\"\"\" #:md:\n\n")
+      (if start-pos (insert "\n\"\"\" #:md:\n\n") (insert "\n\"\"\" #:md:\n")) 
        )
      (goto-char point-pos)
   )
