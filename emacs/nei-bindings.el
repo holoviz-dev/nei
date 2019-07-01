@@ -14,10 +14,10 @@
   (define-key map (kbd "C-c C") 'nei-update-theme)
   (define-key map (kbd "C-c M") 'nei-server-log)
 
-  (define-key map (kbd "C-c w") 'nei-move-cell-up)
-  (define-key map (kbd "C-c s") 'nei-move-cell-down)
-  (define-key map (kbd "C-c <down>") 'nei-move-point-to-next-cell)
-  (define-key map (kbd "C-c <up>") 'nei-move-point-to-previous-cell)
+  (define-key map (kbd "C-c C-<up>") 'nei-move-cell-up)
+  (define-key map (kbd "C-c C-<down>") 'nei-move-cell-down)
+  (define-key map (kbd "C-c C-.") 'nei-move-point-to-next-cell)
+  (define-key map (kbd "C-c C-,") 'nei-move-point-to-previous-cell)
   (define-key map (kbd "C-c c") 'nei-insert-code-cell)
   (define-key map (kbd "C-c m") 'nei-insert-markdown-cell)
   (define-key map (kbd "C-c <DEL>") 'nei-delete-cell)
@@ -41,8 +41,8 @@
 
   (define-key map (kbd "C-c C-'") 'nei-move-point-to-next-code-cell)
   (define-key map (kbd "C-c C-;") 'nei-move-point-to-previous-code-cell)
-  (define-key map (kbd "C-c '") 'nei-move-point-to-next-markdown-cell)
-  (define-key map (kbd "C-c ;") 'nei-move-point-to-previous-markdown-cell)
+  (define-key map (kbd "C-c C-]") 'nei-move-point-to-next-markdown-cell)
+  (define-key map (kbd "C-c C-[") 'nei-move-point-to-previous-markdown-cell)
   
   ;; More unusual bindings
   (define-key map [(S-return)] 'nei-exec-by-line-and-move-to-next-cell)
