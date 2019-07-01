@@ -167,7 +167,7 @@
   )
 
 (defun nei--point-within-bounds (bounds)
-  (and (>= (point) (car bounds)) (<= (point) (cdr bounds)))
+  (and (>= (point) (car bounds)) (< (point) (cdr bounds)))
   )
 
 
@@ -221,6 +221,7 @@
   (interactive)
   (let ((cell-bounds (bounds-of-thing-at-point 'nei-cell))
         (next-cell-bounds (save-excursion
+                            (end-of-line)
                             (if (forward-thing 'nei-cell)
                                 (bounds-of-thing-at-point 'nei-cell)))))
     (if (and cell-bounds next-cell-bounds)
