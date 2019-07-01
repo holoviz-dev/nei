@@ -421,9 +421,23 @@
 (defun nei-open-notebook (filename)
   "Prompt for filename, load it into a new python-mode buffer and start mirroring"
   (interactive "FFind notebook: ")
-  (find-file filename)
-  (nei-view-ipynb)
-)
+  (if (not (s-ends-with? ".ipynb" filename))
+      (message "Notebook file %s must have .ipynb extension" filename)
+    (progn
+      (if (file-exists-p filename)
+          (find-file filename)
+        (progn
+          (with-temp-file filename    ;; Empty notebook
+            (insert "{\"cells\": [],\"metadata\": {},\"nbformat\": 4,\"nbformat_minor\": 2}")
+            )
+          (find-file filename)
+          (message "(New notebook)")
+          )
+        )
+        (nei-view-ipynb)
+        )
+    )
+  )
 
 
 (defun nei--insert-notebook-command (filename text line-number)
