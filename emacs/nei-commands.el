@@ -496,7 +496,7 @@
   (add-hook 'after-change-functions #'nei--mirror nil t)
   (add-hook 'post-command-hook 'nei--point-move-disable-highlight-hook)
   (add-variable-watcher 'text-scale-mode-amount 'text-scale-mode-watcher)
-  (run-with-idle-timer 0.2 t 'nei--update-highlight-cell)
+  (run-with-idle-timer 0.05 t 'nei--update-highlight-cell)
 )
 
 
