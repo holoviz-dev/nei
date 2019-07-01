@@ -20,7 +20,7 @@
   (define-key map (kbd "C-c C-,") 'nei-move-point-to-previous-cell)
   (define-key map (kbd "C-c c") 'nei-insert-code-cell)
   (define-key map (kbd "C-c m") 'nei-insert-markdown-cell)
-  (define-key map (kbd "C-c <DEL>") 'nei-delete-cell)
+  (define-key map (kbd "C-c C-<backspace>") 'nei-delete-cell)
   (define-key map (kbd "C-c e") 'nei-exec-by-line-and-move-to-next-cell)
  
   (define-key map (kbd "C-c k") 'nei-start-kernel)
