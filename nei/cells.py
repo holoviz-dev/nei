@@ -937,6 +937,6 @@ class SyncNotebooks(object):
     def deletions(cls, connection, dst, deletions, hashes):
         "When src is the same as dst with some cells deleted"
         src_hashes, dst_hashes = hashes
-        for deletion in deletions:
-            ind = dst_hashes.index(deletion)
+        deleted_inds = [dst_hashes.index(deletion)for deletion in deletions]
+        for ind in sorted(deleted_inds)[::-1]:
             dst.remove_cell(connection, ind)
