@@ -528,7 +528,7 @@ class Notebook(Cells):
         dict_cells = json.loads(json_string)
 
         if buffer_text:
-            valid = ParseNotebook.validate_notebook(nb, dict_cells, buffer_text, Cell)
+            valid = ParseNotebook.validate_notebook(nb, buffer_text, Cell)
             if not valid:
                 return {'cmd':'load_validated',
                         'data':{'filename':filename, 'valid':False}}
