@@ -859,6 +859,8 @@ class SyncNotebooks(object):
             cls.additions(connection, src, dst, additions, hashes)
         elif deletions and not additions:
             cls.deletions(connection, dst, deletions, hashes)
+        elif additions and deletions:
+            cls.boundary_updates(connection, src, dst, additions, deletions, hashes)
 
         # As this all works via hashes on the stripped source, we need to
         # transfer the exact source lines across to preserve newlines and
@@ -867,6 +869,31 @@ class SyncNotebooks(object):
             logging.info('WARNING: Cell length mismatch %r vs %r' % (src.cells, dst.cells))
         for src_cell, dst_cell in zip(src.cells, dst.cells):
             dst_cell.source = src_cell.source
+
+    @classmethod
+    def boundary_updates(cls, connection, src, dst, additions, deletions, hashes):
+        src_hashes, dst_hashes = hashes
+
+        add_set = {src_hashes.index(h) for h in additions}
+        del_set = {dst_hashes.index(h) for h in deletions}
+        updated_inds = add_set & del_set
+
+        true_del_set = del_set - updated_inds
+        true_add_set = add_set - updated_inds
+
+        for update_ind in updated_inds:
+            cell = src.cells[update_ind]
+            dst.update_cell_input(connection, cell.source,
+                                  update_ind, cell.input)
+
+        for deletion_ind in sorted(true_del_set)[::-1]:
+            dst.remove_cell(connection, deletion_ind)
+
+        for addition_ind in true_add_set:
+            cell = src.cells[addition_ind]
+            dst.add_cell(connection, cell.source,
+                         cell.input, mode=cell.mode,
+                         position=addition_ind, outputs=cell.outputs)
 
 
     @classmethod
