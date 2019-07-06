@@ -13,7 +13,7 @@ class ValidatingParser(object):
             return source
 
     @classmethod
-    def validate_notebook(cls, nb, buffer_text, cell_cls):
+    def validate_notebook(cls, nb, parsed_cells):
         """
         Used to validate parsing process with a notebook ipynb file is
         loaded by comparing the notebook object to the parse result. If
@@ -22,7 +22,6 @@ class ValidatingParser(object):
         """
         ipynb_modes = [c['cell_type'] for c in nb.cells]
         ipynb_sources =  [c['source'] for c in nb.cells]
-        parsed_cells = cls.extract_cells(buffer_text, cell_cls, unique_prompts=True)
         parsed_modes = [c['mode'] for c in parsed_cells]
         parsed_sources = [c['source'] for c in parsed_cells]
         if ipynb_modes != parsed_modes:
@@ -167,8 +166,9 @@ class ParseNotebook(ValidatingParser):
                   and cell_type == "code" and source.endswith("\n\n")):
                 source = source[:-2]
 
-            cells.append(dict({'mode':cell_type,
-                               'source':source}, **info))
+            cells.append(dict({'mode': cell_type,
+                               'source':source,
+                               'lines': (start, stop)}, **info))
         return cells
 
     @classmethod

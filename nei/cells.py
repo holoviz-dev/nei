@@ -67,12 +67,14 @@ class Cell(object):
     # To extract the prompt number (if any)
     code_prompt_regexp = re.compile("^# In\[(\d*| )\]")
 
-    def __init__(self, mode, source, input=None, prompt=None, outputs=None):
+    def __init__(self, mode, source, input=None, prompt=None, outputs=None, lines=None):
         if outputs is None: outputs = []
         self.mode = mode
         self.source = source
         self.prompt = prompt
         self.input = input
+        # Line boundaries in the buffer as a (start, end) tuple
+        self.lines = lines
 
         self.outputs = outputs # List of nbformat output nodes
 
@@ -521,7 +523,7 @@ class Notebook(Cells):
 
         SyncNotebooks.sync(connection, src, self)
 
-    def load_from_file(self, connection, json_string, filename, buffer_text=None):
+    def load_from_file(self, connection, json_string, filename, buffer_text):
         "Clears any existing cells and replaces them with ones loaded from file"
         self.clear_notebook(connection)
 
@@ -535,20 +537,24 @@ class Notebook(Cells):
             return {'cmd':'load_validated',
                     'data':{'filename':filename, 'valid':True}}
 
-        dict_cells = json.loads(json_string)
+        dict_cells = json.loads(json_string)                          # JSON parsed by editor
+        parsed_cells = ParseNotebook.extract_cells(buffer_text, Cell) # Parsed from text
+        valid = ParseNotebook.validate_notebook(nb, parsed_cells)
+        if not valid:
+            return {'cmd':'load_validated',
+                    'data':{'filename':filename, 'valid':False}}
 
-        if buffer_text:
-            valid = ParseNotebook.validate_notebook(nb, buffer_text, Cell)
-            if not valid:
-                return {'cmd':'load_validated',
-                        'data':{'filename':filename, 'valid':False}}
-
+        # Transfer output state
         for (pos, (dict_cell, nb_cell)) in enumerate(zip(dict_cells, nb.cells)):
             if nb_cell.cell_type == 'code':
                 dict_cell['outputs'] = nb_cell.outputs
 
             dict_cell['position'] = pos
             self.add_cell(connection, **dict_cell)
+
+        # Transfer line boundaries
+        for cell, parse_cell in zip(self.cells, parsed_cells):
+            cell.lines = parse_cell['lines']
 
         return {'cmd':'load_validated',
                 'data':{'filename':filename, 'valid':True}}
