@@ -7,6 +7,21 @@
   (if nei-verbose (apply 'message  args))
   )
 
+(defun nei--line-bounds (bounds &optional zero-indexed relative)
+  """
+  If zero-indexed is true, then start counting lines from zero.
+  If relative is true, count lines in  narrowed region.
+  """
+  (if bounds 
+      (let* ((start-line (line-number-at-pos (car bounds) (not relative)))
+             (end-line   (line-number-at-pos (cdr bounds) (not relative)))
+             (offset-start (if zero-indexed (- start-line 1) start-line))
+             (offset-end (if zero-indexed (- end-line 1) end-line)))
+        (cons offset-start offset-end)
+        )
+    )
+  )
+
 (defun assoc-value (key alist)
   "Helper to make accessing keys from an alist more readable"
   (cdr (assoc key alist))
