@@ -310,6 +310,7 @@ class Notebook(Cells):
 
                          # Used for debugging
                          'terminate' :       self.terminate,
+                         'notebook_debug':   self.notebook_debug,
                          'server_info' :     self.server_info,
 
                          'write_notebook':   self.write_notebook,
@@ -372,6 +373,15 @@ class Notebook(Cells):
 
     def terminate(self, connection): # Used for debugging
         logging.info("ERROR: Termination requested")
+
+    def notebook_debug(self, connection, code):
+        "Returns the result of eval as a message"
+        try:
+            result = repr(eval(code))
+        except Exception as e:
+            result = str(e)
+        return  {'cmd':'user_message', 'data':result}
+
 
     def server_info(self, connection):
         # Used for debugging and testing by outputting info on browser connection

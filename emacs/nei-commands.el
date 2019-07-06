@@ -106,6 +106,12 @@
   (nei--logging "Sent restart kernel message")
 )
 
+
+(defun nei--notebook-debug (code)
+  (interactive)
+  (nei--server-cmd "notebook_debug" (list (cons "code" code)))
+  )
+
 (defun nei-shutdown-kernel ()
   "Send an shutdown-kernel  message"
   (interactive)
@@ -134,7 +140,7 @@
       )
 
     (if (s-equals? cmd "user_message")
-        (message data)
+        (message "%s" data)
         )
     
     (if (s-equals? cmd "load_validated")
