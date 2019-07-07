@@ -152,21 +152,10 @@ class Cells(object):
 
     def by_line(self, line_number, offset=False):
         "Given a line number find the corresponding cell number with offset if requested"
-        md_closed, cell_count, boundary = True, -1, 0
-        for lineno, line in enumerate(str(self.mirrorbuffer).splitlines(keepends=True)):
-            if line.startswith(Cell.code_startswith):
-                cell_count += 1
-                boundary = lineno
-            if line.startswith(Cell.md_startswith) and md_closed:
-                cell_count += 1
-                boundary = lineno
-                md_closed = not md_closed
-            elif line.startswith(Cell.md_startswith):
-                md_closed = not md_closed
-            if line_number == lineno+1:
-                cell_no = cell_count if cell_count >= 0 else None
-                delta = lineno - boundary
-                return (cell_no, delta) if offset else cell_no
+        for cell_no, cell in enumerate(self.cells):
+            (low, high) = cell.lines
+            if low <= line_number <= high: # Inclusive semantics
+                return (cell_no, line_number - low) if offset else cell_no
 
         logging.info('WARNING: Line number out of bounds')
 
