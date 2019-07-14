@@ -242,6 +242,22 @@
     )
   )
 
+;;=======================================;;
+;; Functions for handling cell selection ;;
+;;=======================================;;
+
+(defun nei-select-cell ()
+  "Select a single cell at the point position"
+  (interactive)
+  (let ((cell-bounds (bounds-of-thing-at-point 'nei-cell)))
+    (if cell-bounds
+        (progn 
+          (goto-char (car cell-bounds))
+          (set-mark (cdr cell-bounds))
+          )
+      )
+    )
+  )
 
 ;;====================================;;
 ;; Functions for handling file revert ;;
