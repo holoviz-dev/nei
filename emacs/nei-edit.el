@@ -259,6 +259,29 @@
     )
   )
 
+
+(defun nei-select-cells ()
+  "Select the cells within the marked region"
+  (interactive)
+  (if mark-active
+      (let* ((point-before-mark (< (point) (mark)))
+             (min-pos (min (point) (mark)))
+             (max-pos (max (point) (mark)))
+             (bounds-at-min (save-excursion (goto-char min-pos)
+                                            (bounds-of-thing-at-point 'nei-cell)))
+             (bounds-at-max (save-excursion (goto-char max-pos)
+                                            (bounds-of-thing-at-point 'nei-cell)))
+             (new-min (if bounds-at-min (car bounds-at-min)))
+             (new-max (if bounds-at-min (cdr bounds-at-max)))
+             )
+         (if (not (null new-max)) (goto-char new-max))
+         (if (not (null new-min)) (set-mark new-min))
+         (if point-before-mark (exchange-point-and-mark))        
+        )
+    )
+  )
+
+
 ;;====================================;;
 ;; Functions for handling file revert ;;
 ;;====================================;;
