@@ -258,15 +258,17 @@
 ;; Highlighting of bounds with overlay
 
 (defun nei--update-highlight-thing (thing)
-  (let* ((cell-bounds (bounds-of-thing-at-point thing))
-         (beginning (car cell-bounds))
-         (end (cdr cell-bounds)))
-    (if (and beginning end)
-        (progn
-          (move-overlay nei--highlight-overlay beginning end)
-          (if (eq thing 'nei-code-cell)
-              (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-code-face)
-            (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-markdown-face))
+  (if (null mark-active)
+      (let* ((cell-bounds (bounds-of-thing-at-point thing))
+             (beginning (car cell-bounds))
+             (end (cdr cell-bounds)))
+        (if (and beginning end)
+            (progn
+              (move-overlay nei--highlight-overlay beginning end)
+              (if (eq thing 'nei-code-cell)
+                  (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-code-face)
+                (overlay-put nei--highlight-overlay 'face 'nei-cell-highlight-markdown-face))
+              )
           )
         )
     )
