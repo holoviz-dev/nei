@@ -191,7 +191,7 @@ class ParseNotebook(ValidatingParser):
         lines = source.splitlines(keepends=True)
         # Note: If last line ends in a newline there is in fact one more
         # (empty) line that needs to be counted to get correct line boundaries
-        lines = lines + [''] if lines[-1].endswith('\n') else lines
+        lines = lines + [''] if (lines and lines[-1].endswith('\n')) else lines
         md_ranges, remaining_lines = cls.find_markdown_ranges(lines)
         code_ranges = cls.find_code_ranges(remaining_lines, cell_cls.code_prompt_regexp)
         extracted = cls.collect_cells(lines, md_ranges+code_ranges)
