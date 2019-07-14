@@ -277,7 +277,8 @@
          (if (not (null new-max)) (goto-char new-max))
          (if (not (null new-min)) (set-mark new-min))
          (if point-before-mark (exchange-point-and-mark))        
-        )
+         )
+    (nei-select-cell)
     )
   )
 

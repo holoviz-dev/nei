@@ -54,7 +54,8 @@
   (define-key map (kbd "C-<wheel-down>") 'nei-scroll-down)
   (define-key map (kbd "C-<double-wheel-down>") 'nei-scroll-down)
   (define-key map (kbd "C-<triple-wheel-down>") 'nei-scroll-down)
- 
+
+  (define-key map (kbd "C-c s") 'nei-select-cells)
   map
   )
 
@@ -117,6 +118,7 @@
     ["Insert Markdown" nei-insert-markdown-cell t]
     "---"
     ["Delete Cell" nei-delete-cell t]
+    ["Select Cells" nei-select-cells t]
     "---"
     ["Move Cell Up" nei-move-cell-up t]
     ["Move Cell Down" nei-move-cell-down t]
