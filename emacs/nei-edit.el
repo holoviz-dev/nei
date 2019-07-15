@@ -259,7 +259,6 @@
     )
   )
 
-
 (defun nei-select-cells ()
   "Select the cells within the marked region"
   (interactive)
@@ -282,6 +281,58 @@
     )
   )
 
+
+;;===============================================;;
+;; Functions for handling copy/paste with output ;;
+;;===============================================;;
+
+
+(defvar nei--killed-with-output nil
+  "Internal variable that holds the cell boundaries of cells that were
+  killed that when pasted should have their output restored.")
+
+(defun nei-kill-cells-with-output ()
+  "Cell aware version of kill-region that expands the region to include
+  the entire cells covered when marking a region and that preserves cell
+  output when yanked"
+  (interactive)
+  (message "SENDING MESSAGE TO SERVER ABOUT KILLED CELLS")
+  (save-excursion 
+    (if mark-active
+        (progn
+          (nei-select-cells)
+          (setq nei--killed-with-output "INFO ABOUT KILLED CELLS")
+          (kill-region (mark) (point))
+          (setq nei--killed-with-output nil)
+          )
+      )
+   )
+  )
+
+
+(defun nei--yank-handler (info)
+  "Custom yank-handler that messages the server about cells that need
+  their output restored upon yanking"
+  ;;(message "MESSAGE TO SERVER ABOUT PASTE %s" (nth 3 info))
+  (insert (car info))
+  )
+
+(defun nei--filter-buffer-substring-function (beg end &optional delete)
+  "Custom filter-buffer-substring-function that applied the yank-handler
+  text property when there is information to store about killed cells
+  that should retain their output when yanked"
+  (let ((substr (buffer-substring--filter beg end delete)))
+    (if nei--killed-with-output
+        (put-text-property 0 (length substr) 'yank-handler
+                           (list 'nei--yank-handler
+                                 (list substr beg end nei--killed-with-output))
+                           substr)
+      )
+    substr
+    )
+  )
+
+(setq filter-buffer-substring-function #'nei--filter-buffer-substring-function)
 
 ;;====================================;;
 ;; Functions for handling file revert ;;
