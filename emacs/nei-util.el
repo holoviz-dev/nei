@@ -51,6 +51,23 @@
   "Utility for easier regexp search and replace"
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
+
+(defun nei--find-conda-envs ()
+  "Build an alist of environments using conda.el to populate kernel
+   environment selection"
+  (let ((accumulator nil))
+    (dolist (env-name (conda-env-candidates) accumulator)
+      (add-to-list 'accumulator
+                   (cons env-name 
+                         (concat (conda--get-path-prefix
+                                  (conda-env-name-to-dir env-name)) "/" "python")
+                         )
+                   )
+      )
+    )
+  )
+
+
 ;;==================================;;
 ;; Utilities to htmlize python code ;;
 ;;==================================;;
