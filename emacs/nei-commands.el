@@ -5,6 +5,10 @@
 (require 'json)
 
 
+(defvar nei-env-alist (nei--find-conda-envs)
+  "Alist mapping names to Python executables, allowing the selection
+  between different environments")
+
 (defvar-local nei--currently-mirroring nil)
 (defvar-local nei--active-kernel nil)
 
@@ -71,14 +75,21 @@
   )
 
 
-(defun nei-start-kernel-with (executable)
-  (interactive "FPython executable: ")
-  (nei-start-kernel executable)
+(defun nei-start-kernel-with-executable (executable)
+  (interactive "FPython executable path: ")
+  (nei--start-kernel executable)
   )
 
-(defun nei-start-kernel (&optional executable)
+(defun nei-start-kernel (env-name)
+  (interactive (list (completing-read
+                      "(Optional) Select an environment: "
+                      nei-env-alist nil t "")))
+  (nei-start-kernel-with-executable (assoc-value env-name nei-env-alist))
+  )
+
+
+(defun nei--start-kernel (&optional executable)
   "Send an interrupt-kernel  message"
-  (interactive)
   (setq nei--active-kernel t)
   (nei--server-cmd "start_kernel"
                    (list (cons "cwd" default-directory)
