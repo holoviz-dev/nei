@@ -922,8 +922,15 @@ class SyncNotebooks(object):
         # to correctly infer cell positions from line numbers.
         if len(src.cells) != len(dst.cells):
             logging.info('WARNING: Cell length mismatch %r vs %r' % (src.cells, dst.cells))
-        for src_cell, dst_cell in zip(src.cells, dst.cells):
+        for ind, (src_cell, dst_cell) in enumerate(zip(src.cells, dst.cells)):
             dst_cell.source = src_cell.source
+            dst_cell.lines = src_cell.lines
+            try:
+                restored = OutputStore.pop(dst_cell.source)
+                for output in restored:
+                    dst.update_cell_outputs(connection, ind, output)
+            except:
+                pass
 
     @classmethod
     def boundary_updates(cls, connection, src, dst, additions, deletions, hashes):
