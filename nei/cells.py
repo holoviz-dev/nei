@@ -357,6 +357,9 @@ class Notebook(Cells):
                          'reorder_cells':          self.reorder_cells,
                          'clear_notebook':         self.clear_notebook,
                          'clear_all_cell_outputs': self.clear_all_cell_outputs,
+
+                         'push_outputs': self.push_outputs,
+                         'pop_outputs': self.pop_outputs,
                          # IO commands
                          'download_python_notebook':  self.download_python_notebook,
                          'download_cleared_notebook': self.download_cleared_notebook,
@@ -373,6 +376,16 @@ class Notebook(Cells):
         self.config = {'browser':'firefox'}
         self.code_visible = True
 
+    def push_outputs(self, connection, info):
+        "Pushing cell outputs to OutputStore before they are deleted"
+        OutputStore.push_outputs(self, info)
+
+    def pop_outputs(self, connection, info):
+        """
+        Declaring cells that are to pop the outputs from the
+        OutputStore when they are created
+        """
+        OutputStore.pop_outputs(info)
 
     def message(self, connection, command, args, buffers=[]):
         if connection is not None:
