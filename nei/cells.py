@@ -6,7 +6,9 @@ import re
 import webbrowser
 import hashlib
 import difflib
+import copy
 
+from collections import deque, defaultdict
 from .parser import ParseNotebook
 
 try:
@@ -20,7 +22,6 @@ from .styles import process_css
 
 # TODO
 # [ ] Could add a kill buffer hook to shutdown server when all nei buffers closed.
-# [ ] Add Yank hook.
 
 def serialize_binary_message(msg):
     """serialize a message as a binary blob
@@ -217,7 +218,6 @@ class Cells(object):
         return self._open_browser("http://localhost:8000/view.html")
 
     def view_browser(self, connection, ws_port=9999):
-
         if ws_port == 9999:
             url = "http://localhost:8000/index.html"
         else:
@@ -268,6 +268,43 @@ class OutputMessage(object):
             outputs.append((mtype, data))
         return outputs
 
+
+class OutputStore(object):
+    "Class used to store cell outputs that can be transfered between notebooks"
+
+    store = {}
+    output_queue = defaultdict(deque)
+
+    @classmethod
+    def push_outputs(cls, notebook, info):
+        assert info['buffer-name'] == notebook.name
+        boundaries = sorted([tuple(el) for el in info['boundaries']])
+        indices = [ind for (ind, cell) in enumerate(notebook.cells)
+                   if cell.lines in boundaries]
+        cells = [notebook.cells[ind] for ind in indices]
+
+        ddict = defaultdict(deque)
+        for cell in cells:
+            md5hash = hashlib.md5(cell.source.strip().encode('utf-8')).hexdigest()
+            ddict[md5hash].append(copy.deepcopy(cell.outputs))
+        cls.store[(info['buffer-name'], info['timestamp'])] = ddict
+
+    @classmethod
+    def pop_outputs(cls, info):
+        cls.output_queue = cls.store[(info['buffer-name'], info['timestamp'])]
+
+    @classmethod
+    def pop(cls, source):
+        source_hash = hashlib.md5(source.strip().encode('utf-8')).hexdigest()
+        if source_hash in cls.output_queue:
+            if len(cls.output_queue[source_hash]) > 0:
+                return cls.output_queue[source_hash].popleft()
+        raise Exception('Nothing to pop')
+
+    @classmethod
+    def check_empty(cls):
+        if len(output_queue):
+            raise Exception('OutputStore should have been emptied!')
 
 
 class Notebook(Cells):
