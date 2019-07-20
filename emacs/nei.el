@@ -177,6 +177,7 @@
   (setq-local buffer-stale-function #'nei--buffer-stale-function)
   (setq-local revert-buffer-function #'nei--reverter-function)
   (auto-revert-mode t)
+  (setq buffer-offer-save t) ;; Prompt when modified and emacs quits
   (setq mode-require-final-newline nil) ;; Otherwise Python mode inserts newlines upon save
 
   (setq-local nei--highlight-overlay
