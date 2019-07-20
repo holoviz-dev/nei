@@ -2,6 +2,7 @@
 (require 'nei-util)
 (require 'nei-parse)
 (require 'nei-at-point)
+(require 'nei-commands)
 (require 'json)
 
 
@@ -296,25 +297,34 @@
   the entire cells covered when marking a region and that preserves cell
   output when yanked"
   (interactive)
-  (message "SENDING MESSAGE TO SERVER ABOUT KILLED CELLS")
   (save-excursion 
     (if mark-active
         (progn
           (nei-select-cells)
-          (setq nei--killed-with-output "INFO ABOUT KILLED CELLS")
-          (kill-region (mark) (point))
-          (setq nei--killed-with-output nil)
+          (let* ((boundaries (nei--cell-boundaries-in-region))
+                 (line-bounds (mapcar (lambda (x) (nei--line-bounds x t)) boundaries))
+                 (info `(("buffer-name" . ,(buffer-name))
+                         ("boundaries" .
+                          ,(mapcar (lambda (x) (vector (car x) (cdr x))) line-bounds))
+                         ("timestamp" .  ,(format-time-string "%s")))))
+            (setq nei--killed-with-output info)
+            (nei--push-outputs-for-kill info)
+            (kill-region (mark) (point))
+            (setq nei--killed-with-output nil)
+            )
           )
       )
-   )
+    )
   )
+  
 
 
-(defun nei--yank-handler (info)
+(defun nei--yank-handler (yank-info)
   "Custom yank-handler that messages the server about cells that need
   their output restored upon yanking"
-  ;;(message "MESSAGE TO SERVER ABOUT PASTE %s" (nth 3 info))
-  (insert (car info))
+  (nei--pop-outputs-for-yank (nth 3 yank-info))
+  (insert (car yank-info))
+  (setq nei--killed-with-output nil)
   )
 
 (defun nei--filter-buffer-substring-function (beg end &optional delete)
