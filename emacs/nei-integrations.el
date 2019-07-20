@@ -139,6 +139,25 @@
   (set-frame-configuration nei--ediff-window-list)
   )
 
+
+;; Integration with conda.el
+
+(defun nei--find-conda-envs ()
+  "Build an alist of environments using conda.el to populate kernel
+   environment selection"
+  (let ((accumulator nil))
+    (dolist (env-name (conda-env-candidates) accumulator)
+      (add-to-list 'accumulator
+                   (cons env-name 
+                         (concat (conda--get-path-prefix
+                                  (conda-env-name-to-dir env-name)) "/" "python")
+                         )
+                   )
+      )
+    )
+  )
+
+
 (provide 'nei-integrations)
 
 

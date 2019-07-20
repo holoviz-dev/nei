@@ -3,7 +3,7 @@
 ;; Module for commands sent to and from the server
 (require 'nei-util)
 (require 'json)
-
+(require 'nei-integrations)
 
 (defvar nei-env-alist (nei--find-conda-envs)
   "Alist mapping names to Python executables, allowing the selection
