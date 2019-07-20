@@ -214,6 +214,23 @@
 
 
 
+(defun nei--push-outputs-for-kill (info)
+  "Send a push_outputs message to server"
+  (interactive)
+  (nei--server-cmd "push_outputs" (list (cons "info" info)))
+  (nei--logging "Pushed cell outputs")
+)
+
+
+(defun nei--pop-outputs-for-yank (info)
+  "Send a push_outputs message to server"
+  (interactive)
+  (nei--server-cmd "pop_outputs" (list (cons "info" info)))
+  (nei--logging "Popped cell outputs")   
+)
+
+
+
 (defun nei-clear-all-cell-outputs ()
   "Send a clear_all_cell_outputs message to server"
   (interactive)
