@@ -951,7 +951,7 @@ class SyncNotebooks(object):
         for deletion_ind in sorted(true_del_set)[::-1]:
             dst.remove_cell(connection, deletion_ind)
 
-        for addition_ind in true_add_set:
+        for addition_ind in sorted(true_add_set):
             cell = src.cells[addition_ind]
             dst.add_cell(connection, cell.source,
                          cell.input, mode=cell.mode,
