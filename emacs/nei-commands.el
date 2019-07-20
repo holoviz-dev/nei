@@ -74,6 +74,23 @@
   (nei--scroll-by nei-scroll-pixels)
   )
 
+(defun nei--desktop-restore-file-buffer (desktop-buffer-filename
+                                         desktop-buffer-name
+                                         desktop-ipynb-filename)
+  "Function to restore NEI buffers visiting IPYNB files when using desktop mode"
+  (if (and (s-ends-with? ".ipynb" desktop-buffer-name) desktop-ipynb-filename)
+      (nei-open-notebook desktop-ipynb-filename)
+    (desktop-restore-file-buffer desktop-buffer-filename
+                                 desktop-buffer-name
+                                 desktop-ipynb-filename)
+    )
+  )
+
+(defun nei--desktop-save-buffer (desktop-dirname)
+  "Integration with desktop mode by saving notebook path to .desktop file"
+  (if (boundp 'nei--ipynb-buffer-filename) nei--ipynb-buffer-filename nil)
+  )
+
 
 (defun nei-start-kernel-with-executable (executable)
   (interactive "FPython executable path: ")

@@ -213,6 +213,8 @@
   magic-alist:         Suggest hint when viewing notebook JSON in buffers
   view-ipynb:          Set global shortcut for viewing ipynb buffers (C-c I)
   "
+  (add-to-list 'desktop-buffer-mode-handlers
+               '(python-mode . nei--desktop-restore-file-buffer))
   (if add-file-menu-entry
       (progn
         (global-set-key (kbd "C-c F") 'nei-open-notebook)
