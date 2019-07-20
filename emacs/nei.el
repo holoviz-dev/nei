@@ -11,6 +11,7 @@
 (require 'nei-bindings)
 (require 'nei-tools)
 (require 'nei-at-point)
+(require 'nei-integrations)
 
 (defvar nei-browser "firefox"
   "The browser used by NEI when launch new tabs.")

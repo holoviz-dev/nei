@@ -7,13 +7,6 @@
   "Magic string used to track the point from the JSON source in ipynb files"
   )
 
-(defvar nei--ediff-window-list nil "Used to restore windows when ediff is quit")
-
-(defvar nei--ediff-unstaged-buffer-name nil "Tracks buffer name for unstaged changes")
-
-(defvar nei--ediff-revision-buffer-name nil "Tracks buffer name for revision")
-
-
 (defvar-local nei-ipynb-save-enabled t "Disable saving of ipynb files. Automatically set if NEI detects an inconsistent state on load.")
 
 (defun nei--write-file-hook ()
@@ -204,60 +197,10 @@
       )
   )
 
-
-
-(defun nei-next-error-hook ()
-  (if (s-equals? (nei--visited-file-type) "IPYNB") 
-      (nei--ipynb-buffer)
-    )
-  )
-
 (defun nei--ipynb-suggestion ()
   (message "Switch to NEI mode using nei-view-ipynb (%s)"
            (mapconcat 'key-description (where-is-internal 'nei-view-ipynb) " "))
   (fundamental-mode)
   )
-
-(defun nei-rgrep-integration () ;; Make into toggle
-  "Sets up custom next error hook for use from rgrep"
-  (interactive)
-  (add-hook 'next-error-hook #'nei-next-error-hook)
-)
-
-(defun nei-magit-view-diff ()
-  "When hovering on an unstaged notebook in magit, this function
-   can be called to apply ediff to view the changes as plaintext"
-  (interactive)
-  (let ((filename (magit-current-file)))
-    (if (s-ends-with? ".ipynb" filename)
-        (progn
-          (setq nei--ediff-window-list (current-frame-configuration))
-          (delete-other-windows)
-          (magit-diff-visit-file filename t)
-          (setq nei--ediff-unstaged-buffer-name (s-prepend "NEI>" (buffer-name)))
-          (nei-view-ipynb)
-          (other-window 1)
-          (magit-find-file "master" filename)
-          (setq nei--ediff-revision-buffer-name (s-prepend "NEI>" (buffer-name)))
-          (nei-view-ipynb)
-          (ediff-buffers nei--ediff-unstaged-buffer-name nei--ediff-revision-buffer-name)
-          (with-current-buffer nei--ediff-unstaged-buffer-name
-            (setq buffer-read-only t))
-          (with-current-buffer nei--ediff-revision-buffer-name
-            (setq buffer-read-only t))
-          )
-      )
-    )
-  )
-
-(defun nei--cleanup-ediff-buffers ()
-  "For use with an 'ediff-quit-hook"
-  (kill-buffer nei--ediff-unstaged-buffer-name)
-  (kill-buffer nei--ediff-revision-buffer-name)
-  (setq nei--ediff-unstaged-buffer-name nil)
-  (setq nei--ediff-revision-buffer-name nil)
-  (set-frame-configuration nei--ediff-window-list)
-  )
-
 
 (provide 'nei-tools)
