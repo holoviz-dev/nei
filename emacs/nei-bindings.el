@@ -56,6 +56,8 @@
   (define-key map (kbd "C-<triple-wheel-down>") 'nei-scroll-down)
 
   (define-key map (kbd "M-s") 'nei-select-cells)
+
+  (define-key map (kbd "C-W") 'nei-kill-cells-with-output)
   map
   )
 
