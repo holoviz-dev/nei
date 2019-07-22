@@ -9,6 +9,11 @@
 (defvar nei--prompt-regexp "^# In\\[\\([\\[:alnum:] ]*\\)\]"
   "The regular expression used to match prompts. Not to be changed by users.")
 
+(defvar nei--killed-with-output nil
+  "Internal variable that holds the cell boundaries of cells that were
+  killed that when pasted should have their output restored.")
+
+
 (defface nei-prompt-face
   '((t :foreground "#ffcc66"))
   "Face used for the code prompts"
@@ -287,20 +292,15 @@
 ;; Functions for handling copy/paste with output ;;
 ;;===============================================;;
 
-
-(defvar nei--killed-with-output nil
-  "Internal variable that holds the cell boundaries of cells that were
-  killed that when pasted should have their output restored.")
-
 (defun nei-kill-cells-with-output ()
   "Cell aware version of kill-region that expands the region to include
   the entire cells covered when marking a region and that preserves cell
   output when yanked"
   (interactive)
-  (save-excursion 
+  (save-excursion
+    (nei-select-cells)
     (if mark-active
         (progn
-          (nei-select-cells)
           (let* ((boundaries (nei--cell-boundaries-in-region))
                  (line-bounds (mapcar (lambda (x) (nei--line-bounds x t)) boundaries))
                  (info `(("buffer-name" . ,(buffer-name))
