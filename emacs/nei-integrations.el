@@ -12,7 +12,8 @@
 (defvar nei--mouse-drag-and-drop-p nil "Tracks whether a drag-and-drop event is occurring")
 
 (defun nei-global-config (add-file-menu-entry rgrep-integration connect
-                          magic-alist view-ipynb completions magit-diff)
+                                              magic-alist view-ipynb completions magit-diff
+                                              mouse-drag-and-drop)
   "Function to enable global integrations, to be enabled in .emacs.
 
   add-file-menu-entry: Add 'Visit New Notebook' to the File menu (C-c F).
@@ -20,6 +21,7 @@
   connect:             Start NEI server and establish websocket connection
   magic-alist:         Suggest hint when viewing notebook JSON in buffers
   view-ipynb:          Set global shortcut for viewing ipynb buffers (C-c I)
+  mouse-drag-and-drop: Enable mouse drag-and-drop of cells.
   "
   (add-to-list 'desktop-buffer-mode-handlers
                '(python-mode . nei--desktop-restore-file-buffer))
@@ -62,6 +64,13 @@
       (progn 
         (global-set-key (kbd "C-c d") 'nei-magit-view-diff)
         (add-hook 'ediff-quit-hook 'nei--cleanup-ediff-buffers)
+        )
+    )
+
+  (if mouse-drag-and-drop
+      (progn
+        (setq mouse-drag-and-drop-region t)
+        (nei-enable-mouse-drag-and-drop-cells)
         )
     )
 )
