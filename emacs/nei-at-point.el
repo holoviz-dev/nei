@@ -295,6 +295,32 @@
     )
   )
 
+;; Boundaries in region
+
+(defun nei--cell-boundaries-in-region () ;; TODO char-mode option arg and do lines
+  "Returns the boundaries of all the cells within a marked region"
+  (save-mark-and-excursion 
+    (let ((start (region-beginning))
+          (end (region-end))
+          (accumulator nil)
+          (continue t))
+
+      (goto-char start)
+      (while continue
+        (if (null (thing-at-point 'nei-cell)) (forward-thing 'nei-cell))
+        (let ((bounds (bounds-of-thing-at-point 'nei-cell)))
+          (if (and (>= (car bounds) start) (<= (cdr bounds) end))
+              (push bounds accumulator))
+          (if (>= (cdr bounds) end) (setq continue nil))
+          
+          )
+        (forward-thing 'nei-cell)
+        )
+      (reverse accumulator)
+      )
+    )
+  )
+
 
 ;; Movement aliases
 
