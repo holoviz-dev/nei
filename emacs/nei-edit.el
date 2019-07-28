@@ -318,6 +318,14 @@
   )
   
 
+(defun nei--insert-cell-at-boundary (text &optional mode)
+  "Insert text at the closest cell boundary to avoid disrupting existing
+  cells. If mode is nil, the closest boundary is used in either
+  direction, if mode is 1 the forward boundary is used and if the mode
+  is -1 the backwards boundary is used."
+  (nei--move-point-to-boundary mode)
+  (insert (s-concat "\n" text "\n"))
+  )
 
 (defun nei--yank-handler (yank-info)
   "Custom yank-handler that messages the server about cells that need
