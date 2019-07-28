@@ -292,21 +292,28 @@
 ;; Functions for handling copy/paste with output ;;
 ;;===============================================;;
 
+(defun nei--yank-info-in-region ()
+  "Returns information needed for yanking output given a marked region"
+  (let* ((boundaries (nei--cell-boundaries-in-region))
+         (line-bounds (mapcar (lambda (x) (nei--line-bounds x t)) boundaries))
+         (info `(("buffer-name" . ,(buffer-name))
+                 ("boundaries" .
+                  ,(mapcar (lambda (x) (vector (car x) (cdr x))) line-bounds))
+                 ("timestamp" .  ,(format-time-string "%s")))))
+    info
+    )
+  )
+
 (defun nei-kill-cells-with-output ()
   "Cell aware version of kill-region that expands the region to include
-  the entire cells covered when marking a region and that preserves cell
-  output when yanked"
+  the entire cells in the region and that also preserves cell output
+  when yanked"
   (interactive)
   (save-excursion
     (nei-select-cells)
     (if mark-active
         (progn
-          (let* ((boundaries (nei--cell-boundaries-in-region))
-                 (line-bounds (mapcar (lambda (x) (nei--line-bounds x t)) boundaries))
-                 (info `(("buffer-name" . ,(buffer-name))
-                         ("boundaries" .
-                          ,(mapcar (lambda (x) (vector (car x) (cdr x))) line-bounds))
-                         ("timestamp" .  ,(format-time-string "%s")))))
+          (let ((info (nei--yank-info-in-region)))
             (setq nei--killed-with-output info)
             (nei--push-outputs-for-kill info)
             (kill-region (mark) (point))
@@ -316,7 +323,6 @@
       )
     )
   )
-  
 
 (defun nei--insert-cell-at-boundary (text &optional mode)
   "Insert text at the closest cell boundary to avoid disrupting existing
