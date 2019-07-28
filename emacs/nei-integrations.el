@@ -72,6 +72,7 @@
   (if mouse-drag-and-drop
       (progn
         (setq mouse-drag-and-drop-region t)
+        (setq mouse-drag-and-drop-region-cut-when-buffers-differ t)
         (nei-enable-mouse-drag-and-drop-cells)
         )
     )
