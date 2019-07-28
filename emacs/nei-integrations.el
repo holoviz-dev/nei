@@ -11,6 +11,8 @@
 
 (defvar nei--mouse-drag-and-drop-p nil "Tracks whether a drag-and-drop event is occurring")
 
+(defvar nei--mouse-drag-and-drop-yank-info nil "Yank output information for drag and drop")
+
 (defun nei-global-config (add-file-menu-entry rgrep-integration connect
                                               magic-alist view-ipynb completions magit-diff
                                               mouse-drag-and-drop)
@@ -180,6 +182,7 @@
            (and (symbolp 'nei-mode) (symbol-value 'nei-mode)))
       (progn
         (nei--move-point-to-boundary nil)
+        (nei--pop-outputs-for-yank nei--mouse-drag-and-drop-yank-info)
         (apply original-fn `("\n" ,(car ARGS) "\n"))
         )
     (apply original-fn ARGS)
@@ -193,6 +196,8 @@
       (progn
         (nei-select-cell)
         (setq nei--mouse-drag-and-drop-p t)
+        (setq  nei--mouse-drag-and-drop-yank-info (nei--yank-info-in-region))
+        (nei--push-outputs-for-kill nei--mouse-drag-and-drop-yank-info)
         )
     )
   )
