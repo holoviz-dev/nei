@@ -321,6 +321,33 @@
     )
   )
 
+(defun nei--closest-boundary-to-point ()
+  "Returns nil if at boundary already, 1 if the closest boundary is the
+   next boundary, -1 if closest boundary is the previous boundary"
+  (let ((bounds (bounds-of-thing-at-point 'nei-cell)))
+    (if bounds
+        (let ((back-distance (- (point) (car bounds)))
+              (forward-distance (- (cdr bounds) (point))))
+          (if (> back-distance forward-distance) 1 -1)
+          )
+      )
+    )
+  )
+    
+(defun nei--move-point-to-boundary (&optional mode)
+  "Leaves the point in place if already at a boundary or moves it to the
+   previous or next boundary according to mode. If mode is nil, the
+   closest boundary is used, 1 always uses the next boundary and -1
+   always uses the previous boundary. Returns the direction travelled."
+  (let ((direction (if (null mode) (nei--closest-boundary-to-point) mode))
+        (bounds (bounds-of-thing-at-point 'nei-cell)))
+    (if (eq direction 1)
+        (goto-char (min (point-max) (+ (cdr bounds) 1))))
+    (if (eq direction -1)
+        (goto-char (max (point-min) (- (car bounds) 1))))
+    )
+  )
+
 
 ;; Movement aliases
 
