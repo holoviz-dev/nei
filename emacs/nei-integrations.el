@@ -9,6 +9,7 @@
 
 (defvar nei--ediff-revision-buffer-name nil "Tracks buffer name for revision")
 
+(defvar nei--mouse-drag-and-drop-p nil "Tracks whether a drag-and-drop event is occurring")
 
 (defun nei-global-config (add-file-menu-entry rgrep-integration connect
                           magic-alist view-ipynb completions magit-diff)
@@ -157,6 +158,54 @@
     )
   )
 
+
+;; Integration with mouse.el
+
+(defun nei--drag-and-drop-insert (original-fn &rest ARGS)
+  "Advice applied :around `insert' used to customize
+  `mouse-drag-and-drop-region' for use in NEI. As advising primitives is
+  risky, the goal is to only change the behavior of `insert' in NEI mode
+  during a drag and drop event. In all other situations, the advice
+  should do nothing."
+  (if (and nei--mouse-drag-and-drop-p
+           (and (symbolp 'nei-mode) (symbol-value 'nei-mode)))
+      (progn
+        (nei--move-point-to-boundary nil)
+        (apply original-fn `("\n" ,(car ARGS) "\n"))
+        )
+    (apply original-fn ARGS)
+    )
+  )
+
+(defun nei--before-mouse-drag-and-drop (event)
+  "Advice applied :before mouse-drag-and-drop-region to select the cell
+   at the point and enable custom insert mode"
+  (if (and (symbolp 'nei-mode) (symbol-value 'nei-mode))
+      (progn
+        (nei-select-cell)
+        (setq nei--mouse-drag-and-drop-p t)
+        )
+    )
+  )
+
+(defun nei--after-mouse-drag-and-drop (event)
+  "Advice applied :before mouse-drag-and-drop-region to disable
+   custom insert mode"
+  (setq nei--mouse-drag-and-drop-p nil)
+  (set-mark (point))
+  )
+
+(defun nei-enable-mouse-drag-and-drop-cells ()
+  (advice-add  #'insert :around 'nei--drag-and-drop-insert)
+  (advice-add  #'mouse-drag-and-drop-region :before 'nei--before-mouse-drag-and-drop)
+  (advice-add  #'mouse-drag-and-drop-region :after 'nei--after-mouse-drag-and-drop)
+
+  ;; Hackish: Needed to reload mouse.el so that the advice around insert is used.
+  (load-file
+   (s-concat (find-lisp-object-file-name
+              'mouse-drag-and-drop-region
+              (symbol-function 'mouse-drag-and-drop-region)) ".gz"))
+  )
 
 (provide 'nei-integrations)
 
